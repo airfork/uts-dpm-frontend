@@ -1,0 +1,21 @@
+{
+  "hosting": {
+    "public": "./dist/uts-dpm",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "emulators": {
+    "hosting": {
+      "port": "10000"
+    }
+  }
+}

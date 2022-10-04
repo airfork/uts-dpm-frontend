@@ -32,7 +32,8 @@ export class UserDetailComponent implements OnInit {
   user?: GetUserDetailDto;
   currentDpm?: DpmDetailDto;
   dpms: DpmDetailDto[] = [];
-  modalOpen = false;
+  dpmModalOpen = false;
+  confirmModalOpen = false;
   modalMessage = '';
   outputKey: DetailOutputKey = 'email';
 
@@ -69,7 +70,7 @@ export class UserDetailComponent implements OnInit {
 
   clickRow(dpm: DpmDetailDto) {
     this.currentDpm = dpm;
-    this.modalOpen = true;
+    this.dpmModalOpen = true;
   }
 
   denyDpm() {
@@ -147,19 +148,19 @@ export class UserDetailComponent implements OnInit {
     }
     this.modalMessage = DETAIL_DELETE_MESSAGE;
     this.outputKey = 'delete';
-    this.modalOpen = true;
+    this.confirmModalOpen = true;
   }
 
   sendEmailClick() {
     this.modalMessage = DETAIL_EMAIL_MESSAGE;
     this.outputKey = 'email';
-    this.modalOpen = true;
+    this.confirmModalOpen = true;
   }
 
   resetClick() {
     this.modalMessage = DETAIL_RESET_MESSAGE;
     this.outputKey = 'reset';
-    this.modalOpen = true;
+    this.confirmModalOpen = true;
   }
 
   viewingSelf(): boolean {

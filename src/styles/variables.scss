@@ -1,11 +1,17 @@
 // accent colors
 $accent: hsl((var(--a)));
+$accentContent: hsl((var(--ac)));
 
 // Base colors
 $base1: hsl((var(--b1)));
 $base2: hsl((var(--b2)));
 $base3: hsl((var(--b3)));
 $baseContent: hsl((var(--bc)));
+
+// Primary colors
+$primary: hsl(var(--p));
+$primaryContent: hsl(var(--pc));
+$primaryFocus: hsl(var(--pf));
 
 // Secondary colors
 $secondary: hsl(var(--s));

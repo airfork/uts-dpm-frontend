@@ -6,6 +6,7 @@
 @import "styles/autocomplete";
 @import "styles/paginator";
 @import "fonts";
+@import "styles/variables";
 
 html,
 body {
@@ -13,6 +14,11 @@ body {
   font-family: Poppins, system-ui;
 }
 
-.table th:first-child {
-  position: relative !important;
+.table th {
+  background-color: $primary;
+  color: $primaryContent;
+
+  :first-child {
+    position: relative !important;
+  }
 }

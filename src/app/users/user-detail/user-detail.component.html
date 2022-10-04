@@ -64,13 +64,13 @@
       </ng-template>
       <ng-template pTemplate="body" let-dpm>
         <tr class="hover hover:cursor-pointer" (click)="clickRow(dpm)">
-          <td class="lg:text-base break-words whitespace-normal">
+          <td class="text-base break-words whitespace-normal">
             {{ dpm.type }}
           </td>
-          <td class="lg:text-base break-words whitespace-normal">
+          <td class="text-base break-words whitespace-normal">
             {{ dpm.date }}
           </td>
-          <td class="lg:text-base break-words whitespace-normal">
+          <td class="text-base break-words whitespace-normal">
             {{ dpm.status }}
           </td>
         </tr>
@@ -85,12 +85,16 @@
 
   <div *ngIf="activeTab.actions" class="flex flex-wrap justify-center">
     <div class="mx-4 basis-full lg:basis-auto grid place-items-center">
-      <a class="link link-hover text-lg" (click)="resetClick()"
+      <a
+        class="text-lg hover:text-primary hover:cursor-pointer font-medium"
+        (click)="resetClick()"
         >Reset Password</a
       >
     </div>
     <div class="mx-4 basis-full lg:basis-auto grid place-items-center">
-      <a class="link link-hover text-lg" (click)="sendEmailClick()"
+      <a
+        class="text-lg hover:text-primary hover:cursor-pointer font-medium"
+        (click)="sendEmailClick()"
         >Send Points Email</a
       >
     </div>
@@ -98,7 +102,9 @@
       *ngIf="!viewingSelf()"
       class="mx-4 basis-full lg:basis-auto grid place-items-center"
     >
-      <a class="link link-hover text-lg text-error" (click)="deleteUserClick()"
+      <a
+        class="text-lg hover:cursor-pointer font-medium text-error"
+        (click)="deleteUserClick()"
         >Delete User</a
       >
     </div>
@@ -109,7 +115,7 @@
   type="checkbox"
   id="dpmModal"
   class="modal-toggle"
-  [(ngModel)]="modalOpen"
+  [(ngModel)]="dpmModalOpen"
 />
 <label for="dpmModal" class="modal cursor-pointer">
   <label class="modal-box relative">
@@ -189,6 +195,6 @@
 <app-confirm-box
   [message]="modalMessage"
   [outputKey]="outputKey"
-  [(isOpen)]="modalOpen"
+  [(isOpen)]="confirmModalOpen"
   (confirmed)="handleConfirmEvent($event)"
 ></app-confirm-box>

@@ -62,10 +62,10 @@
           class="hover hover:cursor-pointer"
           (click)="handlerUserClick(user.id)"
         >
-          <td class="lg:text-base break-words whitespace-normal">
+          <td class="text-base break-words whitespace-normal">
             {{ user.name | name: "last" }}
           </td>
-          <td class="lg:text-base break-words whitespace-normal">
+          <td class="text-base break-words whitespace-normal">
             {{ user.name | name: "first" }}
           </td>
         </tr>
@@ -84,12 +84,16 @@
 
   <div *ngIf="activeTab.actions" class="flex flex-wrap justify-center">
     <div class="mx-4 basis-full lg:basis-auto grid place-items-center">
-      <a class="link link-hover text-lg" (click)="sendEmailClick()"
+      <a
+        class="text-lg hover:text-primary hover:cursor-pointer font-medium"
+        (click)="sendEmailClick()"
         >Send Points Email</a
       >
     </div>
     <div class="mx-4 basis-full lg:basis-auto grid place-items-center">
-      <a class="link link-hover text-lg" (click)="resetPointsClick()"
+      <a
+        class="text-lg hover:text-primary hover:cursor-pointer font-medium"
+        (click)="resetPointsClick()"
         >Reset Points Balance</a
       >
     </div>

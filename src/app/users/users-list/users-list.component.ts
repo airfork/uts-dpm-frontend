@@ -117,7 +117,7 @@ export class UsersListComponent implements OnInit {
   handleConfirmEvent($event: string) {
     switch ($event as ListOutputKey) {
       case 'email':
-        console.log('Sending points email');
+        this.sendPointsBalanceAll();
         break;
       case 'reset':
         this.resetPointBalances();
@@ -157,5 +157,14 @@ export class UsersListComponent implements OnInit {
       relativeTo: this.route,
       replaceUrl: true,
     });
+  }
+
+  private sendPointsBalanceAll() {
+    this.userService
+      .sendPointsBalanceAll()
+      .pipe(first())
+      .subscribe(() =>
+        this.notificationService.showSuccess('Emails have been queued')
+      );
   }
 }

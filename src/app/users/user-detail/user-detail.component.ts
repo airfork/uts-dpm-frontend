@@ -130,10 +130,10 @@ export class UserDetailComponent implements OnInit {
         this.deleteUser();
         break;
       case 'email':
-        console.log('Sending this user a points balance email');
+        this.sendPointsBalanceEmail();
         break;
       case 'reset':
-        console.log("Resetting this user's password");
+        this.resetPassword();
         break;
       default:
         console.warn('Unknown user detail output key: ' + $event);
@@ -203,5 +203,21 @@ export class UserDetailComponent implements OnInit {
             this.notificationService.showSuccess('User has been deleted')
           );
       });
+  }
+
+  private sendPointsBalanceEmail() {
+    this.userService
+      .sendPointsBalance(this.userId)
+      .pipe(first())
+      .subscribe(() => this.notificationService.showSuccess('Email sent'));
+  }
+
+  private resetPassword() {
+    this.userService
+      .resetPassword(this.userId)
+      .pipe(first())
+      .subscribe(() =>
+        this.notificationService.showSuccess("User's password has been reset")
+      );
   }
 }

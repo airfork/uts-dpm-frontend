@@ -147,4 +147,38 @@ export class UserService {
       })
     );
   }
+
+  sendPointsBalance(id: string): Observable<any> {
+    return this.http.get(`${BASE_URL}/${id}/points`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return this.errorService.errorResponse(
+          error,
+          "Something went wrong trying to send the user's points balance. ID: " +
+            id
+        );
+      })
+    );
+  }
+
+  sendPointsBalanceAll(): Observable<any> {
+    return this.http.get(BASE_URL + '/points').pipe(
+      catchError((error: HttpErrorResponse) => {
+        return this.errorService.errorResponse(
+          error,
+          'Something went wrong trying to send each user their points balance'
+        );
+      })
+    );
+  }
+
+  resetPassword(id: string): Observable<any> {
+    return this.http.get(`${BASE_URL}/${id}/reset`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return this.errorService.errorResponse(
+          error,
+          "Something went wrong trying to reset the user' password. ID: " + id
+        );
+      })
+    );
+  }
 }

@@ -30,42 +30,36 @@ export class ApprovalsService {
   }
 
   updatePoints(id: number, points: number): Observable<any> {
-    return this.http
-      .patch<any>(`${BASE_URL}/dpms/${id}`, { points: points })
-      .pipe(
-        catchError((error) => {
-          return this.errorService.errorResponse(
-            error,
-            "Something went wrong when trying to update the user's points"
-          );
-        })
-      );
+    return this.http.patch<any>(`${BASE_URL}/${id}`, { points: points }).pipe(
+      catchError((error) => {
+        return this.errorService.errorResponse(
+          error,
+          "Something went wrong when trying to update the user's points"
+        );
+      })
+    );
   }
 
   approveDpm(id: number): Observable<any> {
-    return this.http
-      .patch<any>(`${BASE_URL}/dpms/${id}`, { approved: true })
-      .pipe(
-        retry(2),
-        catchError((error) => {
-          return this.errorService.errorResponse(
-            error,
-            'Something went wrong trying to approve the dpm'
-          );
-        })
-      );
+    return this.http.patch<any>(`${BASE_URL}/${id}`, { approved: true }).pipe(
+      retry(2),
+      catchError((error) => {
+        return this.errorService.errorResponse(
+          error,
+          'Something went wrong trying to approve the dpm'
+        );
+      })
+    );
   }
 
   denyDpm(id: number): Observable<any> {
-    return this.http
-      .patch<any>(`${BASE_URL}/dpms/${id}`, { ignored: true })
-      .pipe(
-        catchError((error) => {
-          return this.errorService.errorResponse(
-            error,
-            'Something went wrong trying to deny the dpm'
-          );
-        })
-      );
+    return this.http.patch<any>(`${BASE_URL}/${id}`, { ignored: true }).pipe(
+      catchError((error) => {
+        return this.errorService.errorResponse(
+          error,
+          'Something went wrong trying to deny the dpm'
+        );
+      })
+    );
   }
 }

@@ -28,7 +28,6 @@ export class DpmService {
   }
 
   create(dpm: PostDpmDto): Observable<any> {
-    console.log(dpm);
     return this.http.post(BASE_URL, dpm).pipe(
       catchError((error) => {
         return this.errorService.errorResponse(

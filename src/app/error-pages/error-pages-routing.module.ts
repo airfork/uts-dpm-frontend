@@ -7,7 +7,7 @@ import { ForbiddenComponent } from './forbidden/forbidden.component';
 
 const routes: Routes = [
   {
-    path: 'errors',
+    path: '',
     component: ErrorPagesComponent,
     children: [
       {

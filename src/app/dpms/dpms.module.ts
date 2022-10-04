@@ -4,12 +4,9 @@ import { HomeComponent } from './home/home.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NewDpmComponent } from './new-dpm/new-dpm.component';
-import { FlatpickrModule } from 'angularx-flatpickr';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarModule } from 'primeng/calendar';
-import { RippleModule } from 'primeng/ripple';
-import { ToastModule } from 'primeng/toast';
 import { AutogenComponent } from './autogen/autogen.component';
 import { DatagenComponent } from './datagen/datagen.component';
 import { UiModule } from '../ui/ui.module';
@@ -32,13 +29,10 @@ import { TableModule } from 'primeng/table';
     CommonModule,
     BrowserModule,
     FormsModule,
-    FlatpickrModule.forRoot(),
     ReactiveFormsModule,
     AutoCompleteModule,
     BrowserAnimationsModule,
     CalendarModule,
-    RippleModule,
-    ToastModule,
     UiModule,
     DpmsRoutingModule,
     SharedModule,

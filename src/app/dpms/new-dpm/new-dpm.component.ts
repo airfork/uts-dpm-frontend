@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -26,7 +26,6 @@ interface queryResult {
 @Component({
   selector: 'app-new-dpm',
   templateUrl: './new-dpm.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewDpmComponent implements OnInit {
   dpmTypes = DPMTypes;
@@ -151,11 +150,11 @@ export class NewDpmComponent implements OnInit {
   getBlockValidationMessages(): string {
     if (!this.hasErrors(this.block)) return '';
 
-    if (this.name?.errors?.['required']) {
+    if (this.block?.errors?.['required']) {
       return 'Block is required';
     }
 
-    if (this.name?.errors?.['maxlength']) {
+    if (this.block?.errors?.['maxlength']) {
       return 'Block cannot be longer than 5 characters';
     }
 
@@ -165,11 +164,11 @@ export class NewDpmComponent implements OnInit {
   getLocationValidationMessages(): string {
     if (!this.hasErrors(this.location)) return '';
 
-    if (this.name?.errors?.['required']) {
+    if (this.location?.errors?.['required']) {
       return 'Location is required';
     }
 
-    if (this.name?.errors?.['maxlength']) {
+    if (this.location?.errors?.['maxlength']) {
       return 'Location cannot be longer than 5 characters';
     }
 

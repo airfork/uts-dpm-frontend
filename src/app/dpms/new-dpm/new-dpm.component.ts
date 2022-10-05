@@ -29,6 +29,7 @@ interface queryResult {
 })
 export class NewDpmComponent implements OnInit {
   dpmTypes = DPMTypes;
+  private driverNames: UsernameDto[] = [];
   private defaultDpmType = this.dpmTypes[0].names[0];
 
   homeFormGroup = new FormGroup({
@@ -55,8 +56,7 @@ export class NewDpmComponent implements OnInit {
     notes: new FormControl(''),
   });
 
-  private driverNames: UsernameDto[] = [];
-
+  mobileMode = false;
   autocompleteResults: string[] = [];
 
   constructor(
@@ -67,6 +67,15 @@ export class NewDpmComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    const ua = navigator.userAgent;
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(
+        ua
+      )
+    ) {
+      this.mobileMode = true;
+    }
+
     this.userService
       .getUserNames()
       .pipe(first())

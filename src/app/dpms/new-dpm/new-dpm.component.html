@@ -96,6 +96,7 @@
         errorsOrSuccess(dpmDate)
       }}"
       [required]="true"
+      [touchUI]="mobileMode"
     ></p-calendar>
     <label class="label" for="dpmDateInput">
       <span class="label-text-alt text-error">{{
@@ -118,6 +119,7 @@
       maxlength="4"
       autocomplete="off"
       formControlName="startTime"
+      inputmode="numeric"
       required
     />
     <label class="label" for="dpmStartTimeInput">
@@ -141,6 +143,7 @@
       maxlength="4"
       autocomplete="off"
       formControlName="endTime"
+      inputmode="numeric"
       required
     />
     <label class="label" for="dpmEndTimeInput">

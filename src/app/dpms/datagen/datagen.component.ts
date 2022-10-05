@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormatService } from '../../services/format.service';
 import { environment } from '../../../environments/environment';
@@ -10,8 +10,9 @@ import { DatagenService } from '../../services/datagen.service';
   templateUrl: './datagen.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DatagenComponent {
+export class DatagenComponent implements OnInit {
   private BASE_URL = environment.baseUrl + '/datagen';
+  mobileMode = false;
 
   dpmDataFormGroup = new FormGroup(
     {
@@ -26,6 +27,17 @@ export class DatagenComponent {
     private formatService: FormatService,
     private datagenService: DatagenService
   ) {}
+
+  ngOnInit() {
+    const ua = navigator.userAgent;
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(
+        ua
+      )
+    ) {
+      this.mobileMode = true;
+    }
+  }
 
   getUserData() {
     this.datagenService.downloadUserData();

@@ -20,6 +20,7 @@ export class LoginComponent {
     username: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
   });
+  loading = false;
 
   constructor(
     private authService: AuthService,
@@ -28,6 +29,7 @@ export class LoginComponent {
   ) {}
 
   onSubmit() {
+    this.loading = true;
     const values = this.loginFormGroup.value;
     this.authService.login(values.username!, values.password!).subscribe({
       next: ({ token }) => {
@@ -36,6 +38,7 @@ export class LoginComponent {
         this.router.navigate(['/']);
       },
       error: (error: HttpErrorResponse) => {
+        this.loading = false;
         if (error.status === 401) this.badCredentials = true;
         else {
           console.error(error);

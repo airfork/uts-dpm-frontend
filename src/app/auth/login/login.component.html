@@ -42,7 +42,7 @@
       pRipple
       type="submit"
       class="btn btn-primary w-full"
-      [disabled]="!loginFormGroup.valid"
+      [disabled]="!loginFormGroup.valid || loading"
     >
       Login
     </button>

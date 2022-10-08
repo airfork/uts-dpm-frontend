@@ -20,6 +20,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class ChangePasswordComponent implements OnInit {
   isLoading = true;
+  waitingForResponse = false;
   changePasswordFormGroup = new FormGroup(
     {
       currentPassword: new FormControl('', [Validators.required]),
@@ -55,6 +56,7 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   onSubmit() {
+    this.waitingForResponse = true;
     this.authService
       .changePassword(this.formGroupToDto())
       .pipe(first())
@@ -68,6 +70,7 @@ export class ChangePasswordComponent implements OnInit {
             );
         },
         error: (error: HttpErrorResponse) => {
+          this.waitingForResponse = false;
           const values = this.changePasswordFormGroup.value;
           if (error.status === 401) {
             this.notificationService.showError(

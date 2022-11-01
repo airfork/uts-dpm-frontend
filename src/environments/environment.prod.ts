@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: 'https://utsdpm-rewrite.herokuapp.com/api',
+  baseUrl: 'https://api.utsdpm.com',
 };

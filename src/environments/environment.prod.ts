@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: 'https://api.utsdpm.com',
+  baseUrl: 'https://api.utsdpm.com/api',
 };

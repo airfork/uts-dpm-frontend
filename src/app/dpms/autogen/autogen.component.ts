@@ -12,6 +12,7 @@ import AutogenDpm from '../../models/autogen-dpm';
 export class AutogenComponent implements OnInit {
   autogenDpms?: AutogenDpm[];
   submittedTime?: String;
+  empty = false;
 
   constructor(
     private autogenService: AutogenService,
@@ -25,6 +26,7 @@ export class AutogenComponent implements OnInit {
       .pipe(first())
       .subscribe((wrapper) => {
         if (wrapper.submitted) this.submittedTime = wrapper.submitted;
+        if (wrapper.dpms.length === 0) this.empty = true;
         this.autogenDpms = wrapper.dpms;
       });
   }

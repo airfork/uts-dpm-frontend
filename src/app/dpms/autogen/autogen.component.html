@@ -38,6 +38,7 @@
         pRipple
         type="button"
         class="btn btn-secondary w-full sm:btn-wide mt-5"
+        [disabled]="empty"
         (click)="onSubmit()"
       >
         Submit
@@ -45,13 +46,9 @@
     </ng-template>
 
     <div
-      *ngIf="submittedTime || empty; else submitButton"
+      *ngIf="submittedTime; else submitButton"
       class="tooltip"
-      data-tip="{{
-        submittedTime
-          ? 'Autogen has already been called today'
-          : 'There are no DPMs to submit'
-      }}"
+      data-tip="Autogen has already been called today"
     >
       <button
         pRipple

@@ -178,7 +178,7 @@
         pRipple
         type="submit"
         class="btn btn-secondary m-auto w-full md:btn-wide"
-        [disabled]="isButtonDisabled()"
+        [disabled]="isButtonDisabled() || waiting"
       >
         {{ layout === "edit" ? "Update" : "Create" }}
       </button>

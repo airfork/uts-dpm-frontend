@@ -36,6 +36,7 @@ export class UserFormComponent implements OnInit, OnChanges {
   @Input() userInfo?: { user: GetUserDetailDto; id: string };
   user?: GetUserDetailDto;
   userId?: string;
+  waiting = false;
 
   roles: string[] = [];
 
@@ -251,23 +252,31 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   private editUser() {
+    this.waiting = true;
     this.userService
       .updateUser(this.formGroupToUserDetailDto(), this.userId!)
       .pipe(first())
-      .subscribe(() => {
-        this.notificationService.showSuccess('User updated');
+      .subscribe({
+        next: () => {
+          this.waiting = false;
+          this.notificationService.showSuccess('User updated');
 
-        const newValues = { ...this.userFormGroup.value };
-        if (!this.user!.fullTime && newValues.fullTime!) {
-          newValues.points = 0;
-        }
-        // role is not set if the formControl is disabled
-        // role formControl is disabled if user is viewing themselves
-        if (!newValues.role) {
-          newValues.role = this.roles[0];
-        }
+          const newValues = { ...this.userFormGroup.value };
+          if (!this.user!.fullTime && newValues.fullTime!) {
+            newValues.points = 0;
+          }
+          // role is not set if the formControl is disabled
+          // role formControl is disabled if user is viewing themselves
+          if (!newValues.role) {
+            newValues.role = this.roles[0];
+          }
 
-        this.userFormGroup.reset({ ...newValues });
+          this.userFormGroup.reset({ ...newValues });
+          this.userFormGroup.markAsPristine();
+        },
+        error: () => {
+          this.waiting = false;
+        },
       });
   }
 

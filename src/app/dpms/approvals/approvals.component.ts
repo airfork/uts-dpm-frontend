@@ -1,17 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ApprovalsService } from '../../services/approvals.service';
 import { FormatService } from '../../services/format.service';
 import { first } from 'rxjs';
 import ApprovalDpmDto from '../../models/approval-dpm-dto';
 import { NotificationService } from '../../services/notification.service';
+import { LazyLoadEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-approvals',
   templateUrl: './approvals.component.html',
   styleUrls: ['./approvals.component.scss'],
 })
-export class ApprovalsComponent implements OnInit {
-  dpms?: ApprovalDpmDto[];
+export class ApprovalsComponent {
+  private lastLazyLoadEvent?: LazyLoadEvent;
+
+  dpms: ApprovalDpmDto[] = [];
+  loadingDpms = true;
+  totalRecords = 0;
+
   modalOpen = false;
   currentDpm?: ApprovalDpmDto;
   editOpen = false;
@@ -22,13 +28,6 @@ export class ApprovalsComponent implements OnInit {
     private formatService: FormatService,
     private notificationService: NotificationService
   ) {}
-
-  ngOnInit() {
-    this.approvalsService
-      .getApprovalDpms()
-      .pipe(first())
-      .subscribe((value) => (this.dpms = value));
-  }
 
   showApprovalModal(dpm: ApprovalDpmDto) {
     this.currentDpm = dpm;
@@ -63,6 +62,7 @@ export class ApprovalsComponent implements OnInit {
           'DPM has been approved',
           'Success'
         );
+        this.lazyLoadEvent(this.lastLazyLoadEvent!);
       });
   }
 
@@ -74,6 +74,30 @@ export class ApprovalsComponent implements OnInit {
       .pipe(first())
       .subscribe(() => {
         this.notificationService.showSuccess('DPM has been denied', 'Success');
+        this.lazyLoadEvent(this.lastLazyLoadEvent!);
+      });
+  }
+
+  lazyLoadEvent(event: LazyLoadEvent) {
+    this.lastLazyLoadEvent = event;
+    this.loadingDpms = true;
+    let size = 10;
+    if (event.rows) {
+      size = event.rows;
+    }
+
+    let page = 0;
+    if (event.first) {
+      page = event.first / size;
+    }
+
+    this.approvalsService
+      .getApprovalDpms(page, size)
+      .pipe(first())
+      .subscribe((page) => {
+        this.dpms = page.content;
+        this.totalRecords = page.totalElements;
+        this.loadingDpms = false;
       });
   }
 

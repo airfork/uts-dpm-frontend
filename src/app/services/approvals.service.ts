@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DpmService } from './dpm.service';
 import { catchError, Observable, retry } from 'rxjs';
-import ApprovalDpmDto from '../models/approval-dpm-dto';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ErrorService } from './error.service';
+import ApprovalDpmPage from '../models/approval-dpm-page';
 
 const BASE_URL = environment.baseUrl + '/dpms';
 
@@ -18,15 +18,17 @@ export class ApprovalsService {
     private errorService: ErrorService
   ) {}
 
-  getApprovalDpms(): Observable<ApprovalDpmDto[]> {
-    return this.http.get<ApprovalDpmDto[]>(BASE_URL + '/approvals').pipe(
-      catchError((error: HttpErrorResponse) => {
-        return this.errorService.errorResponse(
-          error,
-          'Something went wrong when trying to get the unapproved dpm list'
-        );
-      })
-    );
+  getApprovalDpms(page: number, size: number): Observable<ApprovalDpmPage> {
+    return this.http
+      .get<ApprovalDpmPage>(`${BASE_URL}/approvals?page=${page}&size=${size}`)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          return this.errorService.errorResponse(
+            error,
+            'Something went wrong when trying to get the unapproved dpm list'
+          );
+        })
+      );
   }
 
   updatePoints(id: number, points: number): Observable<any> {

@@ -14,9 +14,12 @@
     [rows]="10"
     [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10, 25, 50]"
-    [loading]="false"
+    [loading]="loadingDpms"
     responsiveLayout="scroll"
     [paginator]="true"
+    [lazy]="true"
+    [totalRecords]="totalRecords"
+    (onLazyLoad)="lazyLoadEvent($event)"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
   >
     <ng-template pTemplate="header" class="table">

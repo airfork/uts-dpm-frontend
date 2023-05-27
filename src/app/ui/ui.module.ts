@@ -5,7 +5,7 @@ import { AuthModule } from '../auth/auth.module';
 import { ConfirmBoxComponent } from './confirm-box/confirm-box.component';
 import { FormsModule } from '@angular/forms';
 import { RippleModule } from 'primeng/ripple';
-import { RouterLinkActive, RouterLinkWithHref } from '@angular/router';
+import { RouterLinkActive, RouterLink } from '@angular/router';
 
 @NgModule({
   declarations: [NavbarComponent, ConfirmBoxComponent],
@@ -14,7 +14,7 @@ import { RouterLinkActive, RouterLinkWithHref } from '@angular/router';
     AuthModule,
     FormsModule,
     RippleModule,
-    RouterLinkWithHref,
+    RouterLink,
     RouterLinkActive,
   ],
   exports: [NavbarComponent, ConfirmBoxComponent],

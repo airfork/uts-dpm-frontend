@@ -5,6 +5,7 @@ import { first } from 'rxjs';
 import ApprovalDpmDto from '../../models/approval-dpm-dto';
 import { NotificationService } from '../../services/notification.service';
 import { LazyLoadEvent } from 'primeng/api';
+import { TableLazyLoadEvent } from 'primeng/table';
 
 @Component({
   selector: 'app-approvals',
@@ -12,7 +13,7 @@ import { LazyLoadEvent } from 'primeng/api';
   styleUrls: ['./approvals.component.scss'],
 })
 export class ApprovalsComponent {
-  private lastLazyLoadEvent?: LazyLoadEvent;
+  private lastLazyLoadEvent?: TableLazyLoadEvent;
 
   dpms: ApprovalDpmDto[] = [];
   loadingDpms = true;
@@ -78,7 +79,7 @@ export class ApprovalsComponent {
       });
   }
 
-  lazyLoadEvent(event: LazyLoadEvent) {
+  lazyLoadEvent(event: TableLazyLoadEvent) {
     this.lastLazyLoadEvent = event;
     this.loadingDpms = true;
     let size = 10;

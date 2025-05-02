@@ -5,7 +5,6 @@ import { first } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { NotificationService } from '../../services/notification.service';
 import DpmDetailDto from '../../models/dpm-detail-dto';
-import { LazyLoadEvent } from 'primeng/api';
 import { DpmService } from '../../services/dpm.service';
 import { ApprovalsService } from '../../services/approvals.service';
 import { UserService } from '../../services/user.service';
@@ -17,13 +16,14 @@ import {
   DetailOutputKey,
 } from '../shared/confirm-box-info';
 import { AuthService } from '../../services/auth.service';
+import { TableLazyLoadEvent } from 'primeng/table';
 
 @Component({
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
 })
 export class UserDetailComponent implements OnInit {
-  private lastLazyLoadEvent?: LazyLoadEvent;
+  private lastLazyLoadEvent?: TableLazyLoadEvent;
 
   userId = '';
   loadingDpms = true;
@@ -103,7 +103,7 @@ export class UserDetailComponent implements OnInit {
     }
   }
 
-  lazyLoadEvent(event: LazyLoadEvent) {
+  lazyLoadEvent(event: TableLazyLoadEvent) {
     this.lastLazyLoadEvent = event;
     this.loadingDpms = true;
     let size = 10;

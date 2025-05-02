@@ -2,9 +2,9 @@
   <app-loading></app-loading>
 </ng-template>
 
-<div *ngIf="users; else loading">
+@if (users) {
+<div>
   <h2 class="text-3xl mb-5 font-bold">Users</h2>
-
   <div class="tabs mb-5 grid justify-items-center lg:justify-items-start">
     <div>
       <a
@@ -27,8 +27,8 @@
       >
     </div>
   </div>
-
-  <div *ngIf="activeTab.search">
+  @if (activeTab.search) {
+  <div>
     <input
       pAutoFocus
       [autofocus]="true"
@@ -38,7 +38,6 @@
       class="input input-bordered w-full mb-2"
       (input)="filterUsers($event)"
     />
-
     <p-table
       #dt
       [value]="filteredUsers"
@@ -79,12 +78,12 @@
       </ng-template>
     </p-table>
   </div>
-
-  <div *ngIf="activeTab.create">
+  } @if (activeTab.create) {
+  <div>
     <app-user-form layout="create" [managers]="managers"></app-user-form>
   </div>
-
-  <div *ngIf="activeTab.actions" class="flex flex-wrap justify-center">
+  } @if (activeTab.actions) {
+  <div class="flex flex-wrap justify-center">
     <div class="mx-4 basis-full lg:basis-auto grid place-items-center">
       <a
         class="text-lg hover:text-primary hover:cursor-pointer font-medium"
@@ -100,7 +99,11 @@
       >
     </div>
   </div>
+  }
 </div>
+} @else {
+<app-loading></app-loading>
+}
 
 <app-confirm-box
   [message]="modalMessage"

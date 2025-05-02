@@ -76,16 +76,13 @@
       </label>
     </div>
 
-    <div
-      *ngIf="layout === 'edit'"
-      class="form-control col-span-3 md:col-span-1"
-    >
+    @if (layout === 'edit') {
+    <div class="form-control col-span-3 md:col-span-1">
       <label class="label" for="points">
         <span class="label-text" [ngClass]="{ 'text-error': hasErrors(points) }"
           >Points</span
         >
       </label>
-
       <input
         id="points"
         type="text"
@@ -96,13 +93,13 @@
         required
         [ngClass]="{ 'input-error': hasErrors(points) }"
       />
-
       <label class="label" for="points">
         <span class="label-text-alt text-error">
           {{ getPointsValidationMessages() }}
         </span>
       </label>
     </div>
+    }
 
     <div class="form-control col-span-3 md:col-span-1">
       <label class="label" for="role-select">
@@ -114,9 +111,11 @@
         class="select select-bordered w-full"
         formControlName="manager"
       >
-        <option *ngFor="let manager of managers" [value]="manager">
+        @for (manager of managers; track manager) {
+        <option [value]="manager">
           {{ manager }}
         </option>
+        }
       </select>
 
       <label class="label" for="manager-select">
@@ -136,9 +135,11 @@
         class="select select-bordered w-full"
         formControlName="role"
       >
-        <option *ngFor="let role of roles" [value]="role">
+        @for (role of roles; track role) {
+        <option [value]="role">
           {{ role }}
         </option>
+        }
       </select>
 
       <label class="label" for="role-select">

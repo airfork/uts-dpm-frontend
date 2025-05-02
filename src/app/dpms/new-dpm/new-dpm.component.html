@@ -163,11 +163,15 @@
         class="select select-bordered w-full"
         formControlName="type"
       >
-        <optgroup *ngFor="let dpmType of dpmTypes" label="{{ dpmType.type }}">
-          <option *ngFor="let name of dpmType.names" [value]="name">
+        @for (dpmType of dpmTypes; track dpmType) {
+        <optgroup label="{{ dpmType.type }}">
+          @for (name of dpmType.names; track name) {
+          <option [value]="name">
             {{ name }}
           </option>
+          }
         </optgroup>
+        }
       </select>
       <label class="label" for="dpmTypeInput">
         <span class="label-text-alt">

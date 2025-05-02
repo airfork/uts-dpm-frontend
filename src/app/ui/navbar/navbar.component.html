@@ -22,22 +22,24 @@
         tabindex="0"
         class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
       >
+        @for (link of links; track link) {
         <li
-          *ngFor="let link of links"
           [appRemoveIfUnauthorized]="link.allowedRoles"
           class="mb-2 last:mb-0"
         >
+          @if (link.path) {
           <a
-            *ngIf="link.path"
             routerLink="{{ link.path }}"
             routerLinkActive="active"
             [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
             (click)="menuItemClick()"
             >{{ link.name }}</a
           >
-
-          <a *ngIf="!link.path" (click)="logoutClick()">{{ link.name }}</a>
+          } @if (!link.path) {
+          <a (click)="logoutClick()">{{ link.name }}</a>
+          }
         </li>
+        }
       </ul>
     </div>
 
@@ -46,24 +48,23 @@
 
   <div class="navbar-end w-[60%] hidden lg:flex">
     <ul class="menu menu-horizontal p-0">
-      <li
-        class="mx-1"
-        *ngFor="let link of links"
-        [appRemoveIfUnauthorized]="link.allowedRoles"
-      >
+      @for (link of links; track link) {
+      <li class="mx-1" [appRemoveIfUnauthorized]="link.allowedRoles">
+        @if (link.path) {
         <a
-          *ngIf="link.path"
           routerLink="{{ link.path }}"
           routerLinkActive="active"
           [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
         >
           {{ link.name }}
         </a>
-
-        <a *ngIf="!link.path" (click)="logoutClick()">
+        } @if (!link.path) {
+        <a (click)="logoutClick()">
           {{ link.name }}
         </a>
+        }
       </li>
+      }
     </ul>
   </div>
 </div>

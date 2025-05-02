@@ -6,9 +6,9 @@
 />
 <label for="dpmModal" class="modal cursor-pointer">
   <label class="modal-box relative">
-    <div *ngIf="currentDpm">
+    @if (currentDpm) {
+    <div>
       <h3 class="text-xl font-bold mx-4">{{ currentDpm.type }}</h3>
-
       <table
         class="my-4 border-separate border-spacing-x-4 border-spacing-y-1.5"
       >
@@ -35,16 +35,19 @@
               {{ currentDpm.time }}
             </td>
           </tr>
-          <tr *ngIf="currentDpm.notes" class="break-words whitespace-normal">
+          @if (currentDpm.notes) {
+          <tr class="break-words whitespace-normal">
             <th>Notes:</th>
             <td>{{ currentDpm.notes }}</td>
           </tr>
+          }
         </tbody>
       </table>
       <div class="modal-action">
         <label for="dpmModal" class="btn btn-secondary">Close</label>
       </div>
     </div>
+    }
   </label>
 </label>
 
@@ -52,9 +55,9 @@
   <app-loading></app-loading>
 </ng-template>
 
-<div *ngIf="currentDpms$ | async as dpms; else loading">
+@if (currentDpms$ | async; as dpms) {
+<div>
   <h2 class="text-3xl mb-5 font-bold">Current DPMs</h2>
-
   <p-table
     #dt
     [value]="dpms"
@@ -96,3 +99,6 @@
     </ng-template>
   </p-table>
 </div>
+} @else {
+<app-loading></app-loading>
+}

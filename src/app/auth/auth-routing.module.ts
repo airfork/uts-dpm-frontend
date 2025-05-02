@@ -3,8 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { GenerateTitle } from '../shared/title-helper';
 import { AuthComponent } from './auth/auth.component';
-import { AuthGuard } from './auth.guard';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { authGuard } from './auth.guard';
 
 const routes: Routes = [
   {
@@ -15,7 +15,7 @@ const routes: Routes = [
         path: '',
         component: LoginComponent,
         title: GenerateTitle('Login'),
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'ANALYST', 'DRIVER', 'MANAGER', 'SUPERVISOR'],
         },
@@ -30,7 +30,7 @@ const routes: Routes = [
         path: '',
         component: ChangePasswordComponent,
         title: GenerateTitle('Change Password'),
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'ANALYST', 'DRIVER', 'MANAGER', 'SUPERVISOR'],
         },

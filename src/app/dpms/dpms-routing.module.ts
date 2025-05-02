@@ -7,7 +7,7 @@ import { AutogenComponent } from './autogen/autogen.component';
 import { DatagenComponent } from './datagen/datagen.component';
 import { ApprovalsComponent } from './approvals/approvals.component';
 import { GenerateTitle, TitlePrefix } from '../shared/title-helper';
-import { AuthGuard } from '../auth/auth.guard';
+import { authGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -18,7 +18,7 @@ const routes: Routes = [
         path: '',
         component: HomeComponent,
         title: TitlePrefix,
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'ANALYST', 'DRIVER', 'MANAGER', 'SUPERVISOR'],
         },
@@ -27,7 +27,7 @@ const routes: Routes = [
         path: 'dpm',
         component: NewDpmComponent,
         title: GenerateTitle('New DPM'),
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'ANALYST', 'MANAGER', 'SUPERVISOR'],
         },
@@ -36,7 +36,7 @@ const routes: Routes = [
         path: 'autogen',
         component: AutogenComponent,
         title: GenerateTitle('Autogenerate DPMs'),
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'ANALYST', 'MANAGER', 'SUPERVISOR'],
         },
@@ -45,7 +45,7 @@ const routes: Routes = [
         path: 'datagen',
         component: DatagenComponent,
         title: GenerateTitle('Generate Data'),
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'ANALYST', 'MANAGER'],
         },
@@ -54,7 +54,7 @@ const routes: Routes = [
         path: 'approvals',
         component: ApprovalsComponent,
         title: GenerateTitle('Approvals'),
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'MANAGER'],
         },

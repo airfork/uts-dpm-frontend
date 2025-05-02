@@ -4,13 +4,13 @@ import { UsersListComponent } from './users-list/users-list.component';
 import { UsersComponent } from './users/users.component';
 import { GenerateTitle } from '../shared/title-helper';
 import { UserDetailComponent } from './user-detail/user-detail.component';
-import { AuthGuard } from '../auth/auth.guard';
+import { authChildGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: UsersComponent,
-    canActivateChild: [AuthGuard],
+    canActivateChild: [authChildGuard],
     data: {
       allowedRoles: ['ADMIN'],
     },

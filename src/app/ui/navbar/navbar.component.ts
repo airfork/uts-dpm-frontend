@@ -59,8 +59,6 @@ export class NavbarComponent {
   logoutClick() {
     this.menuItemClick();
     this.authService.logout();
-    this.router
-      .navigate(['/login'])
-      .then(() => this.notificationService.showInfo('Logged out'));
+    this.router.navigate(['/login']).then(() => this.notificationService.showInfo('Logged out'));
   }
 }

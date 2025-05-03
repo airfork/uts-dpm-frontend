@@ -19,20 +19,18 @@ export class ApprovalsService {
   ) {}
 
   getApprovalDpms(page: number, size: number): Observable<ApprovalDpmPage> {
-    return this.http
-      .get<ApprovalDpmPage>(`${BASE_URL}/approvals?page=${page}&size=${size}`)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          return this.errorService.errorResponse(
-            error,
-            'Something went wrong when trying to get the unapproved dpm list'
-          );
-        })
-      );
+    return this.http.get<ApprovalDpmPage>(`${BASE_URL}/approvals?page=${page}&size=${size}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return this.errorService.errorResponse(
+          error,
+          'Something went wrong when trying to get the unapproved dpm list'
+        );
+      })
+    );
   }
 
-  updatePoints(id: number, points: number): Observable<any> {
-    return this.http.patch<any>(`${BASE_URL}/${id}`, { points: points }).pipe(
+  updatePoints(id: number, points: number): Observable<unknown> {
+    return this.http.patch<unknown>(`${BASE_URL}/${id}`, { points: points }).pipe(
       catchError((error) => {
         return this.errorService.errorResponse(
           error,
@@ -42,8 +40,8 @@ export class ApprovalsService {
     );
   }
 
-  approveDpm(id: number): Observable<any> {
-    return this.http.patch<any>(`${BASE_URL}/${id}`, { approved: true }).pipe(
+  approveDpm(id: number): Observable<unknown> {
+    return this.http.patch<unknown>(`${BASE_URL}/${id}`, { approved: true }).pipe(
       retry(2),
       catchError((error) => {
         return this.errorService.errorResponse(
@@ -54,8 +52,8 @@ export class ApprovalsService {
     );
   }
 
-  denyDpm(id: number): Observable<any> {
-    return this.http.patch<any>(`${BASE_URL}/${id}`, { ignored: true }).pipe(
+  denyDpm(id: number): Observable<unknown> {
+    return this.http.patch<unknown>(`${BASE_URL}/${id}`, { ignored: true }).pipe(
       catchError((error) => {
         return this.errorService.errorResponse(
           error,

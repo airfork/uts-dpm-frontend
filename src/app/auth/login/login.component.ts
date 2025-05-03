@@ -1,10 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
 import { Router } from '@angular/router';
@@ -43,10 +38,7 @@ export class LoginComponent {
         if (error.status === 401) this.badCredentials = true;
         else {
           console.error(error);
-          this.notificationService.showError(
-            'Something went wrong, please try again',
-            'Error'
-          );
+          this.notificationService.showError('Something went wrong, please try again', 'Error');
         }
       },
     });

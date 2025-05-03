@@ -57,9 +57,6 @@ export const DPMTypes: DPMType[] = [
   },
   {
     type: 'Type D',
-    names: [
-      'DNS/Did Not Show (-10 Points)',
-      'Preventable Accident 3, 4 (-20 Points)',
-    ],
+    names: ['DNS/Did Not Show (-10 Points)', 'Preventable Accident 3, 4 (-20 Points)'],
   },
 ];

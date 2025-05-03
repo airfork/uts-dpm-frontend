@@ -4,15 +4,11 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: 'users',
-    loadChildren: () =>
-      import('./users/users.module').then((m) => m.UsersModule),
+    loadChildren: () => import('./users/users.module').then((m) => m.UsersModule),
   },
   {
     path: 'errors',
-    loadChildren: () =>
-      import('./error-pages/error-pages.module').then(
-        (m) => m.ErrorPagesModule
-      ),
+    loadChildren: () => import('./error-pages/error-pages.module').then((m) => m.ErrorPagesModule),
   },
   {
     path: '**',

@@ -12,7 +12,7 @@ import AutogenDpm from '../../models/autogen-dpm';
 })
 export class AutogenComponent implements OnInit {
   autogenDpms?: AutogenDpm[];
-  submittedTime?: String;
+  submittedTime?: string;
   empty = false;
 
   constructor(

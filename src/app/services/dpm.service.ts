@@ -13,7 +13,10 @@ const BASE_URL = environment.baseUrl + '/dpms';
   providedIn: 'root',
 })
 export class DpmService {
-  constructor(private http: HttpClient, private errorService: ErrorService) {}
+  constructor(
+    private http: HttpClient,
+    private errorService: ErrorService
+  ) {}
 
   getCurrentDpms(): Observable<HomeDpmDto[]> {
     return this.http.get<HomeDpmDto[]>(BASE_URL + '/current').pipe(
@@ -27,7 +30,7 @@ export class DpmService {
     );
   }
 
-  create(dpm: PostDpmDto): Observable<any> {
+  create(dpm: PostDpmDto): Observable<unknown> {
     return this.http.post(BASE_URL, dpm).pipe(
       catchError((error) => {
         return this.errorService.errorResponse(
@@ -39,15 +42,13 @@ export class DpmService {
   }
 
   getAll(id: string, page: number, size: number): Observable<DpmDetailPage> {
-    return this.http
-      .get<DpmDetailPage>(`${BASE_URL}/user/${id}?page=${page}&size=${size}`)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          return this.errorService.errorResponse(
-            error,
-            "Something went wrong trying to get the user' dpms"
-          );
-        })
-      );
+    return this.http.get<DpmDetailPage>(`${BASE_URL}/user/${id}?page=${page}&size=${size}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return this.errorService.errorResponse(
+          error,
+          "Something went wrong trying to get the user' dpms"
+        );
+      })
+    );
   }
 }

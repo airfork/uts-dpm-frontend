@@ -1,4 +1,8 @@
-# Add files here to ignore them from prettier formatting
+# Ignore all SCSS files
+**/*.scss
 
-/dist
-/coverage
+# Other ignored paths
+dist/
+coverage/
+node_modules/
+.angular/

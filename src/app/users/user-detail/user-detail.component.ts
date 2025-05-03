@@ -174,9 +174,7 @@ export class UserDetailComponent implements OnInit {
   private setTitle() {
     if (this.user) {
       this.titleService.setTitle(
-        `${this.titleService.getTitle()} (${this.user.firstname} ${
-          this.user.lastname
-        })`
+        `${this.titleService.getTitle()} (${this.user.firstname} ${this.user.lastname})`
       );
     }
   }
@@ -200,9 +198,7 @@ export class UserDetailComponent implements OnInit {
       .subscribe(() => {
         this.router
           .navigate(['/users'])
-          .then(() =>
-            this.notificationService.showSuccess('User has been deleted')
-          );
+          .then(() => this.notificationService.showSuccess('User has been deleted'));
       });
   }
 
@@ -217,8 +213,6 @@ export class UserDetailComponent implements OnInit {
     this.userService
       .resetPassword(this.userId)
       .pipe(first())
-      .subscribe(() =>
-        this.notificationService.showSuccess("User's password has been reset")
-      );
+      .subscribe(() => this.notificationService.showSuccess("User's password has been reset"));
   }
 }

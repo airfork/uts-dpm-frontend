@@ -7,12 +7,7 @@ import { ErrorPageComponent } from './error-page/error-page.component';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 
 @NgModule({
-  declarations: [
-    ErrorPagesComponent,
-    NotFoundComponent,
-    ErrorPageComponent,
-    ForbiddenComponent,
-  ],
+  declarations: [ErrorPagesComponent, NotFoundComponent, ErrorPageComponent, ForbiddenComponent],
   imports: [CommonModule, ErrorPagesRoutingModule],
 })
 export class ErrorPagesModule {}

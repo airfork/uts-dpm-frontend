@@ -7,12 +7,7 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import GetUserDetailDto from '../../models/get-user-detail-dto';
 import UserDetailDto from '../../models/user-detail-dto';
 import { UserService } from '../../services/user.service';
@@ -237,10 +232,7 @@ export class UserFormComponent implements OnInit, OnChanges {
     this.user = this.userInfo.user;
     this.userId = this.userInfo.id;
     this.roles = this.userService.orderRoles(this.user.role);
-    this.managers = this.userService.orderManagers(
-      this.user.manager,
-      this.user.managers
-    );
+    this.managers = this.userService.orderManagers(this.user.manager, this.user.managers);
 
     if (
       this.authService.userData.username.toLowerCase().trim() ===
@@ -306,14 +298,8 @@ export class UserFormComponent implements OnInit, OnChanges {
             this.lastname?.markAsTouched();
             this.changeDetector.detectChanges();
           } else {
-            this.notificationService.showError(
-              'Something went wrong, please try again',
-              'Error'
-            );
-            console.error(
-              'Something went wrong trying to create the user',
-              error
-            );
+            this.notificationService.showError('Something went wrong, please try again', 'Error');
+            console.error('Something went wrong trying to create the user', error);
           }
         },
       });

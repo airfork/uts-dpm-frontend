@@ -32,9 +32,7 @@ export class DatagenComponent implements OnInit {
   ngOnInit() {
     const ua = navigator.userAgent;
     if (
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(
-        ua
-      )
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua)
     ) {
       this.mobileMode = true;
     }
@@ -79,8 +77,7 @@ export class DatagenComponent implements OnInit {
   }
 
   generateDownloadUrl(): string {
-    if (this.dpmDataFormGroup.invalid && !this.dpmDataFormGroup.value.getAll)
-      return '#';
+    if (this.dpmDataFormGroup.invalid && !this.dpmDataFormGroup.value.getAll) return '#';
 
     const values = this.dpmDataFormGroup.value;
 
@@ -92,16 +89,12 @@ export class DatagenComponent implements OnInit {
     let endDateParam = '';
 
     if (values.startDate) {
-      startDateParam = `?startDate=${this.format.datagenDate(
-        values.startDate
-      )}`;
+      startDateParam = `?startDate=${this.format.datagenDate(values.startDate)}`;
     }
 
     if (values.endDate) {
       const prefix = values.startDate ? '&' : '?';
-      endDateParam = `${prefix}endDate=${this.format.datagenDate(
-        values.endDate
-      )}`;
+      endDateParam = `${prefix}endDate=${this.format.datagenDate(values.endDate)}`;
     }
 
     return `${this.BASE_URL}/dpms${startDateParam}${endDateParam}`;

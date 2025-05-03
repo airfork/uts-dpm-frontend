@@ -5,11 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { DpmsModule } from './dpms/dpms.module';
 import { ToastrModule } from 'ngx-toastr';
 import { DpmsRoutingModule } from './dpms/dpms-routing.module';
-import {
-  HTTP_INTERCEPTORS,
-  provideHttpClient,
-  withInterceptorsFromDi,
-} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AuthRoutingModule } from './auth/auth-routing.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthInterceptor } from './auth/auth.interceptor';

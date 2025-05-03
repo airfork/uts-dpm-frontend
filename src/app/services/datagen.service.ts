@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpResponse,
-} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { NotificationService } from './notification.service';
 import { environment } from '../../environments/environment';
 import { saveAs } from 'file-saver';
@@ -27,10 +23,7 @@ export class DatagenService {
       })
       .subscribe({
         next: (response) => {
-          saveAs(
-            response.body!,
-            this.filenameFromHeaderOrDefault(response, 'Users.xlsx')
-          );
+          saveAs(response.body!, this.filenameFromHeaderOrDefault(response, 'Users.xlsx'));
         },
         error: (error: HttpErrorResponse) => {
           if (error.status === 303) {
@@ -39,10 +32,7 @@ export class DatagenService {
           }
 
           console.error(error);
-          this.notificationService.showError(
-            'Something went wrong, please try again.',
-            'Error'
-          );
+          this.notificationService.showError('Something went wrong, please try again.', 'Error');
         },
       });
   }
@@ -55,10 +45,7 @@ export class DatagenService {
       })
       .subscribe({
         next: (response) => {
-          saveAs(
-            response.body!,
-            this.filenameFromHeaderOrDefault(response, 'DPMs.xlsx')
-          );
+          saveAs(response.body!, this.filenameFromHeaderOrDefault(response, 'DPMs.xlsx'));
           callback();
         },
         error: (error: HttpErrorResponse) => {
@@ -68,18 +55,12 @@ export class DatagenService {
           }
 
           console.error(error);
-          this.notificationService.showError(
-            'Something went wrong, please try again.',
-            'Error'
-          );
+          this.notificationService.showError('Something went wrong, please try again.', 'Error');
         },
       });
   }
 
-  private filenameFromHeaderOrDefault(
-    response: HttpResponse<Blob>,
-    defaultName: string
-  ): string {
+  private filenameFromHeaderOrDefault(response: HttpResponse<Blob>, defaultName: string): string {
     let fileName = defaultName;
     const contentDisposition = response.headers.get('Content-Disposition');
 

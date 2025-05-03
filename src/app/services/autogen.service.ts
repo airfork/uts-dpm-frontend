@@ -11,7 +11,10 @@ const BASE_URL = environment.baseUrl + '/autogen';
   providedIn: 'root',
 })
 export class AutogenService {
-  constructor(private http: HttpClient, private errorService: ErrorService) {}
+  constructor(
+    private http: HttpClient,
+    private errorService: ErrorService
+  ) {}
 
   getAutogenDpms(): Observable<AutogenWrapper> {
     return this.http.get<AutogenWrapper>(BASE_URL).pipe(
@@ -24,7 +27,7 @@ export class AutogenService {
     );
   }
 
-  submit(): Observable<any> {
+  submit(): Observable<unknown> {
     return this.http.post(BASE_URL + '/submit', null).pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(

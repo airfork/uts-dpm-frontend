@@ -9,14 +9,7 @@ import { RouterLinkActive, RouterLink } from '@angular/router';
 
 @NgModule({
   declarations: [NavbarComponent, ConfirmBoxComponent],
-  imports: [
-    CommonModule,
-    AuthModule,
-    FormsModule,
-    RippleModule,
-    RouterLink,
-    RouterLinkActive,
-  ],
+  imports: [CommonModule, AuthModule, FormsModule, RippleModule, RouterLink, RouterLinkActive],
   exports: [NavbarComponent, ConfirmBoxComponent],
 })
 export class UiModule {}

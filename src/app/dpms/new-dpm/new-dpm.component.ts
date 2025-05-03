@@ -19,11 +19,6 @@ import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 type startEndTime = 'Start Time' | 'End Time';
 const regex24HourTime = /^(?:[01][0-9]|2[0-3])[0-5][0-9](?::[0-5][0-9])?$/;
 
-interface queryResult {
-  originalEvent: InputEvent;
-  query: string;
-}
-
 @Component({
   selector: 'app-new-dpm',
   templateUrl: './new-dpm.component.html',
@@ -50,10 +45,7 @@ export class NewDpmComponent implements OnInit {
     ]),
     name: new FormControl('', [Validators.required]),
     block: new FormControl('', [Validators.required, Validators.maxLength(5)]),
-    location: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(5),
-    ]),
+    location: new FormControl('', [Validators.required, Validators.maxLength(5)]),
     type: new FormControl(this.defaultDpmType),
     notes: new FormControl(''),
   });
@@ -71,9 +63,7 @@ export class NewDpmComponent implements OnInit {
   ngOnInit() {
     const ua = navigator.userAgent;
     if (
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(
-        ua
-      )
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua)
     ) {
       this.mobileMode = true;
     }
@@ -86,9 +76,7 @@ export class NewDpmComponent implements OnInit {
 
   search(event: AutoCompleteCompleteEvent) {
     this.autocompleteResults = this.driverNames
-      .filter((user) =>
-        user.name.toLowerCase().includes(event.query.toLowerCase())
-      )
+      .filter((user) => user.name.toLowerCase().includes(event.query.toLowerCase()))
       .map((user) => user.name);
   }
 
@@ -222,7 +210,7 @@ export class NewDpmComponent implements OnInit {
   private getTimeValidationMessages(
     title: startEndTime,
     errors: ValidationErrors | null | undefined,
-    value: String | undefined
+    value: string | undefined
   ): string {
     if (errors?.['required']) {
       return `${title} is required`;

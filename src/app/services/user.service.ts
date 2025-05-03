@@ -40,28 +40,18 @@ export class UserService {
       catchError((error: HttpErrorResponse) => {
         if (error.status === 303) {
           this.notificationService.showWarning('Password change required');
-          return throwError(
-            () => new Error('Request failed, password change required')
-          );
+          return throwError(() => new Error('Request failed, password change required'));
         }
 
         if (error.status === 404) {
           this.router.navigate(['/errors/404']);
-          return throwError(
-            () => new Error('Failed to find user with id: ' + id)
-          );
+          return throwError(() => new Error('Failed to find user with id: ' + id));
         }
 
         console.error(error);
-        this.notificationService.showError(
-          'Something went wrong, please try again.',
-          'Error'
-        );
+        this.notificationService.showError('Something went wrong, please try again.', 'Error');
         return throwError(
-          () =>
-            new Error(
-              'Something went wrong trying to find the user with id: ' + id
-            )
+          () => new Error('Something went wrong trying to find the user with id: ' + id)
         );
       })
     );
@@ -80,20 +70,16 @@ export class UserService {
 
   orderManagers(currentManager: string, managers: string[]): string[] {
     if (!managers.includes(currentManager)) {
-      console.warn(
-        `Failed to find manager '${currentManager}' in manager list`
-      );
+      console.warn(`Failed to find manager '${currentManager}' in manager list`);
       return managers;
     }
 
     const filteredManagers = [currentManager];
-    filteredManagers.push(
-      ...managers.filter((value) => value !== currentManager)
-    );
+    filteredManagers.push(...managers.filter((value) => value !== currentManager));
     return filteredManagers;
   }
 
-  updateUser(dto: UserDetailDto, id: string): Observable<any> {
+  updateUser(dto: UserDetailDto, id: string): Observable<unknown> {
     return this.http.patch(`${BASE_URL}/${id}`, dto).pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(
@@ -115,7 +101,7 @@ export class UserService {
     );
   }
 
-  createUser(dto: CreateUserDto): Observable<any> {
+  createUser(dto: CreateUserDto): Observable<unknown> {
     return this.http.post(BASE_URL, dto).pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(
@@ -126,7 +112,7 @@ export class UserService {
     );
   }
 
-  resetPointBalances(): Observable<any> {
+  resetPointBalances(): Observable<unknown> {
     return this.http.patch(BASE_URL + '/points/reset', null).pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(
@@ -137,7 +123,7 @@ export class UserService {
     );
   }
 
-  deleteUser(id: string): Observable<any> {
+  deleteUser(id: string): Observable<unknown> {
     return this.http.delete(`${BASE_URL}/${id}`).pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(
@@ -148,19 +134,18 @@ export class UserService {
     );
   }
 
-  sendPointsBalance(id: string): Observable<any> {
+  sendPointsBalance(id: string): Observable<unknown> {
     return this.http.get(`${BASE_URL}/${id}/points`).pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(
           error,
-          "Something went wrong trying to send the user's points balance. ID: " +
-            id
+          "Something went wrong trying to send the user's points balance. ID: " + id
         );
       })
     );
   }
 
-  sendPointsBalanceAll(): Observable<any> {
+  sendPointsBalanceAll(): Observable<unknown> {
     return this.http.get(BASE_URL + '/points').pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(
@@ -171,7 +156,7 @@ export class UserService {
     );
   }
 
-  resetPassword(id: string): Observable<any> {
+  resetPassword(id: string): Observable<unknown> {
     return this.http.get(`${BASE_URL}/${id}/reset`).pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(

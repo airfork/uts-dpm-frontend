@@ -1,20 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import UsernameDto from '../../models/username-dto';
 import { FormatService } from '../../services/format.service';
 import { first } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListTab } from '../shared/tab.types';
-import {
-  LIST_EMAIL_MESSAGE,
-  LIST_RESET_MESSAGE,
-  ListOutputKey,
-} from '../shared/confirm-box-info';
+import { LIST_EMAIL_MESSAGE, LIST_RESET_MESSAGE, ListOutputKey } from '../shared/confirm-box-info';
 import { NotificationService } from '../../services/notification.service';
 
 @Component({
@@ -134,12 +125,11 @@ export class UsersListComponent implements OnInit {
 
   private resetPointBalances() {
     this.userService
+
       .resetPointBalances()
       .pipe(first())
       .subscribe(() =>
-        this.notificationService.showSuccess(
-          'Part-timer point balances have been reset'
-        )
+        this.notificationService.showSuccess('Part-timer point balances have been reset')
       );
   }
 
@@ -164,8 +154,6 @@ export class UsersListComponent implements OnInit {
     this.userService
       .sendPointsBalanceAll()
       .pipe(first())
-      .subscribe(() =>
-        this.notificationService.showSuccess('Emails have been queued')
-      );
+      .subscribe(() => this.notificationService.showSuccess('Emails have been queued'));
   }
 }

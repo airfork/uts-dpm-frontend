@@ -13,12 +13,7 @@ import { UserFormComponent } from './user-form/user-form.component';
 import { AutoFocusModule } from 'primeng/autofocus';
 
 @NgModule({
-  declarations: [
-    UsersListComponent,
-    UsersComponent,
-    UserDetailComponent,
-    UserFormComponent,
-  ],
+  declarations: [UsersListComponent, UsersComponent, UserDetailComponent, UserFormComponent],
   imports: [
     CommonModule,
     UsersRoutingModule,

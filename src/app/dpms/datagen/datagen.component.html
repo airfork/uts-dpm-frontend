@@ -9,7 +9,10 @@
       <label class="label" for="startDate">
         <span
           class="label-text text-base"
-          [ngClass]="{ 'text-error': dpmDataFormGroup.errors?.['mixedDate'] && !getAll?.value }"
+          [ngClass]="{
+            'text-error':
+              dpmDataFormGroup.errors?.['mixedDate'] && !getAll?.value,
+          }"
         >
           Start Date
         </span>
@@ -33,7 +36,10 @@
       <label class="label" for="endDate">
         <span
           class="label-text text-base"
-          [ngClass]="{ 'text-error': dpmDataFormGroup.errors?.['mixedDate'] && !getAll?.value }"
+          [ngClass]="{
+            'text-error':
+              dpmDataFormGroup.errors?.['mixedDate'] && !getAll?.value,
+          }"
         >
           End Date
         </span>

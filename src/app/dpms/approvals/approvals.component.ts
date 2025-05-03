@@ -59,10 +59,7 @@ export class ApprovalsComponent {
       .approveDpm(this.currentDpm?.id)
       .pipe(first())
       .subscribe(() => {
-        this.notificationService.showSuccess(
-          'DPM has been approved',
-          'Success'
-        );
+        this.notificationService.showSuccess('DPM has been approved', 'Success');
         this.lazyLoadEvent(this.lastLazyLoadEvent!);
       });
   }

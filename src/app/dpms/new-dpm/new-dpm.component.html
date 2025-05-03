@@ -83,7 +83,7 @@
         class="label-text text-base"
         [ngClass]="{
           'text-error': hasErrors(dpmDate),
-          'text-success': !hasErrors(dpmDate)
+          'text-success': !hasErrors(dpmDate),
         }"
         >Date</span
       >
@@ -164,13 +164,13 @@
         formControlName="type"
       >
         @for (dpmType of dpmTypes; track dpmType) {
-        <optgroup label="{{ dpmType.type }}">
-          @for (name of dpmType.names; track name) {
-          <option [value]="name">
-            {{ name }}
-          </option>
-          }
-        </optgroup>
+          <optgroup label="{{ dpmType.type }}">
+            @for (name of dpmType.names; track name) {
+              <option [value]="name">
+                {{ name }}
+              </option>
+            }
+          </optgroup>
         }
       </select>
       <label class="label" for="dpmTypeInput">

@@ -9,7 +9,10 @@ import { AuthService } from '../../services/auth.service';
 export class RemoveIfUnauthorizedDirective implements OnInit {
   @Input('appRemoveIfUnauthorized') roles: Roles[] = [];
 
-  constructor(private authService: AuthService, private el: ElementRef) {}
+  constructor(
+    private authService: AuthService,
+    private el: ElementRef
+  ) {}
 
   ngOnInit() {
     const role = this.authService.userData.role as Roles;

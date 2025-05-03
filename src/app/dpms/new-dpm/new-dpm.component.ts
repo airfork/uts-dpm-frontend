@@ -27,6 +27,7 @@ interface queryResult {
 @Component({
   selector: 'app-new-dpm',
   templateUrl: './new-dpm.component.html',
+  standalone: false,
 })
 export class NewDpmComponent implements OnInit {
   dpmTypes = DPMTypes;

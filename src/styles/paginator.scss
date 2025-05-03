@@ -1,4 +1,4 @@
-@import "variables";
+@use "variables" as vars;
 
 [_nghost-xeb-c95] .p-datatable.p-datatable-customers .p-paginator {
   padding: 1rem;
@@ -15,9 +15,9 @@
 }
 
 .p-paginator {
-  background: $base1;
-  color: $baseContent;
-  border: 0 solid $base3;
+  background: vars.$base1;
+  color: vars.$baseContent;
+  border: 0 solid vars.$base3;
   padding: 0.5rem 1rem;
   border-radius: 6px;
 }
@@ -25,7 +25,7 @@
 .p-paginator .p-paginator-current {
   background-color: transparent;
   border: 0 none;
-  color: $baseContent;
+  color: vars.$baseContent;
   min-width: 3rem;
   height: 3rem;
   margin: 0.143rem;
@@ -57,7 +57,7 @@
 .p-paginator .p-paginator-first, .p-paginator .p-paginator-prev, .p-paginator .p-paginator-next, .p-paginator .p-paginator-last {
   background-color: transparent;
   border: 0 none;
-  color: $baseContent;
+  color: vars.$baseContent;
   min-width: 3rem;
   height: 3rem;
   margin: 0.143rem;
@@ -120,15 +120,15 @@
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-  background: $base2;
-  border-color: $base3;
-  color: $baseContent;
+  background: vars.$base2;
+  border-color: vars.$base3;
+  color: vars.$baseContent;
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page {
   background-color: transparent;
   border: 0 none;
-  color: $baseContent;
+  color: vars.$baseContent;
   min-width: 3rem;
   height: 3rem;
   margin: 0.143rem;
@@ -148,8 +148,8 @@
   position: relative;
   -webkit-user-select: none;
   user-select: none;
-  background: $base1;
-  border: 1px solid $base2;
+  background: vars.$base1;
+  border: 1px solid vars.$base2;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
   border-radius: 6px;
 }
@@ -195,10 +195,10 @@
 span.p-inputtext {
   margin: 0;
   font-size: 1rem;
-  color: $baseContent;
-  background: $base1;
+  color: vars.$baseContent;
+  background: vars.$base1;
   padding: 0.75rem 0.75rem;
-  border: 1px solid $base2;
+  border: 1px solid vars.$base2;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
   appearance: none;
   border-radius: 6px;
@@ -206,7 +206,7 @@ span.p-inputtext {
 
 .p-dropdown .p-dropdown-trigger {
   background: transparent;
-  color: $baseContent;
+  color: vars.$baseContent;
   width: 3rem;
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
@@ -223,8 +223,8 @@ span.p-inputtext {
 }
 
 .p-dropdown-panel {
-  background: $base1;
-  color: $baseContent;
+  background: vars.$base1;
+  color: vars.$baseContent;
   border: 0 none;
   border-radius: 6px;
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
@@ -246,13 +246,13 @@ span.p-inputtext {
   margin: 0;
   padding: 0.75rem 1.25rem;
   border: 0 none;
-  color: $baseContent;
+  color: vars.$baseContent;
   background: transparent;
   transition: box-shadow 0.2s;
   border-radius: 0;
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
-  color: $accent;
-  background: $base1;
+  color: vars.$accent;
+  background: vars.$base1;
 }

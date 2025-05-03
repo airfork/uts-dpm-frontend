@@ -1,4 +1,4 @@
-@import "variables";
+@use "variables" as vars;
 
 @mixin statusStyles($backgroundColor, $textColor) {
   background-color: $backgroundColor;
@@ -32,18 +32,18 @@
   }
 
   .toast-info {
-    @include statusStyles($info, $infoContent);
+    @include statusStyles(vars.$info, vars.$infoContent);
   }
 
   .toast-success {
-    @include statusStyles($success, $successContent);
+    @include statusStyles(vars.$success, vars.$successContent);
   }
 
   .toast-warning {
-    @include statusStyles($warning, $warningContent);
+    @include statusStyles(vars.$warning, vars.$warningContent);
   }
 
   .toast-error {
-    @include statusStyles($error, $errorContent);
+    @include statusStyles(vars.$error, vars.$errorContent);
   }
 }

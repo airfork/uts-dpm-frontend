@@ -17,6 +17,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
+  standalone: false,
 })
 export class ChangePasswordComponent implements OnInit {
   isLoading = true;

@@ -9,6 +9,7 @@ import { DatagenService } from '../../services/datagen.service';
   selector: 'app-datagen',
   templateUrl: './datagen.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class DatagenComponent implements OnInit {
   private BASE_URL = environment.baseUrl + '/datagen';

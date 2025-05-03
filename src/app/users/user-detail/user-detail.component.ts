@@ -21,6 +21,7 @@ import { TableLazyLoadEvent } from 'primeng/table';
 @Component({
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
+  standalone: false,
 })
 export class UserDetailComponent implements OnInit {
   private lastLazyLoadEvent?: TableLazyLoadEvent;

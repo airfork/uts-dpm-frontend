@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
   selector: 'app-home',
   templateUrl: './home.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class HomeComponent {
   currentDpms$: Observable<HomeDpmDto[]>;

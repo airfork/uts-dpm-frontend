@@ -1,6 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({ name: 'block' })
+@Pipe({
+  name: 'block',
+  standalone: false,
+})
 export class BlockPipe implements PipeTransform {
   transform(block: string): string {
     if (!block.startsWith('[')) block = '[' + block;

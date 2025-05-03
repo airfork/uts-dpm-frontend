@@ -1,12 +1,12 @@
+@use "styles/calendar";
+@use "styles/toast";
+@use "styles/autocomplete";
+@use "styles/paginator";
+@use "fonts";
+@use "styles/variables" as vars;
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "styles/calendar";
-@import "styles/toast";
-@import "styles/autocomplete";
-@import "styles/paginator";
-@import "fonts";
-@import "styles/variables";
 
 html,
 body {
@@ -15,8 +15,8 @@ body {
 }
 
 .table th {
-  background-color: $primary;
-  color: $primaryContent;
+  background-color: vars.$primary;
+  color: vars.$primaryContent;
 
   :first-child {
     position: relative !important;

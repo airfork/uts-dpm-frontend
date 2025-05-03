@@ -4,6 +4,7 @@ import Required from '../../shared/required-decorator';
 @Component({
   selector: 'app-confirm-box',
   templateUrl: './confirm-box.component.html',
+  standalone: false,
 })
 export class ConfirmBoxComponent {
   private _isOpen = false;

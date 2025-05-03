@@ -21,6 +21,7 @@ import { NotificationService } from '../../services/notification.service';
   selector: 'app-users-list',
   templateUrl: './users-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class UsersListComponent implements OnInit {
   users?: UsernameDto[];

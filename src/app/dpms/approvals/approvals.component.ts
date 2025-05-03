@@ -4,13 +4,13 @@ import { FormatService } from '../../services/format.service';
 import { first } from 'rxjs';
 import ApprovalDpmDto from '../../models/approval-dpm-dto';
 import { NotificationService } from '../../services/notification.service';
-import { LazyLoadEvent } from 'primeng/api';
 import { TableLazyLoadEvent } from 'primeng/table';
 
 @Component({
   selector: 'app-approvals',
   templateUrl: './approvals.component.html',
   styleUrls: ['./approvals.component.scss'],
+  standalone: false,
 })
 export class ApprovalsComponent {
   private lastLazyLoadEvent?: TableLazyLoadEvent;

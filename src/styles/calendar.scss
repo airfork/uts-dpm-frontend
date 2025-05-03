@@ -1,4 +1,4 @@
-@import "variables";
+@use "variables" as vars;
 
 .p-calendar,
 .p-datepicker {
@@ -36,7 +36,7 @@
 }
 
 .p-datepicker:not(.p-datepicker-inline) {
-  background: $base1;
+  background: vars.$base1;
   border: 0 none;
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 20%);
 }
@@ -55,7 +55,7 @@
 
 .p-datepicker {
   padding: 0.5rem;
-  color: $baseContent;
+  color: vars.$baseContent;
   border: 1px solid #ff006d;
   border-radius: 6px;
 }
@@ -66,16 +66,16 @@
 }
 
 .p-datepicker:not(.p-datepicker-inline) .p-datepicker-header {
-  background: $base1;
+  background: vars.$base1;
 }
 
 .p-datepicker .p-datepicker-header {
   padding: 0.5rem;
-  color: $baseContent;
-  background: $base1;
+  color: vars.$baseContent;
+  background: vars.$base1;
   font-weight: 600;
   margin: 0;
-  border-bottom: 1px solid $baseContent;
+  border-bottom: 1px solid vars.$baseContent;
   border-top-right-radius: 6px;
   border-top-left-radius: 6px;
 }
@@ -90,7 +90,7 @@
 .p-datepicker .p-datepicker-header .p-datepicker-next {
   width: 2rem;
   height: 2rem;
-  color: $baseContent;
+  color: vars.$baseContent;
   border: 0 none;
   background: transparent;
   border-radius: 50%;
@@ -133,7 +133,7 @@
 
 .p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-year,
 .p-datepicker .p-datepicker-header .p-datepicker-title .p-datepicker-month {
-  color: $baseContent;
+  color: vars.$baseContent;
   transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
   font-weight: 600;
   padding: 0.5rem;
@@ -220,19 +220,19 @@ element.style {
 
 .p-datepicker:not(.p-disabled) table td span:not(.p-highlight):not(.p-disabled) {
   &:hover {
-    background: $base3;
+    background: vars.$base3;
   }
 
   &:focus {
     outline: 0 none;
     outline-offset: 0;
-    box-shadow: 0 0 0 0.2rem $secondaryFocus;
+    box-shadow: 0 0 0 0.2rem vars.$secondaryFocus;
   }
 }
 
 .p-datepicker table td.p-datepicker-today > span {
-  background: $base2;
-  color: $baseContent;
+  background: vars.$base2;
+  color: vars.$baseContent;
   border-color: transparent;
 }
 
@@ -242,6 +242,6 @@ element.style {
 }
 
 .p-datepicker table td > span.p-highlight {
-  color: $accentContent;
-  background: $accent;
+  color: vars.$accentContent;
+  background: vars.$accent;
 }

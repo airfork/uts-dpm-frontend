@@ -13,6 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
+  standalone: false,
 })
 export class LoginComponent {
   badCredentials = false;

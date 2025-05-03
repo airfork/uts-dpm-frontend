@@ -8,6 +8,7 @@ import AutogenDpm from '../../models/autogen-dpm';
 @Component({
   selector: 'app-autogen',
   templateUrl: './autogen.component.html',
+  standalone: false,
 })
 export class AutogenComponent implements OnInit {
   autogenDpms?: AutogenDpm[];

@@ -29,6 +29,7 @@ const POINTS_VALIDATORS = [Validators.required, Validators.pattern(/-?\d+/)];
   selector: 'app-user-form',
   templateUrl: './user-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class UserFormComponent implements OnInit, OnChanges {
   @Input() @Required layout: 'create' | 'edit' = 'edit';

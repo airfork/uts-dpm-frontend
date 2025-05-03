@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 
 @Directive({
   selector: '[appRemoveIfUnauthorized]',
+  standalone: false,
 })
 export class RemoveIfUnauthorizedDirective implements OnInit {
   @Input('appRemoveIfUnauthorized') roles: Roles[] = [];

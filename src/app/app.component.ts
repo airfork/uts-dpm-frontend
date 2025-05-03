@@ -5,6 +5,7 @@ import { PrimeNG } from 'primeng/config';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  standalone: false,
 })
 export class AppComponent implements OnInit {
   title = 'uts-new-dpm';

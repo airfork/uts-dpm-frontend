@@ -1,6 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({ name: 'name' })
+@Pipe({
+  name: 'name',
+  standalone: false,
+})
 export class NamePipe implements PipeTransform {
   transform(name: string, type: 'first' | 'last'): string {
     return type === 'first' ? this.firstname(name) : this.lastname(name);

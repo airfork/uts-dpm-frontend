@@ -15,6 +15,7 @@ import { DpmsRoutingModule } from './dpms-routing.module';
 import { DpmsComponent } from './dpms/dpms.component';
 import { SharedModule } from '../shared/shared.module';
 import { TableModule } from 'primeng/table';
+import { DatePickerModule } from 'primeng/datepicker';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { TableModule } from 'primeng/table';
     AutoCompleteModule,
     BrowserAnimationsModule,
     CalendarModule,
+    DatePickerModule,
     UiModule,
     DpmsRoutingModule,
     SharedModule,

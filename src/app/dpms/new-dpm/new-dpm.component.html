@@ -14,10 +14,10 @@
       id="dpmNameInput"
       placeholder="Jane Doe"
       formControlName="name"
-      inputStyleClass="input input-bordered w-full {{ setStatusClass(name) }}"
+      styleClass="input input-bordered w-full {{ setStatusClass(name) }}"
       panelStyleClass="menu bg-base-100"
       [required]="true"
-      [suggestions]="autocompleteResults"
+      [suggestions]="autocompleteResults()"
       (completeMethod)="search($event)"
       [showEmptyMessage]="true"
       [forceSelection]="true"
@@ -88,16 +88,14 @@
         >Date</span
       >
     </label>
-    <p-calendar
+    <p-date-picker
       id="dpmDateInput"
       formControlName="dpmDate"
       [placeholder]="format.dpmDate()"
-      inputStyleClass="input input-bordered w-full {{
-        errorsOrSuccess(dpmDate)
-      }}"
+      styleClass="input input-bordered w-full {{ errorsOrSuccess(dpmDate) }}"
       [required]="true"
       [touchUI]="mobileMode"
-    ></p-calendar>
+    ></p-date-picker>
     <label class="label" for="dpmDateInput">
       <span class="label-text-alt text-error">{{
         getDpmDateValidationMessages()

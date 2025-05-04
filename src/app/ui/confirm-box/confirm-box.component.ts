@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, input, Output, output } from '@angular/core';
 import Required from '../../shared/required-decorator';
 
 @Component({
@@ -19,15 +19,15 @@ export class ConfirmBoxComponent {
     this.isOpenChange.emit(value);
   }
 
-  @Input() title: string = 'Are you sure?';
-  @Input() @Required message = '';
-  @Input() @Required outputKey = '';
+  title = input('Are you sure?');
+  message = input.required<string>();
+  outputKey = input.required<string>();
 
-  @Output() confirmed = new EventEmitter<string>();
+  confirmed = output<string>();
 
   constructor() {}
 
   confirm() {
-    this.confirmed.emit(this.outputKey);
+    this.confirmed.emit(this.outputKey());
   }
 }

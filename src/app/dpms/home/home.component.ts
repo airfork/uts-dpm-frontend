@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { DpmService } from '../../services/dpm.service';
 import { FormatService } from '../../services/format.service';
 import HomeDpmDto from '../../models/home-dpm-dto';
-import { Observable } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-home',
@@ -11,20 +11,18 @@ import { Observable } from 'rxjs';
   standalone: false,
 })
 export class HomeComponent {
-  currentDpms$: Observable<HomeDpmDto[]>;
-  modalOpen = false;
-  currentDpm?: HomeDpmDto;
+  currentDpms = toSignal(this.dpmService.getCurrentDpms(), { initialValue: [] });
+  modalOpen = signal(false);
+  currentDpm = signal<HomeDpmDto | null>(null);
 
   constructor(
     private dpmService: DpmService,
     private formatService: FormatService
-  ) {
-    this.currentDpms$ = this.dpmService.getCurrentDpms();
-  }
+  ) {}
 
   clickRow(dpm: HomeDpmDto) {
-    this.modalOpen = true;
-    this.currentDpm = dpm;
+    this.modalOpen.set(true);
+    this.currentDpm.set(dpm);
   }
 
   get format() {

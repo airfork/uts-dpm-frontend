@@ -2,32 +2,33 @@
   <app-loading></app-loading>
 </ng-template>
 
-@if (users) {
+@let active = activeTab();
+@if (users()) {
   <div>
     <h2 class="text-3xl mb-5 font-bold">Users</h2>
     <div class="tabs mb-5 grid justify-items-center lg:justify-items-start">
       <div>
         <a
           class="tab tab-lg tab-bordered"
-          [ngClass]="{ 'tab-active': activeTab.search }"
+          [ngClass]="{ 'tab-active': active.search }"
           (click)="activateTab('search')"
           >Search</a
         >
         <a
           class="tab tab-lg tab-bordered"
-          [ngClass]="{ 'tab-active': activeTab.create }"
+          [ngClass]="{ 'tab-active': active.create }"
           (click)="activateTab('create')"
           >Create</a
         >
         <a
           class="tab tab-lg tab-bordered"
-          [ngClass]="{ 'tab-active': activeTab.actions }"
+          [ngClass]="{ 'tab-active': active.actions }"
           (click)="activateTab('actions')"
           >Actions</a
         >
       </div>
     </div>
-    @if (activeTab.search) {
+    @if (active.search) {
       <div>
         <input
           [pAutoFocus]="true"
@@ -40,7 +41,7 @@
         />
         <p-table
           #dt
-          [value]="filteredUsers"
+          [value]="filteredUsers()"
           dataKey="id"
           styleClass="table table-fixed lg:table-auto w-full"
           [rowHover]="true"
@@ -79,12 +80,12 @@
         </p-table>
       </div>
     }
-    @if (activeTab.create) {
+    @if (active.create) {
       <div>
-        <app-user-form layout="create" [managers]="managers"></app-user-form>
+        <app-user-form layout="create" [managers]="managers()"></app-user-form>
       </div>
     }
-    @if (activeTab.actions) {
+    @if (active.actions) {
       <div class="flex flex-wrap justify-center">
         <div class="mx-4 basis-full lg:basis-auto grid place-items-center">
           <a
@@ -108,8 +109,9 @@
 }
 
 <app-confirm-box
-  [message]="modalMessage"
-  [outputKey]="outputKey"
-  [(isOpen)]="modalOpen"
+  [message]="modalMessage()"
+  [outputKey]="outputKey()"
+  [isOpen]="modalOpen()"
+  (isOpenChange)="modalOpen.set($event)"
   (confirmed)="handleConfirmEvent($event)"
 ></app-confirm-box>

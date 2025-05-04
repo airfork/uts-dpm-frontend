@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormatService } from '../../services/format.service';
 import { environment } from '../../../environments/environment';
@@ -13,7 +13,7 @@ import { DatagenService } from '../../services/datagen.service';
 })
 export class DatagenComponent implements OnInit {
   private BASE_URL = environment.baseUrl + '/datagen';
-  mobileMode = false;
+  mobileMode = signal(false);
 
   dpmDataFormGroup = new FormGroup(
     {
@@ -34,7 +34,7 @@ export class DatagenComponent implements OnInit {
     if (
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua)
     ) {
-      this.mobileMode = true;
+      this.mobileMode.set(true);
     }
   }
 

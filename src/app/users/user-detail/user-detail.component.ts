@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import GetUserDetailDto from '../../models/get-user-detail-dto';
 import { first } from 'rxjs';
@@ -26,17 +26,17 @@ import { TableLazyLoadEvent } from 'primeng/table';
 export class UserDetailComponent implements OnInit {
   private lastLazyLoadEvent?: TableLazyLoadEvent;
 
-  userId = '';
-  loadingDpms = true;
-  totalRecords = 0;
-  activeTab = { info: true, dpms: false, actions: false };
-  user?: GetUserDetailDto;
-  currentDpm?: DpmDetailDto;
-  dpms: DpmDetailDto[] = [];
-  dpmModalOpen = false;
-  confirmModalOpen = false;
-  modalMessage = '';
-  outputKey: DetailOutputKey = 'email';
+  userId = signal('');
+  loadingDpms = signal(true);
+  totalRecords = signal(0);
+  activeTab = signal({ info: true, dpms: false, actions: false });
+  user = signal<GetUserDetailDto | null>(null);
+  currentDpm = signal<DpmDetailDto | null>(null);
+  dpms = signal<DpmDetailDto[]>([]);
+  dpmModalOpen = signal(false);
+  confirmModalOpen = signal(false);
+  modalMessage = signal('');
+  outputKey = signal<DetailOutputKey>('email');
 
   constructor(
     private router: Router,
@@ -56,9 +56,9 @@ export class UserDetailComponent implements OnInit {
         .getUser(id)
         .pipe(first())
         .subscribe((user) => {
-          this.user = user;
+          this.user.set(user);
           this.setTitle();
-          this.userId = id;
+          this.userId.set(id);
         });
     });
 
@@ -70,14 +70,16 @@ export class UserDetailComponent implements OnInit {
   }
 
   clickRow(dpm: DpmDetailDto) {
-    this.currentDpm = dpm;
-    this.dpmModalOpen = true;
+    this.currentDpm.set(dpm);
+    this.dpmModalOpen.set(true);
   }
 
   denyDpm() {
-    if (!this.currentDpm) return;
+    const currentDpm = this.currentDpm();
+    if (!currentDpm) return;
+
     this.approvalsService
-      .denyDpm(this.currentDpm.id)
+      .denyDpm(currentDpm.id)
       .pipe(first())
       .subscribe(() => {
         this.notificationService.showSuccess('DPM has been denied', 'Success');
@@ -89,15 +91,15 @@ export class UserDetailComponent implements OnInit {
     switch (tab) {
       case 'detail-actions':
         this.saveTabInUrl(tab);
-        this.activeTab = { info: false, dpms: false, actions: true };
+        this.activeTab.set({ info: false, dpms: false, actions: true });
         break;
       case 'dpms':
         this.saveTabInUrl(tab);
-        this.activeTab = { info: false, dpms: true, actions: false };
+        this.activeTab.set({ info: false, dpms: true, actions: false });
         break;
       case 'info':
         this.saveTabInUrl(tab);
-        this.activeTab = { info: true, dpms: false, actions: false };
+        this.activeTab.set({ info: true, dpms: false, actions: false });
         break;
       default:
         console.error(`Unknown tab: ${tab}`);
@@ -106,7 +108,7 @@ export class UserDetailComponent implements OnInit {
 
   lazyLoadEvent(event: TableLazyLoadEvent) {
     this.lastLazyLoadEvent = event;
-    this.loadingDpms = true;
+    this.loadingDpms.set(true);
     let size = 10;
     if (event.rows) size = event.rows;
 
@@ -116,12 +118,12 @@ export class UserDetailComponent implements OnInit {
     }
 
     this.dpmService
-      .getAll(this.userId, page, size)
+      .getAll(this.userId(), page, size)
       .pipe(first())
       .subscribe((page) => {
-        this.dpms = page.content;
-        this.totalRecords = page.totalElements;
-        this.loadingDpms = false;
+        this.dpms.set(page.content);
+        this.totalRecords.set(page.totalElements);
+        this.loadingDpms.set(false);
       });
   }
 
@@ -147,36 +149,38 @@ export class UserDetailComponent implements OnInit {
       this.notificationService.showWarning("You can't delete yourself -_-");
       return;
     }
-    this.modalMessage = DETAIL_DELETE_MESSAGE;
-    this.outputKey = 'delete';
-    this.confirmModalOpen = true;
+    this.modalMessage.set(DETAIL_DELETE_MESSAGE);
+    this.outputKey.set('delete');
+    this.confirmModalOpen.set(true);
   }
 
   sendEmailClick() {
-    this.modalMessage = DETAIL_EMAIL_MESSAGE;
-    this.outputKey = 'email';
-    this.confirmModalOpen = true;
+    this.modalMessage.set(DETAIL_EMAIL_MESSAGE);
+    this.outputKey.set('email');
+    this.confirmModalOpen.set(true);
   }
 
   resetClick() {
-    this.modalMessage = DETAIL_RESET_MESSAGE;
-    this.outputKey = 'reset';
-    this.confirmModalOpen = true;
+    this.modalMessage.set(DETAIL_RESET_MESSAGE);
+    this.outputKey.set('reset');
+    this.confirmModalOpen.set(true);
   }
 
   viewingSelf(): boolean {
+    const user = this.user();
+    if (!user) return false;
+
     return (
-      this.authService.userData.username.toLowerCase().trim() ===
-      this.user?.email.toLowerCase().trim()
+      this.authService.userData.username.toLowerCase().trim() === user.email.toLowerCase().trim()
     );
   }
 
   private setTitle() {
-    if (this.user) {
-      this.titleService.setTitle(
-        `${this.titleService.getTitle()} (${this.user.firstname} ${this.user.lastname})`
-      );
-    }
+    const user = this.user();
+    if (!user) return;
+    this.titleService.setTitle(
+      `${this.titleService.getTitle()} (${user.firstname} ${user.lastname})`
+    );
   }
 
   private saveTabInUrl(tab: DetailTab) {
@@ -193,7 +197,7 @@ export class UserDetailComponent implements OnInit {
 
   private deleteUser() {
     this.userService
-      .deleteUser(this.userId)
+      .deleteUser(this.userId())
       .pipe(first())
       .subscribe(() => {
         this.router
@@ -204,14 +208,14 @@ export class UserDetailComponent implements OnInit {
 
   private sendPointsBalanceEmail() {
     this.userService
-      .sendPointsBalance(this.userId)
+      .sendPointsBalance(this.userId())
       .pipe(first())
       .subscribe(() => this.notificationService.showSuccess('Email sent'));
   }
 
   private resetPassword() {
     this.userService
-      .resetPassword(this.userId)
+      .resetPassword(this.userId())
       .pipe(first())
       .subscribe(() => this.notificationService.showSuccess("User's password has been reset"));
   }

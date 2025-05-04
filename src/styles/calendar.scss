@@ -1,7 +1,7 @@
 @use "variables" as vars;
 
 .p-calendar,
-.p-datepicker {
+.p-datepicker-calendar-container {
   min-width: 100%;
 }
 
@@ -35,17 +35,32 @@
   width: 1%;
 }
 
-.p-datepicker:not(.p-datepicker-inline) {
+.p-datepicker-day-view:not(.p-datepicker-inline) {
   background: vars.$base1;
   border: 0 none;
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 20%);
 }
 
-.p-datepicker {
-  width: auto;
+.p-datepicker-calendar-container {
+  width: 100%;
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.p-datepicker {
+  input .p-inputtext {
+    --tw-border-opacity: 1;
+    border-color: hsl(var(--su) / var(--tw-border-opacity));
+  }
+}
+
+.p-inputtext {
+  border: none;
+}
+
+.p-datepicker-panel {
+  width: 100%;
 }
 
 .p-component,
@@ -53,23 +68,24 @@
   box-sizing: border-box;
 }
 
-.p-datepicker {
+.p-datepicker-calendar-container {
   padding: 0.5rem;
   color: vars.$baseContent;
-  border: 1px solid #ff006d;
+  background: vars.$base1;
+  //border: 1px solid vars.$primary;
   border-radius: 6px;
 }
 
+
 .p-component {
   font-weight: normal;
-  width: 100%;
 }
 
 .p-datepicker:not(.p-datepicker-inline) .p-datepicker-header {
   background: vars.$base1;
 }
 
-.p-datepicker .p-datepicker-header {
+.p-datepicker-calendar .p-datepicker-header {
   padding: 0.5rem;
   color: vars.$baseContent;
   background: vars.$base1;

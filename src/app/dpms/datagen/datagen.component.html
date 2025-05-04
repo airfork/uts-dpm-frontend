@@ -23,7 +23,7 @@
         [placeholder]="format.dpmDate(null, true)"
         inputStyleClass="input input-bordered w-full {{ errorsOrEmpty() }}"
         [required]="true"
-        [touchUI]="mobileMode"
+        [touchUI]="mobileMode()"
       ></p-calendar>
       <label class="label" for="startDate">
         <span class="label-text-alt text-error">{{
@@ -50,7 +50,7 @@
         [placeholder]="format.dpmDate()"
         inputStyleClass="input input-bordered w-full {{ errorsOrEmpty() }}"
         [required]="true"
-        [touchUI]="mobileMode"
+        [touchUI]="mobileMode()"
       ></p-calendar>
       <label class="label" for="endDate">
         <span class="label-text-alt text-error">{{

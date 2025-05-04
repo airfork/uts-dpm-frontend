@@ -1,4 +1,4 @@
-import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnInit, signal } from '@angular/core';
 import { AutogenService } from '../../services/autogen.service';
 import { formatDate } from '@angular/common';
 import { NotificationService } from '../../services/notification.service';
@@ -11,9 +11,10 @@ import AutogenDpm from '../../models/autogen-dpm';
   standalone: false,
 })
 export class AutogenComponent implements OnInit {
-  autogenDpms?: AutogenDpm[];
-  submittedTime?: string;
-  empty = false;
+  autogenDpms = signal<AutogenDpm[]>([]);
+  loading = signal(true);
+  submittedTime = signal<string | null>(null);
+  empty = signal(false);
 
   constructor(
     private autogenService: AutogenService,
@@ -26,9 +27,10 @@ export class AutogenComponent implements OnInit {
       .getAutogenDpms()
       .pipe(first())
       .subscribe((wrapper) => {
-        if (wrapper.submitted) this.submittedTime = wrapper.submitted;
-        if (wrapper.dpms.length === 0) this.empty = true;
-        this.autogenDpms = wrapper.dpms;
+        if (wrapper.submitted) this.submittedTime.set(wrapper.submitted);
+        if (wrapper.dpms.length === 0) this.empty.set(true);
+        this.autogenDpms.set(wrapper.dpms);
+        this.loading.set(false);
       });
   }
 
@@ -38,7 +40,7 @@ export class AutogenComponent implements OnInit {
       .pipe(first())
       .subscribe(() => {
         this.notificationService.showSuccess('Submitted DPMs!');
-        this.submittedTime = formatDate(new Date(), 'HHmm', this.locale);
+        this.submittedTime.set(formatDate(new Date(), 'HHmm', this.locale));
       });
   }
 }

@@ -137,7 +137,7 @@
         class="select select-bordered w-full"
         formControlName="role"
       >
-        @for (role of roles; track role) {
+        @for (role of roles(); track role) {
           <option [value]="role">
             {{ role }}
           </option>
@@ -181,7 +181,7 @@
         pRipple
         type="submit"
         class="btn btn-secondary m-auto w-full md:btn-wide"
-        [disabled]="isButtonDisabled() || waiting"
+        [disabled]="isButtonDisabled() || waiting()"
       >
         {{ layout === "edit" ? "Update" : "Create" }}
       </button>

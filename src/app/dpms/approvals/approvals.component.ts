@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ApprovalsService } from '../../services/approvals.service';
 import { FormatService } from '../../services/format.service';
 import { first } from 'rxjs';
@@ -15,14 +15,14 @@ import { TableLazyLoadEvent } from 'primeng/table';
 export class ApprovalsComponent {
   private lastLazyLoadEvent?: TableLazyLoadEvent;
 
-  dpms: ApprovalDpmDto[] = [];
-  loadingDpms = true;
-  totalRecords = 0;
+  dpms = signal<ApprovalDpmDto[]>([]);
+  loadingDpms = signal(true);
+  totalRecords = signal(0);
 
-  modalOpen = false;
-  currentDpm?: ApprovalDpmDto;
-  editOpen = false;
-  currentPoints? = 0;
+  modalOpen = signal(false);
+  currentDpm = signal<ApprovalDpmDto | null>(null);
+  editOpen = signal(false);
+  currentPoints = signal<number | undefined>(0);
 
   constructor(
     private approvalsService: ApprovalsService,
@@ -31,32 +31,37 @@ export class ApprovalsComponent {
   ) {}
 
   showApprovalModal(dpm: ApprovalDpmDto) {
-    this.currentDpm = dpm;
-    this.modalOpen = true;
+    this.currentDpm.set(dpm);
+    this.modalOpen.set(true);
   }
 
   hideEdit() {
-    this.editOpen = false;
-    if (this.currentPoints) {
-      this.currentDpm!.points = this.currentPoints;
-      this.approvalsService
-        .updatePoints(this.currentDpm!.id, this.currentPoints)
-        .pipe(first())
-        .subscribe();
-    }
+    this.editOpen.set(false);
+    const currentDpm = this.currentDpm();
+    const currentPoints = this.currentPoints();
+    if (!currentDpm || !currentPoints) return;
+
+    currentDpm.points = currentPoints;
+    this.currentDpm.set(currentDpm);
+    this.approvalsService
+      .updatePoints(this.currentDpm()!.id, currentPoints)
+      .pipe(first())
+      .subscribe();
   }
 
   showEdit($event: MouseEvent) {
     $event.stopPropagation();
-    this.currentPoints = this.currentDpm?.points;
-    this.editOpen = true;
+    this.currentPoints.set(this.currentDpm()?.points);
+    this.editOpen.set(true);
   }
 
   approveDpm() {
-    if (!this.currentDpm) return;
-    this.dpms = this.dpms?.filter((dto) => dto.id != this.currentDpm?.id);
+    const currentDpm = this.currentDpm();
+    if (!currentDpm) return;
+
+    this.dpms.update((prev) => prev.filter((dto) => dto.id != this.currentDpm()?.id));
     this.approvalsService
-      .approveDpm(this.currentDpm?.id)
+      .approveDpm(currentDpm.id)
       .pipe(first())
       .subscribe(() => {
         this.notificationService.showSuccess('DPM has been approved', 'Success');
@@ -65,10 +70,12 @@ export class ApprovalsComponent {
   }
 
   denyDpm() {
-    if (!this.currentDpm) return;
-    this.dpms = this.dpms?.filter((dto) => dto.id != this.currentDpm?.id);
+    const currentDpm = this.currentDpm();
+    if (!currentDpm) return;
+
+    this.dpms.update((prev) => prev.filter((dto) => dto.id != this.currentDpm()?.id));
     this.approvalsService
-      .denyDpm(this.currentDpm.id)
+      .denyDpm(currentDpm.id)
       .pipe(first())
       .subscribe(() => {
         this.notificationService.showSuccess('DPM has been denied', 'Success');
@@ -78,7 +85,7 @@ export class ApprovalsComponent {
 
   lazyLoadEvent(event: TableLazyLoadEvent) {
     this.lastLazyLoadEvent = event;
-    this.loadingDpms = true;
+    this.loadingDpms.set(true);
     let size = 10;
     if (event.rows) {
       size = event.rows;
@@ -93,9 +100,9 @@ export class ApprovalsComponent {
       .getApprovalDpms(page, size)
       .pipe(first())
       .subscribe((page) => {
-        this.dpms = page.content;
-        this.totalRecords = page.totalElements;
-        this.loadingDpms = false;
+        this.dpms.set(page.content);
+        this.totalRecords.set(page.totalElements);
+        this.loadingDpms.set(false);
       });
   }
 

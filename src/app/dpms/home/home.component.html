@@ -6,7 +6,7 @@
 />
 <label for="dpmModal" class="modal cursor-pointer">
   <label class="modal-box relative">
-    @if (currentDpm) {
+    @if (currentDpm(); as currentDpm) {
       <div>
         <h3 class="text-xl font-bold mx-4">{{ currentDpm.type }}</h3>
         <table
@@ -55,7 +55,7 @@
   <app-loading></app-loading>
 </ng-template>
 
-@if (currentDpms$ | async; as dpms) {
+@if (currentDpms(); as dpms) {
   <div>
     <h2 class="text-3xl mb-5 font-bold">Current DPMs</h2>
     <p-table

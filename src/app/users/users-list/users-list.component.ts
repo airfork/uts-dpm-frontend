@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { UserService } from '../../services/user.service';
 import UsernameDto from '../../models/username-dto';
 import { FormatService } from '../../services/format.service';
@@ -15,13 +21,13 @@ import { NotificationService } from '../../services/notification.service';
   standalone: false,
 })
 export class UsersListComponent implements OnInit {
-  users?: UsernameDto[];
-  filteredUsers: UsernameDto[] = [];
-  activeTab = { actions: false, create: false, search: true };
-  managers: string[] | null = null;
-  modalOpen = false;
-  modalMessage = '';
-  outputKey: ListOutputKey = 'email';
+  users = signal<UsernameDto[] | null>(null);
+  filteredUsers = signal<UsernameDto[]>([]);
+  activeTab = signal({ actions: false, create: false, search: true });
+  managers = signal<string[] | null>(null);
+  modalOpen = signal(false);
+  modalMessage = signal('');
+  outputKey = signal<ListOutputKey>('email');
 
   constructor(
     private userService: UserService,
@@ -43,8 +49,8 @@ export class UsersListComponent implements OnInit {
       .getUserNames()
       .pipe(first())
       .subscribe((users) => {
-        this.users = users;
-        this.filteredUsers = users;
+        this.users.set(users);
+        this.filteredUsers.set(users);
         this.changeDetector.detectChanges();
       });
   }
@@ -53,40 +59,41 @@ export class UsersListComponent implements OnInit {
     switch (tab) {
       case 'actions':
         this.saveTabInUrl(tab);
-        this.activeTab = { actions: true, create: false, search: false };
+        this.activeTab.set({ actions: true, create: false, search: false });
         break;
 
       case 'create':
         this.saveTabInUrl(tab);
-        if (!this.managers) {
+        if (!this.managers()) {
           this.userService
             .getManagers()
             .pipe(first())
             .subscribe((managers) => {
-              this.managers = managers;
+              this.managers.set(managers);
               this.changeDetector.detectChanges();
             });
         }
-        this.activeTab = { actions: false, create: true, search: false };
+        this.activeTab.set({ actions: false, create: true, search: false });
         break;
 
       case 'search':
         this.saveTabInUrl(tab);
-        this.activeTab = { actions: false, create: false, search: true };
+        this.activeTab.set({ actions: false, create: false, search: true });
         break;
       default:
         console.warn(`Unknown tab: ${tab}`);
-        this.activeTab = { actions: false, create: false, search: true };
+        this.activeTab.set({ actions: false, create: false, search: true });
         this.clearQueryParams();
     }
   }
 
   filterUsers($event: Event) {
-    if (!this.users) return;
+    const users = this.users();
+    if (!users) return;
 
     const target = $event.target as HTMLInputElement;
-    this.filteredUsers = this.users?.filter((user) =>
-      user.name.toLowerCase().includes(target.value.toLowerCase())
+    this.filteredUsers.set(
+      users.filter((user) => user.name.toLowerCase().includes(target.value.toLowerCase()))
     );
   }
 
@@ -95,15 +102,15 @@ export class UsersListComponent implements OnInit {
   }
 
   sendEmailClick() {
-    this.outputKey = 'email';
-    this.modalMessage = LIST_EMAIL_MESSAGE;
-    this.modalOpen = true;
+    this.outputKey.set('email');
+    this.modalMessage.set(LIST_EMAIL_MESSAGE);
+    this.modalOpen.set(true);
   }
 
   resetPointsClick() {
-    this.outputKey = 'reset';
-    this.modalMessage = LIST_RESET_MESSAGE;
-    this.modalOpen = true;
+    this.outputKey.set('reset');
+    this.modalMessage.set(LIST_RESET_MESSAGE);
+    this.modalOpen.set(true);
   }
 
   handleConfirmEvent($event: string) {

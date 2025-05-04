@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -50,8 +50,8 @@ export class NewDpmComponent implements OnInit {
     notes: new FormControl(''),
   });
 
-  mobileMode = false;
-  autocompleteResults: string[] = [];
+  mobileMode = signal(false);
+  autocompleteResults = signal<string[]>([]);
 
   constructor(
     private userService: UserService,
@@ -65,7 +65,7 @@ export class NewDpmComponent implements OnInit {
     if (
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua)
     ) {
-      this.mobileMode = true;
+      this.mobileMode.set(true);
     }
 
     this.userService
@@ -75,9 +75,11 @@ export class NewDpmComponent implements OnInit {
   }
 
   search(event: AutoCompleteCompleteEvent) {
-    this.autocompleteResults = this.driverNames
-      .filter((user) => user.name.toLowerCase().includes(event.query.toLowerCase()))
-      .map((user) => user.name);
+    this.autocompleteResults.set(
+      this.driverNames
+        .filter((user) => user.name.toLowerCase().includes(event.query.toLowerCase()))
+        .map((user) => user.name)
+    );
   }
 
   errorsOrSuccess(control: AbstractControl | null): string {

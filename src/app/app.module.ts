@@ -10,7 +10,6 @@ import { AuthRoutingModule } from './auth/auth-routing.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { providePrimeNG } from 'primeng/config';
-import Material from '@primeng/themes/material';
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,7 +29,7 @@ import Material from '@primeng/themes/material';
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     provideHttpClient(withInterceptorsFromDi()),
-    providePrimeNG({ ripple: true, theme: { preset: Material } }),
+    providePrimeNG({ ripple: true }),
   ],
 })
 export class AppModule {}

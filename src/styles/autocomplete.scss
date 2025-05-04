@@ -1,6 +1,10 @@
 @use "variables" as vars;
 
-.p-autocomplete-panel {
+.p-autocomplete {
+  width: 100%;
+}
+
+.p-autocomplete-list-container {
   background: vars.$base1;
   color: vars.$baseContent;
   border: 0 none;
@@ -8,25 +12,28 @@
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 20%);
 }
 
-.p-autocomplete-panel .p-autocomplete-items {
+.p-autocomplete-list-container .p-autocomplete-list {
   padding: 0.75rem 0;
 }
 
-.p-autocomplete-panel .p-autocomplete-items .p-autocomplete-item {
+.p-autocomplete-list-container .p-autocomplete-list .p-autocomplete-option {
   margin: 0;
   border: 0 none;
   background: transparent;
   transition: box-shadow 0.2s;
   border-radius: 0;
+  align-items: flex-start;
 }
 
-.p-autocomplete-item {
+.p-autocomplete-option {
   span {
     border-radius: 0 !important;
+    align-items: flex-start;
+    width: 100%;
   }
 }
 
-.p-autocomplete-panel .p-autocomplete-items .p-autocomplete-empty-message {
+.p-autocomplete-list-container .p-autocomplete-list .p-autocomplete-empty-message {
   padding: 0.75rem 1.25rem;
 }
 

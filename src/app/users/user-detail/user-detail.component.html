@@ -2,7 +2,8 @@
   <app-loading></app-loading>
 </ng-template>
 
-@if (user) {
+@let active = activeTab();
+@if (user(); as user) {
   <div>
     <h2 class="text-3xl mb-5 font-bold">
       {{ user.firstname }} {{ user.lastname }}
@@ -11,49 +12,49 @@
       <div>
         <a
           class="tab tab-lg tab-bordered"
-          [ngClass]="{ 'tab-active': activeTab.info }"
+          [ngClass]="{ 'tab-active': active.info }"
           (click)="activateTab('info')"
           >Info</a
         >
         <a
           class="tab tab-lg tab-bordered"
-          [ngClass]="{ 'tab-active': activeTab.dpms }"
+          [ngClass]="{ 'tab-active': active.dpms }"
           (click)="activateTab('dpms')"
           >DPMs</a
         >
         <a
           class="tab tab-lg tab-bordered"
-          [ngClass]="{ 'tab-active': activeTab.actions }"
+          [ngClass]="{ 'tab-active': active.actions }"
           (click)="activateTab('detail-actions')"
           >Actions</a
         >
       </div>
     </div>
-    @if (activeTab.info) {
+    @if (active.info) {
       <div>
         <app-user-form
           layout="edit"
-          [userInfo]="{ user, id: userId }"
+          [userInfo]="{ user, id: userId() }"
         ></app-user-form>
       </div>
     }
-    @if (activeTab.dpms) {
+    @if (active.dpms) {
       <div>
         <p-table
           #dt
-          [value]="dpms"
+          [value]="dpms()"
           dataKey="id"
           styleClass="table table-fixed lg:table-auto w-full"
           [rowHover]="true"
           [rows]="10"
           [showCurrentPageReport]="true"
           [rowsPerPageOptions]="[10, 25, 50]"
-          [loading]="loadingDpms"
+          [loading]="loadingDpms()"
           responsiveLayout="scroll"
           [paginator]="true"
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           [lazy]="true"
-          [totalRecords]="totalRecords"
+          [totalRecords]="totalRecords()"
           (onLazyLoad)="lazyLoadEvent($event)"
         >
           <ng-template pTemplate="header" class="table">
@@ -84,7 +85,7 @@
         </p-table>
       </div>
     }
-    @if (activeTab.actions) {
+    @if (active.actions) {
       <div class="flex flex-wrap justify-center">
         <div class="mx-4 basis-full lg:basis-auto grid place-items-center">
           <a
@@ -124,7 +125,7 @@
 />
 <label for="dpmModal" class="modal cursor-pointer">
   <label class="modal-box relative">
-    @if (currentDpm) {
+    @if (currentDpm(); as currentDpm) {
       <div>
         <h3 class="text-xl font-bold mx-4">{{ currentDpm.type }}</h3>
         <table
@@ -194,8 +195,9 @@
 </label>
 
 <app-confirm-box
-  [message]="modalMessage"
-  [outputKey]="outputKey"
-  [(isOpen)]="confirmModalOpen"
+  [message]="modalMessage()"
+  [outputKey]="outputKey()"
+  [isOpen]="confirmModalOpen()"
+  (isOpenChange)="confirmModalOpen.set($event)"
   (confirmed)="handleConfirmEvent($event)"
 ></app-confirm-box>

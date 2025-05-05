@@ -1,12 +1,11 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route } from '@angular/router';
+import { AuthComponent } from './auth/auth.component';
 import { LoginComponent } from './login/login.component';
 import { GenerateTitle } from '../shared/title-helper';
-import { AuthComponent } from './auth/auth.component';
-import { ChangePasswordComponent } from './change-password/change-password.component';
 import { authGuard } from './auth.guard';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
-const routes: Routes = [
+export const AUTH_ROUTES: Route[] = [
   {
     path: 'login',
     component: AuthComponent,
@@ -38,9 +37,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class AuthRoutingModule {}

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { first } from 'rxjs';
 import { Router } from '@angular/router';
@@ -15,8 +15,8 @@ import { HttpErrorResponse } from '@angular/common/http';
   standalone: false,
 })
 export class ChangePasswordComponent implements OnInit {
-  isLoading = true;
-  waitingForResponse = false;
+  isLoading = signal(true);
+  waitingForResponse = signal(false);
   changePasswordFormGroup = new FormGroup(
     {
       currentPassword: new FormControl('', [Validators.required]),
@@ -37,7 +37,7 @@ export class ChangePasswordComponent implements OnInit {
       .changePasswordRequired()
       .pipe(first())
       .subscribe((required) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         if (!required) {
           this.router.navigate(['/']).then(() => {
             this.notificationService.showWarning('Cannot change password currently');
@@ -47,7 +47,7 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   onSubmit() {
-    this.waitingForResponse = true;
+    this.waitingForResponse.set(true);
     this.authService
       .changePassword(this.formGroupToDto())
       .pipe(first())
@@ -59,7 +59,7 @@ export class ChangePasswordComponent implements OnInit {
             .then(() => this.notificationService.showSuccess('Password has been changed'));
         },
         error: (error: HttpErrorResponse) => {
-          this.waitingForResponse = false;
+          this.waitingForResponse.set(false);
           const values = this.changePasswordFormGroup.value;
           if (error.status === 401) {
             this.notificationService.showError('Current password is incorrect', 'Error');

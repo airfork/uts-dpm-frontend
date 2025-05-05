@@ -13,7 +13,8 @@
         class="input input-bordered w-full"
         placeholder="Username"
         formControlName="username"
-        [ngClass]="{ 'input-error': hasErrors(username) || badCredentials }"
+        (input)="onUserInput()"
+        [ngClass]="{ 'input-error': hasErrors(username) || badCredentials() }"
       />
       <label class="label" for="username">
         <span class="label-text-alt text-error">
@@ -29,7 +30,8 @@
         class="input input-bordered w-full"
         placeholder="Password"
         formControlName="password"
-        [ngClass]="{ 'input-error': hasErrors(password) || badCredentials }"
+        (input)="onUserInput()"
+        [ngClass]="{ 'input-error': hasErrors(password) || badCredentials() }"
       />
       <label class="label" for="password">
         <span class="label-text-alt text-error">
@@ -42,7 +44,7 @@
       pRipple
       type="submit"
       class="btn btn-primary w-full"
-      [disabled]="!loginFormGroup.valid || loading"
+      [disabled]="!loginFormGroup.valid || loading()"
     >
       Login
     </button>

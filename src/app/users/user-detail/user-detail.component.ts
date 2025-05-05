@@ -20,7 +20,6 @@ import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { SharedModule } from '../../shared/shared.module';
 import { NgClass, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { UiModule } from '../../ui/ui.module';
 import { UserFormComponent } from '../user-form/user-form.component';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
 
@@ -32,7 +31,6 @@ import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component'
     NgClass,
     TableModule,
     FormsModule,
-    UiModule,
     UpperCasePipe,
     UserFormComponent,
     ConfirmBoxComponent,

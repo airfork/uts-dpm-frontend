@@ -1,12 +1,11 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { UsersListComponent } from './users-list/users-list.component';
+import { Routes } from '@angular/router';
 import { UsersComponent } from './users/users.component';
+import { authChildGuard } from '../auth/auth.guard';
+import { UsersListComponent } from './users-list/users-list.component';
 import { GenerateTitle } from '../shared/title-helper';
 import { UserDetailComponent } from './user-detail/user-detail.component';
-import { authChildGuard } from '../auth/auth.guard';
 
-const routes: Routes = [
+export const USERS_ROUTES: Routes = [
   {
     path: '',
     component: UsersComponent,
@@ -34,9 +33,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class UsersRoutingModule {}

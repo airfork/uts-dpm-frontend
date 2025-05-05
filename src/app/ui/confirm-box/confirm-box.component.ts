@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, input, Output, output } from '@angular/core';
 import Required from '../../shared/required-decorator';
+import { Ripple } from 'primeng/ripple';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-confirm-box',
   templateUrl: './confirm-box.component.html',
-  standalone: false,
+  imports: [Ripple, FormsModule],
 })
 export class ConfirmBoxComponent {
   private _isOpen = false;

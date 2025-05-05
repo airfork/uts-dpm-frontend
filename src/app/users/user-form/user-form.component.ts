@@ -8,7 +8,14 @@ import {
   signal,
   SimpleChanges,
 } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import GetUserDetailDto from '../../models/get-user-detail-dto';
 import UserDetailDto from '../../models/user-detail-dto';
 import { UserService } from '../../services/user.service';
@@ -18,6 +25,7 @@ import { first } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
 import CreateUserDto from '../../models/create-user-dto';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NgClass } from '@angular/common';
 
 const POINTS_VALIDATORS = [Validators.required, Validators.pattern(/-?\d+/)];
 
@@ -25,7 +33,7 @@ const POINTS_VALIDATORS = [Validators.required, Validators.pattern(/-?\d+/)];
   selector: 'app-user-form',
   templateUrl: './user-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [NgClass, FormsModule, ReactiveFormsModule],
 })
 export class UserFormComponent implements OnInit, OnChanges {
   @Input() @Required layout: 'create' | 'edit' = 'edit';

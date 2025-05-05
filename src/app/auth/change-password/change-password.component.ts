@@ -3,16 +3,24 @@ import { AuthService } from '../../services/auth.service';
 import { first } from 'rxjs';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { PasswordsEqualValidator } from '../directives/passwords-equal.directive';
 import { PasswordsNotEqualValidator } from '../directives/passwords-not-equal.directive';
 import ChangePasswordDto from '../../models/change-password-dto';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Ripple } from 'primeng/ripple';
+import { SharedModule } from '../../shared/shared.module';
 
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
-  standalone: false,
+  imports: [ReactiveFormsModule, Ripple, SharedModule],
 })
 export class ChangePasswordComponent implements OnInit {
   isLoading = signal(true);

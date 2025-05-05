@@ -1,14 +1,22 @@
 import { Component, signal } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NgClass } from '@angular/common';
+import { Ripple } from 'primeng/ripple';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  standalone: false,
+  imports: [NgClass, ReactiveFormsModule, Ripple],
 })
 export class LoginComponent {
   loginFormGroup = new FormGroup({

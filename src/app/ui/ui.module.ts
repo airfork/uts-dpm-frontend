@@ -8,8 +8,16 @@ import { RippleModule } from 'primeng/ripple';
 import { RouterLinkActive, RouterLink } from '@angular/router';
 
 @NgModule({
-  declarations: [NavbarComponent, ConfirmBoxComponent],
-  imports: [CommonModule, AuthModule, FormsModule, RippleModule, RouterLink, RouterLinkActive],
-  exports: [NavbarComponent, ConfirmBoxComponent],
+  declarations: [],
+  imports: [
+    CommonModule,
+    AuthModule,
+    FormsModule,
+    RippleModule,
+    RouterLink,
+    RouterLinkActive,
+    NavbarComponent,
+    ConfirmBoxComponent,
+  ],
 })
 export class UiModule {}

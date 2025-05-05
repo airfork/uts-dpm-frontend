@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
 import { Roles } from '../../auth/roles.types';
+import { RemoveIfUnauthorizedDirective } from '../../auth/directives/remove-if-unauthorized.directive';
 
 interface navbarLinks {
   path?: string;
@@ -13,7 +14,7 @@ interface navbarLinks {
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  standalone: false,
+  imports: [RouterLink, RouterLinkActive, RemoveIfUnauthorizedDirective],
 })
 export class NavbarComponent {
   links: navbarLinks[] = [

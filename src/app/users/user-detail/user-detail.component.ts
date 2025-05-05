@@ -16,12 +16,27 @@ import {
   DetailOutputKey,
 } from '../shared/confirm-box-info';
 import { AuthService } from '../../services/auth.service';
-import { TableLazyLoadEvent } from 'primeng/table';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
+import { SharedModule } from '../../shared/shared.module';
+import { NgClass, UpperCasePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { UiModule } from '../../ui/ui.module';
+import { UserFormComponent } from '../user-form/user-form.component';
+import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
 
 @Component({
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
-  standalone: false,
+  imports: [
+    SharedModule,
+    NgClass,
+    TableModule,
+    FormsModule,
+    UiModule,
+    UpperCasePipe,
+    UserFormComponent,
+    ConfirmBoxComponent,
+  ],
 })
 export class UserDetailComponent implements OnInit {
   private lastLazyLoadEvent?: TableLazyLoadEvent;

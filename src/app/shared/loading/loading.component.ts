@@ -1,9 +1,11 @@
 import { Component, Input } from '@angular/core';
+import { ProgressSpinner } from 'primeng/progressspinner';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-loading',
   templateUrl: './loading.component.html',
-  standalone: false,
+  imports: [ProgressSpinner, NgClass],
 })
 export class LoadingComponent {
   public _halfScreen: boolean = false;

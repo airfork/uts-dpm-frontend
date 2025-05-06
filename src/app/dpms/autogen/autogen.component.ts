@@ -4,11 +4,13 @@ import { formatDate } from '@angular/common';
 import { NotificationService } from '../../services/notification.service';
 import { first } from 'rxjs';
 import AutogenDpm from '../../models/autogen-dpm';
+import { LoadingComponent } from '../../shared/loading/loading.component';
+import { Ripple } from 'primeng/ripple';
 
 @Component({
   selector: 'app-autogen',
   templateUrl: './autogen.component.html',
-  standalone: false,
+  imports: [LoadingComponent, Ripple],
 })
 export class AutogenComponent implements OnInit {
   autogenDpms = signal<AutogenDpm[]>([]);

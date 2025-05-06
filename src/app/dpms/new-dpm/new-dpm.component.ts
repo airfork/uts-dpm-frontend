@@ -3,6 +3,7 @@ import {
   AbstractControl,
   FormControl,
   FormGroup,
+  ReactiveFormsModule,
   ValidationErrors,
   Validators,
 } from '@angular/forms';
@@ -14,7 +15,10 @@ import PostDpmDto from '../../models/post-dpm-dto';
 import UsernameDto from '../../models/username-dto';
 import { first } from 'rxjs';
 import { DPMTypes } from '../../models/dpm-type';
-import { AutoCompleteCompleteEvent } from 'primeng/autocomplete';
+import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
+import { DatePicker } from 'primeng/datepicker';
+import { NgClass } from '@angular/common';
+import { Ripple } from 'primeng/ripple';
 
 type startEndTime = 'Start Time' | 'End Time';
 const regex24HourTime = /^(?:[01][0-9]|2[0-3])[0-5][0-9](?::[0-5][0-9])?$/;
@@ -22,7 +26,7 @@ const regex24HourTime = /^(?:[01][0-9]|2[0-3])[0-5][0-9](?::[0-5][0-9])?$/;
 @Component({
   selector: 'app-new-dpm',
   templateUrl: './new-dpm.component.html',
-  standalone: false,
+  imports: [AutoComplete, ReactiveFormsModule, DatePicker, NgClass, Ripple],
 })
 export class NewDpmComponent implements OnInit {
   dpmTypes = DPMTypes;

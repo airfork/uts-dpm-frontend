@@ -14,17 +14,26 @@ import { ListTab } from '../shared/tab.types';
 import { LIST_EMAIL_MESSAGE, LIST_RESET_MESSAGE, ListOutputKey } from '../shared/confirm-box-info';
 import { NotificationService } from '../../services/notification.service';
 import { UserFormComponent } from '../user-form/user-form.component';
-import { SharedModule } from '../../shared/shared.module';
 import { TableModule } from 'primeng/table';
 import { AutoFocus } from 'primeng/autofocus';
 import { NgClass } from '@angular/common';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
+import { NamePipe } from '../../shared/pipes/NamePipe';
+import { LoadingComponent } from '../../shared/loading/loading.component';
 
 @Component({
   selector: 'app-users-list',
   templateUrl: './users-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [UserFormComponent, SharedModule, TableModule, AutoFocus, NgClass, ConfirmBoxComponent],
+  imports: [
+    UserFormComponent,
+    TableModule,
+    AutoFocus,
+    NgClass,
+    ConfirmBoxComponent,
+    NamePipe,
+    LoadingComponent,
+  ],
 })
 export class UsersListComponent implements OnInit {
   users = signal<UsernameDto[] | null>(null);

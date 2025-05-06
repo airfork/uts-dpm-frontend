@@ -15,12 +15,12 @@ import { PasswordsNotEqualValidator } from '../directives/passwords-not-equal.di
 import ChangePasswordDto from '../../models/change-password-dto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Ripple } from 'primeng/ripple';
-import { SharedModule } from '../../shared/shared.module';
+import { LoadingComponent } from '../../shared/loading/loading.component';
 
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
-  imports: [ReactiveFormsModule, Ripple, SharedModule],
+  imports: [ReactiveFormsModule, Ripple, LoadingComponent],
 })
 export class ChangePasswordComponent implements OnInit {
   isLoading = signal(true);

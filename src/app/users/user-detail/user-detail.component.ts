@@ -17,23 +17,27 @@ import {
 } from '../shared/confirm-box-info';
 import { AuthService } from '../../services/auth.service';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { SharedModule } from '../../shared/shared.module';
 import { NgClass, UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserFormComponent } from '../user-form/user-form.component';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
+import { BlockPipe } from '../../shared/pipes/BlockPipe';
+import { PointsPipe } from '../../shared/pipes/PointsPipe';
+import { LoadingComponent } from '../../shared/loading/loading.component';
 
 @Component({
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
   imports: [
-    SharedModule,
     NgClass,
     TableModule,
     FormsModule,
     UpperCasePipe,
     UserFormComponent,
     ConfirmBoxComponent,
+    BlockPipe,
+    PointsPipe,
+    LoadingComponent,
   ],
 })
 export class UserDetailComponent implements OnInit {

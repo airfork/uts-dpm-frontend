@@ -1,15 +1,18 @@
 import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormatService } from '../../services/format.service';
 import { environment } from '../../../environments/environment';
 import { MixedDateValidator } from '../mixed-date.directive';
 import { DatagenService } from '../../services/datagen.service';
+import { Calendar } from 'primeng/calendar';
+import { NgClass } from '@angular/common';
+import { Ripple } from 'primeng/ripple';
 
 @Component({
   selector: 'app-datagen',
   templateUrl: './datagen.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false,
+  imports: [ReactiveFormsModule, Calendar, NgClass, Ripple],
 })
 export class DatagenComponent implements OnInit {
   private BASE_URL = environment.baseUrl + '/datagen';

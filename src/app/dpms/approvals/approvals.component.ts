@@ -4,13 +4,29 @@ import { FormatService } from '../../services/format.service';
 import { first } from 'rxjs';
 import ApprovalDpmDto from '../../models/approval-dpm-dto';
 import { NotificationService } from '../../services/notification.service';
-import { TableLazyLoadEvent } from 'primeng/table';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
+import { FormsModule } from '@angular/forms';
+import { LoadingComponent } from '../../shared/loading/loading.component';
+import { UpperCasePipe } from '@angular/common';
+import { BlockPipe } from '../../shared/pipes/BlockPipe';
+import { PointsPipe } from '../../shared/pipes/PointsPipe';
+import { Ripple } from 'primeng/ripple';
+import { PrimeTemplate } from 'primeng/api';
 
 @Component({
   selector: 'app-approvals',
   templateUrl: './approvals.component.html',
   styleUrls: ['./approvals.component.scss'],
-  standalone: false,
+  imports: [
+    FormsModule,
+    LoadingComponent,
+    UpperCasePipe,
+    BlockPipe,
+    PointsPipe,
+    Ripple,
+    PrimeTemplate,
+    TableModule,
+  ],
 })
 export class ApprovalsComponent {
   private lastLazyLoadEvent?: TableLazyLoadEvent;

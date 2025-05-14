@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, OnInit, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -14,7 +14,7 @@ import { FormatService } from '../../services/format.service';
 import PostDpmDto from '../../models/post-dpm-dto';
 import UsernameDto from '../../models/username-dto';
 import { first } from 'rxjs';
-import { DPMTypes } from '../../models/dpm-type';
+import { DPMGroup } from '../../models/dpm-type';
 import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { DatePicker } from 'primeng/datepicker';
 import { NgClass } from '@angular/common';
@@ -28,10 +28,8 @@ const regex24HourTime = /^(?:[01][0-9]|2[0-3])[0-5][0-9](?::[0-5][0-9])?$/;
   templateUrl: './new-dpm.component.html',
   imports: [AutoComplete, ReactiveFormsModule, DatePicker, NgClass, Ripple],
 })
-export class NewDpmComponent implements OnInit {
-  dpmTypes = DPMTypes;
+export class NewDpmComponent implements OnInit, AfterViewInit {
   private driverNames: UsernameDto[] = [];
-  private defaultDpmType = this.dpmTypes[0].names[0];
 
   homeFormGroup = new FormGroup({
     dpmDate: new FormControl(new Date(), [Validators.required]),
@@ -50,12 +48,14 @@ export class NewDpmComponent implements OnInit {
     name: new FormControl('', [Validators.required]),
     block: new FormControl('', [Validators.required, Validators.maxLength(5)]),
     location: new FormControl('', [Validators.required, Validators.maxLength(5)]),
-    type: new FormControl(this.defaultDpmType),
+    type: new FormControl(0),
     notes: new FormControl(''),
   });
 
   mobileMode = signal(false);
   autocompleteResults = signal<string[]>([]);
+  dpmGroups = signal<DPMGroup[]>([]);
+  isGroupsLoaded = signal<boolean>(false);
 
   constructor(
     private userService: UserService,
@@ -76,6 +76,41 @@ export class NewDpmComponent implements OnInit {
       .getUserNames()
       .pipe(first())
       .subscribe((users) => (this.driverNames = users));
+
+    this.dpmService
+      .getDpmGroups()
+      .pipe(first())
+      .subscribe((groups) => {
+        this.dpmGroups.set(groups);
+        this.isGroupsLoaded.set(true);
+        this.setDefaultDpmType();
+      });
+  }
+
+  ngAfterViewInit() {
+    // additional check after view init in case the above wasn't enough
+    setTimeout(() => {
+      if (this.isGroupsLoaded() && !this.homeFormGroup.get('type')?.value) {
+        this.setDefaultDpmType();
+      }
+    }, 0);
+  }
+
+  // New helper method to set the default DPM type
+  private setDefaultDpmType() {
+    const groups = this.dpmGroups();
+    if (groups && groups.length > 0 && groups[0].dpms && groups[0].dpms.length > 0) {
+      this.homeFormGroup.patchValue({
+        type: groups[0].dpms[0].id,
+      });
+
+      // Force detection of the change
+      setTimeout(() => {
+        this.homeFormGroup.updateValueAndValidity();
+      }, 0);
+    } else {
+      console.warn('No DPM groups or types found to set as default');
+    }
   }
 
   search(event: AutoCompleteCompleteEvent) {
@@ -105,9 +140,10 @@ export class NewDpmComponent implements OnInit {
       .pipe(first())
       .subscribe(() => {
         this.notificationService.showSuccess('DPM Created', 'Success');
+        const groups = this.dpmGroups();
         this.homeFormGroup.reset({
           dpmDate: new Date(),
-          type: this.defaultDpmType,
+          type: groups[0].dpms[0].id,
         });
       });
   }
@@ -211,6 +247,18 @@ export class NewDpmComponent implements OnInit {
 
   get format() {
     return this.formatService;
+  }
+
+  formatPoints(points: number): string {
+    let strPoints: string;
+    if (points > 0) {
+      strPoints = `+${points}`;
+    } else {
+      strPoints = points.toString();
+    }
+
+    const pointLabel = Math.abs(points) > 1 ? 'Points' : 'Point';
+    return `(${strPoints} ${pointLabel})`;
   }
 
   private getTimeValidationMessages(

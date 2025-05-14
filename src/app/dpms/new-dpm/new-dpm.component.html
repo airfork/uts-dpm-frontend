@@ -161,11 +161,11 @@
         class="select select-bordered w-full"
         formControlName="type"
       >
-        @for (dpmType of dpmTypes; track dpmType) {
-          <optgroup label="{{ dpmType.type }}">
-            @for (name of dpmType.names; track name) {
-              <option [value]="name">
-                {{ name }}
+        @for (group of dpmGroups(); track group.groupName) {
+          <optgroup label="{{ group.groupName }}">
+            @for (dpm of group.dpms; track dpm.name) {
+              <option [value]="dpm.id">
+                {{ dpm.name }} {{ formatPoints(dpm.points) }}
               </option>
             }
           </optgroup>

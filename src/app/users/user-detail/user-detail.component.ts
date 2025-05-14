@@ -135,7 +135,7 @@ export class UserDetailComponent implements OnInit {
     }
 
     this.dpmService
-      .getAll(this.userId(), page, size)
+      .getAllForUser(this.userId(), page, size)
       .pipe(first())
       .subscribe((page) => {
         this.dpms.set(page.content);

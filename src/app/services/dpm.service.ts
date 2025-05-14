@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 import HomeDpmDto from '../models/home-dpm-dto';
 import DpmDetailPage from '../models/dpm-detail-page';
 import { ErrorService } from './error.service';
+import { DPMGroup } from '../models/dpm-type';
 
 const BASE_URL = environment.baseUrl + '/dpms';
 
@@ -41,12 +42,23 @@ export class DpmService {
     );
   }
 
-  getAll(id: string, page: number, size: number): Observable<DpmDetailPage> {
+  getAllForUser(id: string, page: number, size: number): Observable<DpmDetailPage> {
     return this.http.get<DpmDetailPage>(`${BASE_URL}/user/${id}?page=${page}&size=${size}`).pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(
           error,
           "Something went wrong trying to get the user' dpms"
+        );
+      })
+    );
+  }
+
+  getDpmGroups(): Observable<DPMGroup[]> {
+    return this.http.get<DPMGroup[]>(`${BASE_URL}/list`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return this.errorService.errorResponse(
+          error,
+          'Something went wrong trying to get the list of DPM types'
         );
       })
     );

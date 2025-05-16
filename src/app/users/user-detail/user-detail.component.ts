@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, OnInit, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import GetUserDetailDto from '../../models/get-user-detail-dto';
 import { first } from 'rxjs';
@@ -24,6 +24,7 @@ import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component'
 import { BlockPipe } from '../../shared/pipes/BlockPipe';
 import { PointsPipe } from '../../shared/pipes/PointsPipe';
 import { LoadingComponent } from '../../shared/loading/loading.component';
+import { Ripple } from 'primeng/ripple';
 
 @Component({
   selector: 'app-user-detail',
@@ -38,6 +39,7 @@ import { LoadingComponent } from '../../shared/loading/loading.component';
     BlockPipe,
     PointsPipe,
     LoadingComponent,
+    Ripple,
   ],
 })
 export class UserDetailComponent implements OnInit {
@@ -50,10 +52,10 @@ export class UserDetailComponent implements OnInit {
   user = signal<GetUserDetailDto | null>(null);
   currentDpm = signal<DpmDetailDto | null>(null);
   dpms = signal<DpmDetailDto[]>([]);
-  dpmModalOpen = signal(false);
   confirmModalOpen = signal(false);
   modalMessage = signal('');
   outputKey = signal<DetailOutputKey>('email');
+  @ViewChild('dpmModal') dpmModalElement!: ElementRef<HTMLDialogElement>;
 
   constructor(
     private router: Router,
@@ -88,10 +90,11 @@ export class UserDetailComponent implements OnInit {
 
   clickRow(dpm: DpmDetailDto) {
     this.currentDpm.set(dpm);
-    this.dpmModalOpen.set(true);
+    this.showModalInternal();
   }
 
   denyDpm() {
+    this.closeModalInternal();
     const currentDpm = this.currentDpm();
     if (!currentDpm) return;
 
@@ -190,6 +193,18 @@ export class UserDetailComponent implements OnInit {
     return (
       this.authService.userData.username.toLowerCase().trim() === user.email.toLowerCase().trim()
     );
+  }
+
+  showModalInternal() {
+    if (this.dpmModalElement && this.dpmModalElement.nativeElement) {
+      this.dpmModalElement.nativeElement.showModal();
+    }
+  }
+
+  closeModalInternal() {
+    if (this.dpmModalElement && this.dpmModalElement.nativeElement) {
+      this.dpmModalElement.nativeElement.close();
+    }
   }
 
   private setTitle() {

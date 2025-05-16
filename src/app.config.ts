@@ -14,7 +14,17 @@ export const AppConfig: ApplicationConfig = {
     provideRouter([...AUTH_ROUTES, ...DPM_ROUTES, ...APP_ROUTES], withComponentInputBinding()),
     provideHttpClient(withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    providePrimeNG({ ripple: true }),
+    providePrimeNG({
+      ripple: true,
+      theme: {
+        options: {
+          cssLayer: {
+            name: 'primeng',
+            order: 'app, primeng',
+          },
+        },
+      },
+    }),
     provideToastr({
       timeOut: 1000 * 3,
       positionClass: 'app-toast-top-center',

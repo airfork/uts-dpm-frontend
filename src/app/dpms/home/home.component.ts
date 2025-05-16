@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, signal, ViewChild } from '@angular/core';
 import { DpmService } from '../../services/dpm.service';
 import { FormatService } from '../../services/format.service';
 import HomeDpmDto from '../../models/home-dpm-dto';
@@ -20,8 +20,8 @@ export class HomeComponent {
   currentDpms = toSignal(this.dpmService.getCurrentDpms(), {
     initialValue: [],
   });
-  modalOpen = signal(false);
   currentDpm = signal<HomeDpmDto | null>(null);
+  @ViewChild('dpmModal') dpmModalElement!: ElementRef<HTMLDialogElement>;
 
   constructor(
     private dpmService: DpmService,
@@ -29,11 +29,17 @@ export class HomeComponent {
   ) {}
 
   clickRow(dpm: HomeDpmDto) {
-    this.modalOpen.set(true);
     this.currentDpm.set(dpm);
+    this.showModalInternal();
   }
 
   get format() {
     return this.formatService;
+  }
+
+  showModalInternal() {
+    if (this.dpmModalElement && this.dpmModalElement.nativeElement) {
+      this.dpmModalElement.nativeElement.showModal();
+    }
   }
 }

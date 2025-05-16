@@ -7,7 +7,7 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "css"
         }
       },
       "root": "",
@@ -25,20 +25,30 @@
               "src/polyfills.ts"
             ],
             "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
+            "inlineStyleLanguage": "css",
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/ngx-toastr/toastr.css"
+              "src/styles.css",
+              {
+                "input": "node_modules/primeicons/primeicons.css",
+                "bundleName": "prime-icons",
+                "inject": true
+              },
+              {
+                "input": "node_modules/ngx-toastr/toastr.css",
+                "bundleName": "ngx-toastr",
+                "inject": true
+              }
             ],
             "scripts": [],
             "browser": "src/main.ts",
             "stylePreprocessorOptions": {
-              "includePaths": ["src/styles"]
+              "includePaths": [
+                "src/styles"
+              ]
             }
           },
           "configurations": {

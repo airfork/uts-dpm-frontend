@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, ElementRef, signal, ViewChild } from '@angular/core';
 import { ApprovalsService } from '../../services/approvals.service';
 import { FormatService } from '../../services/format.service';
 import { first } from 'rxjs';
@@ -16,7 +16,7 @@ import { PrimeTemplate } from 'primeng/api';
 @Component({
   selector: 'app-approvals',
   templateUrl: './approvals.component.html',
-  styleUrls: ['./approvals.component.scss'],
+  styleUrls: ['./approvals.component.css'],
   imports: [
     FormsModule,
     LoadingComponent,
@@ -40,6 +40,8 @@ export class ApprovalsComponent {
   editOpen = signal(false);
   currentPoints = signal<number | undefined>(0);
 
+  @ViewChild('dpmModal') dpmModalElement!: ElementRef<HTMLDialogElement>;
+
   constructor(
     private approvalsService: ApprovalsService,
     private formatService: FormatService,
@@ -48,7 +50,7 @@ export class ApprovalsComponent {
 
   showApprovalModal(dpm: ApprovalDpmDto) {
     this.currentDpm.set(dpm);
-    this.modalOpen.set(true);
+    this.showModalInternal();
   }
 
   hideEdit() {
@@ -124,5 +126,18 @@ export class ApprovalsComponent {
 
   get format() {
     return this.formatService;
+  }
+
+  showModalInternal() {
+    this.notificationService.showError('Testing modal styling', 'Success');
+    if (this.dpmModalElement && this.dpmModalElement.nativeElement) {
+      this.dpmModalElement.nativeElement.showModal();
+    }
+  }
+
+  closeModalInternal() {
+    if (this.dpmModalElement && this.dpmModalElement.nativeElement) {
+      this.dpmModalElement.nativeElement.close();
+    }
   }
 }

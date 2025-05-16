@@ -39,45 +39,48 @@
           class="input input-bordered w-full mb-2"
           (input)="filterUsers($event)"
         />
-        <p-table
-          #dt
-          [value]="filteredUsers()"
-          dataKey="id"
-          styleClass="table table-fixed lg:table-auto w-full"
-          [rowHover]="true"
-          [rows]="10"
-          [showCurrentPageReport]="true"
-          [rowsPerPageOptions]="[10, 25, 50]"
-          [loading]="false"
-          responsiveLayout="scroll"
-          [paginator]="true"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        >
-          <ng-template pTemplate="header" class="table">
-            <tr>
-              <th class="lg:text-base break-words">Last Name</th>
-              <th class="lg:text-base break-words">First Name</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-user>
-            <tr
-              class="hover hover:cursor-pointer"
-              (click)="handlerUserClick(user.id)"
-            >
-              <td class="text-base break-words whitespace-normal">
-                {{ user.name | name: "last" }}
-              </td>
-              <td class="text-base break-words whitespace-normal">
-                {{ user.name | name: "first" }}
-              </td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="8">No users found.</td>
-            </tr>
-          </ng-template>
-        </p-table>
+        <!--          styleClass="table table-fixed lg:table-auto w-full"-->
+        <div class="overflow-x-auto rounded-box bg-base-100">
+          <p-table
+            #dt
+            [value]="filteredUsers()"
+            dataKey="id"
+            styleClass="table"
+            [rowHover]="true"
+            [rows]="10"
+            [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[10, 25, 50]"
+            [loading]="false"
+            responsiveLayout="scroll"
+            [paginator]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          >
+            <ng-template pTemplate="header" class="table">
+              <tr>
+                <th class="lg:text-base break-words">Last Name</th>
+                <th class="lg:text-base break-words">First Name</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user>
+              <tr
+                class="hover:bg-base-300 hover:cursor-pointer"
+                (click)="handlerUserClick(user.id)"
+              >
+                <td class="text-base break-words whitespace-normal">
+                  {{ user.name | name: "last" }}
+                </td>
+                <td class="text-base break-words whitespace-normal">
+                  {{ user.name | name: "first" }}
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="8">No users found.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
       </div>
     }
     @if (active.create) {
@@ -111,7 +114,6 @@
 <app-confirm-box
   [message]="modalMessage()"
   [outputKey]="outputKey()"
-  [isOpen]="modalOpen()"
-  (isOpenChange)="modalOpen.set($event)"
+  [(isOpen)]="modalOpen"
   (confirmed)="handleConfirmEvent($event)"
 ></app-confirm-box>

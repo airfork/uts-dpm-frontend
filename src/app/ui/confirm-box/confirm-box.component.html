@@ -1,24 +1,21 @@
-<input
-  type="checkbox"
-  id="confirm-modal"
-  class="modal-toggle"
-  [(ngModel)]="isOpen"
-/>
-<label for="confirm-modal" class="modal cursor-pointer">
-  <label class="modal-box relative">
+<dialog #confirmModal class="modal cursor-default">
+  <div class="modal-box relative">
     <h3 class="font-bold text-xl">{{ title() }}</h3>
     <p class="py-4 text-lg">{{ message() }}</p>
     <div class="modal-action">
-      <label
+      <button pRipple class="btn btn-outline btn-success" (click)="confirm()">
+        Yes
+      </button>
+      <button
         pRipple
-        for="confirm-modal"
-        class="btn btn-outline btn-success"
-        (click)="confirm()"
-        >Yes</label
+        class="btn btn-outline btn-error"
+        (click)="requestClose()"
       >
-      <label pRipple for="confirm-modal" class="btn btn-outline btn-error"
-        >No</label
-      >
+        No
+      </button>
     </div>
-  </label>
-</label>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button (click)="requestClose()">close</button>
+  </form>
+</dialog>

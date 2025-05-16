@@ -1,5 +1,4 @@
-import { Component, EventEmitter, Input, input, Output, output } from '@angular/core';
-import Required from '../../shared/required-decorator';
+import { Component, effect, ElementRef, input, model, output, ViewChild } from '@angular/core';
 import { Ripple } from 'primeng/ripple';
 import { FormsModule } from '@angular/forms';
 
@@ -9,27 +8,44 @@ import { FormsModule } from '@angular/forms';
   imports: [Ripple, FormsModule],
 })
 export class ConfirmBoxComponent {
-  private _isOpen = false;
-
-  @Output() isOpenChange = new EventEmitter<boolean>();
-  @Input() @Required get isOpen(): boolean {
-    return this._isOpen;
-  }
-
-  set isOpen(value: boolean) {
-    this._isOpen = value;
-    this.isOpenChange.emit(value);
-  }
-
+  isOpen = model.required<boolean>();
   title = input('Are you sure?');
   message = input.required<string>();
   outputKey = input.required<string>();
 
+  @ViewChild('confirmModal')
+  confirmModalElement!: ElementRef<HTMLDialogElement>;
+
   confirmed = output<string>();
 
-  constructor() {}
+  constructor() {
+    effect(() => {
+      if (this.isOpen()) {
+        this.showModalInternal();
+      } else {
+        this.closeModalInternal();
+      }
+    });
+  }
 
   confirm() {
     this.confirmed.emit(this.outputKey());
+    this.isOpen.set(false);
+  }
+
+  requestClose() {
+    this.isOpen.set(false);
+  }
+
+  private showModalInternal() {
+    if (this.confirmModalElement && this.confirmModalElement.nativeElement) {
+      this.confirmModalElement.nativeElement.showModal();
+    }
+  }
+
+  private closeModalInternal() {
+    if (this.confirmModalElement && this.confirmModalElement.nativeElement) {
+      this.confirmModalElement.nativeElement.close();
+    }
   }
 }

@@ -28,25 +28,34 @@
             class="mb-2 last:mb-0"
           >
             @if (link.path) {
-              <a
+              <button
+                class="btn btn-ghost font-normal text-base"
                 routerLink="{{ link.path }}"
-                routerLinkActive="active"
+                routerLinkActive="btn-active btn-primary"
                 [queryParamsHandling]="
                   link.name === 'Users' ? 'preserve' : null
                 "
                 (click)="menuItemClick()"
-                >{{ link.name }}</a
               >
+                {{ link.name }}
+              </button>
             }
             @if (!link.path) {
-              <a (click)="logoutClick()">{{ link.name }}</a>
+              <button
+                class="btn btn-ghost font-normal text-base"
+                (click)="logoutClick()"
+              >
+                {{ link.name }}
+              </button>
             }
           </li>
         }
       </ul>
     </div>
 
-    <a routerLink="/" class="btn btn-ghost normal-case text-2xl">UTS DPM</a>
+    <button routerLink="/" class="btn btn-ghost normal-case text-2xl">
+      UTS DPM
+    </button>
   </div>
 
   <div class="navbar-end w-[60%] hidden lg:flex">
@@ -54,18 +63,22 @@
       @for (link of links; track link) {
         <li class="mx-1" [appRemoveIfUnauthorized]="link.allowedRoles">
           @if (link.path) {
-            <a
+            <button
+              class="btn btn-ghost font-normal text-base"
               routerLink="{{ link.path }}"
-              routerLinkActive="active"
+              routerLinkActive="btn-active btn-primary"
               [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
             >
               {{ link.name }}
-            </a>
+            </button>
           }
           @if (!link.path) {
-            <a (click)="logoutClick()">
+            <button
+              class="btn btn-ghost font-normal text-base"
+              (click)="logoutClick()"
+            >
               {{ link.name }}
-            </a>
+            </button>
           }
         </li>
       }

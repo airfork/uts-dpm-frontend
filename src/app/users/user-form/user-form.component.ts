@@ -26,6 +26,7 @@ import { NotificationService } from '../../services/notification.service';
 import CreateUserDto from '../../models/create-user-dto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgClass } from '@angular/common';
+import { Ripple } from 'primeng/ripple';
 
 const POINTS_VALIDATORS = [Validators.required, Validators.pattern(/-?\d+/)];
 
@@ -33,7 +34,7 @@ const POINTS_VALIDATORS = [Validators.required, Validators.pattern(/-?\d+/)];
   selector: 'app-user-form',
   templateUrl: './user-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, FormsModule, ReactiveFormsModule],
+  imports: [NgClass, FormsModule, ReactiveFormsModule, Ripple],
 })
 export class UserFormComponent implements OnInit, OnChanges {
   @Input() @Required layout: 'create' | 'edit' = 'edit';

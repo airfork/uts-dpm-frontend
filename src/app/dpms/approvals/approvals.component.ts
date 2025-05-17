@@ -35,7 +35,6 @@ export class ApprovalsComponent {
   loadingDpms = signal(true);
   totalRecords = signal(0);
 
-  modalOpen = signal(false);
   currentDpm = signal<ApprovalDpmDto | null>(null);
   editOpen = signal(false);
   currentPoints = signal<number | undefined>(0);
@@ -82,7 +81,7 @@ export class ApprovalsComponent {
       .approveDpm(currentDpm.id)
       .pipe(first())
       .subscribe(() => {
-        this.notificationService.showSuccess('DPM has been approved', 'Success');
+        this.notificationService.showSuccess('DPM has been approved');
         this.lazyLoadEvent(this.lastLazyLoadEvent!);
       });
   }
@@ -96,7 +95,7 @@ export class ApprovalsComponent {
       .denyDpm(currentDpm.id)
       .pipe(first())
       .subscribe(() => {
-        this.notificationService.showSuccess('DPM has been denied', 'Success');
+        this.notificationService.showSuccess('DPM has been denied');
         this.lazyLoadEvent(this.lastLazyLoadEvent!);
       });
   }
@@ -117,7 +116,7 @@ export class ApprovalsComponent {
     this.approvalsService
       .getApprovalDpms(page, size)
       .pipe(first())
-      .subscribe((page) => {
+      .subscribe(async (page) => {
         this.dpms.set(page.content);
         this.totalRecords.set(page.totalElements);
         this.loadingDpms.set(false);
@@ -129,7 +128,6 @@ export class ApprovalsComponent {
   }
 
   showModalInternal() {
-    this.notificationService.showError('Testing modal styling', 'Success');
     if (this.dpmModalElement && this.dpmModalElement.nativeElement) {
       this.dpmModalElement.nativeElement.showModal();
     }

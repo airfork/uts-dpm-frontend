@@ -29,6 +29,7 @@ import { Ripple } from 'primeng/ripple';
 @Component({
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
+  styleUrls: ['./user-detail.component.css'],
   imports: [
     NgClass,
     TableModule,

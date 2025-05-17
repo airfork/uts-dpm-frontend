@@ -18,10 +18,9 @@ export const AppConfig: ApplicationConfig = {
       ripple: true,
       theme: {
         options: {
-          cssLayer: {
-            name: 'primeng',
-            order: 'app, primeng',
-          },
+          prefix: 'p',
+          darkModeSelector: 'system',
+          cssLayer: true,
         },
       },
     }),

@@ -45,7 +45,10 @@
             #dt
             [value]="dpms()"
             dataKey="id"
-            styleClass="table table-fixed lg:table-auto w-full"
+            styleClass="{{
+              (loadingDpms() ? 'table-is-loading ' : '') +
+                'table table-fixed lg:table-auto w-full'
+            }}"
             [rowHover]="true"
             [rows]="10"
             [showCurrentPageReport]="true"

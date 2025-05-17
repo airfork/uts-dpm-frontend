@@ -1,7 +1,3 @@
-<ng-template #loading>
-  <app-loading></app-loading>
-</ng-template>
-
 @if (dpms()) {
   <div>
     <h2 class="text-3xl mb-5 font-bold">Unapproved DPMs</h2>
@@ -10,7 +6,7 @@
         #dt
         [value]="dpms()"
         dataKey="id"
-        styleClass="table"
+        styleClass="{{ (loadingDpms() ? 'table-is-loading ' : '') + 'table' }}"
         [rowHover]="true"
         [rows]="10"
         [showCurrentPageReport]="true"
@@ -23,7 +19,7 @@
         (onLazyLoad)="lazyLoadEvent($event)"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
       >
-        <ng-template pTemplate="header" class="table">
+        <ng-template pTemplate="header">
           <tr>
             <th class="lg:text-base font-bold break-normal uppercase">Name</th>
             <th class="lg:text-base font-bold break-normal uppercase">

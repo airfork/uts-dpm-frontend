@@ -28,7 +28,7 @@ export class AutogenComponent implements OnInit {
     this.autogenService
       .getAutogenDpms()
       .pipe(first())
-      .subscribe((wrapper) => {
+      .subscribe(async (wrapper) => {
         if (wrapper.submitted) this.submittedTime.set(wrapper.submitted);
         if (wrapper.dpms.length === 0) this.empty.set(true);
         this.autogenDpms.set(wrapper.dpms);

@@ -169,4 +169,7 @@
 
 @theme {
   --text-base--line-height: calc(1.8 / 1);
+  --table-spinner-height: 25px;
+  --table-spinner-width: 25px;
+  --table-loading-min-height: 200px;
 }

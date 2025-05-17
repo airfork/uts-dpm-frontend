@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, signal, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import GetUserDetailDto from '../../models/get-user-detail-dto';
 import { first } from 'rxjs';
 import { Title } from '@angular/platform-browser';
@@ -41,6 +41,7 @@ import { Ripple } from 'primeng/ripple';
     PointsPipe,
     LoadingComponent,
     Ripple,
+    RouterLink,
   ],
 })
 export class UserDetailComponent implements OnInit {

@@ -4,26 +4,39 @@
 
 @let active = activeTab();
 @if (user(); as user) {
+  <div class="breadcrumbs text-md">
+    <ul>
+      <li><a routerLink="/users">Users</a></li>
+      <li>{{ user.firstname }} {{ user.lastname }}</li>
+    </ul>
+  </div>
+
   <div>
     <h2 class="text-3xl mb-5 font-bold">
       {{ user.firstname }} {{ user.lastname }}
     </h2>
-    <div class="tabs mb-5 grid justify-items-center lg:justify-items-start">
+    <div
+      role="tablist"
+      class="tabs tabs-lg tabs-border mb-5 grid justify-items-center lg:justify-items-start"
+    >
       <div>
         <a
-          class="tab tab-lg tab-bordered"
+          role="tab"
+          class="tab"
           [ngClass]="{ 'tab-active': active.info }"
           (click)="activateTab('info')"
           >Info</a
         >
         <a
-          class="tab tab-lg tab-bordered"
+          role="tab"
+          class="tab"
           [ngClass]="{ 'tab-active': active.dpms }"
           (click)="activateTab('dpms')"
           >DPMs</a
         >
         <a
-          class="tab tab-lg tab-bordered"
+          role="tab"
+          class="tab"
           [ngClass]="{ 'tab-active': active.actions }"
           (click)="activateTab('detail-actions')"
           >Actions</a

@@ -6,21 +6,27 @@
 @if (users()) {
   <div>
     <h2 class="text-3xl mb-5 font-bold">Users</h2>
-    <div class="tabs mb-5 grid justify-items-center lg:justify-items-start">
+    <div
+      role="tablist"
+      class="tabs tabs-lg tabs-border mb-5 grid justify-items-center lg:justify-items-start"
+    >
       <div>
         <a
+          role="tab"
           class="tab tab-lg tab-bordered"
           [ngClass]="{ 'tab-active': active.search }"
           (click)="activateTab('search')"
           >Search</a
         >
         <a
+          role="tab"
           class="tab tab-lg tab-bordered"
           [ngClass]="{ 'tab-active': active.create }"
           (click)="activateTab('create')"
           >Create</a
         >
         <a
+          role="tab"
           class="tab tab-lg tab-bordered"
           [ngClass]="{ 'tab-active': active.actions }"
           (click)="activateTab('actions')"

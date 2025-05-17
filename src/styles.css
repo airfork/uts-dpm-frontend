@@ -31,6 +31,7 @@
 @import "tailwindcss";
 @import "./fonts.css";
 @import "./styles/toast.css";
+@import "./styles/autocomplete.css";
 
 @plugin "tailwindcss-primeui";
 

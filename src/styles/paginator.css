@@ -241,48 +241,38 @@ span.p-select-label {
   color: var(--color-base-content);
   border: 1px solid var(--color-base-100);
   border-radius: 4px;
-  box-shadow: 0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, .2), 0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12);
 }
 
-.p-paginator-rpp-dropdown .p-overlay {
-  /*padding: 0 .75rem;*/
-  /*min-width: 100%;*/
-  /*position: absolute;*/
-  /*top: 0;*/
-  /*left: 0;*/
-  /*background: var(--color-base-100);*/
-  /*color: var(--color-base-content);*/
-  /*border: 0 none;*/
-  /*border-radius: 6px;*/
-  /*box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);*/
+.p-select-list {
+  margin: 0;
+  list-style-type: none;
+  padding: .5rem 0;
+  gap: 0;
+  display: flex;
+  flex-direction: column;
+
 }
 
-/*.p-select-overlay {*/
-/*}*/
+.p-select-option {
+  cursor: pointer;
+  font-weight: normal;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border: 0 none;
+  border-radius: 0;
+}
 
-/*.p-dropdown-panel .p-dropdown-items {*/
-/*  padding: 0.75rem 0;*/
-/*}*/
+.p-select-option.p-select-option-selected {
+  background: var(--color-base-200);
+  color: var(--color-base-content);
+}
 
-/*.p-dropdown-item {*/
-/*  cursor: pointer;*/
-/*  font-weight: 400;*/
-/*  white-space: nowrap;*/
-/*  position: relative;*/
-/*  overflow: hidden;*/
-/*}*/
-
-/*.p-dropdown-panel .p-dropdown-items .p-dropdown-item {*/
-/*  margin: 0;*/
-/*  padding: 0.75rem 1.25rem;*/
-/*  border: 0 none;*/
-/*  color: var(--color-base-content);*/
-/*  background: transparent;*/
-/*  transition: box-shadow 0.2s;*/
-/*  border-radius: 0;*/
-/*}*/
-
-/*.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {*/
-/*  color: var(--color-accent);*/
-/*  background: var(--color-base-100);*/
-/*}*/
+.p-select-option:not(.p-select-option-selected):not(.p-disabled).p-focus {
+  background: var(--color-base-300);
+  color: var(--color-base-content);
+}

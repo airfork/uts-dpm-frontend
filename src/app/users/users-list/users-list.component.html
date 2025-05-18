@@ -45,8 +45,7 @@
           class="input input-bordered w-full mb-2"
           (input)="filterUsers($event)"
         />
-        <!--          styleClass="table table-fixed lg:table-auto w-full"-->
-        <div class="overflow-x-auto rounded-box bg-base-100">
+        <div class="rounded-box bg-base-100">
           <p-table
             #dt
             [value]="filteredUsers()"

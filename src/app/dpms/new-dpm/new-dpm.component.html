@@ -77,7 +77,7 @@
       [placeholder]="format.dpmDate()"
       styleClass="input input-bordered w-full {{ errorsOrSuccess(dpmDate) }}"
       [required]="true"
-      [touchUI]="mobileMode"
+      [touchUI]="false"
     ></p-date-picker>
     <p class="label text-error">{{ getDpmDateValidationMessages() }}</p>
   </fieldset>

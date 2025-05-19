@@ -1,38 +1,10 @@
-/*@use "styles/calendar";*/
-/*@use "styles/toast";*/
-/*@use "styles/autocomplete";*/
-/*@use "styles/paginator";*/
-/*@use "fonts";*/
-/*@use "styles/variables" as vars;*/
-/*@tailwind base;*/
-/*@tailwind components;*/
-/*@tailwind utilities;*/
-
-/*html,*/
-/*body {*/
-/*  height: 100%;*/
-/*  font-family: Poppins, system-ui;*/
-/*}*/
-
-/*.table th {*/
-/*  background-color: vars.$primary;*/
-/*  color: vars.$primaryContent;*/
-
-/*  :first-child {*/
-/*    position: relative !important;*/
-/*  }*/
-/*}*/
-
-/*.p-paginator-current {*/
-/*  font-size: .875rem;*/
-/*}*/
-
 @layer app, daisyui, tailwind, primeng;
 @import "tailwindcss";
 @import "./fonts.css";
 @import "./styles/toast.css";
 @import "./styles/autocomplete.css";
 @import "./styles/paginator.css";
+@import "./styles/calendar.css";
 
 @plugin "tailwindcss-primeui";
 
@@ -41,10 +13,10 @@
   body {
     height: 100%;
     font-family: Poppins, system-ui;
+    background-color: var(--color-base-100);
   }
 
   input::placeholder {
-    /*color: color-mix(in oklab, var(--color-base-content) 60%, transparent) !important;*/
     opacity: 65% !important;
   }
 
@@ -57,9 +29,25 @@
     }
   }
 
+  thead > tr {
+    background-color: var(--color-primary);
+    color: var(--color-primary-content);
+
+    :first-child {
+      position: relative !important;
+    }
+  }
+
   .p-paginator-current {
     font-size: .875rem;
   }
+}
+
+html,
+body {
+  height: 100%;
+  font-family: Poppins, system-ui;
+  background-color: var(--color-base-100);
 }
 
 @plugin "daisyui";
@@ -138,5 +126,7 @@
   --table-spinner-height: 25px;
   --table-spinner-width: 25px;
   --table-loading-min-height: 200px;
-  --p-select-transition-duration: .2s
+  --p-select-transition-duration: .2s;
+  --p-inputtext-transition-duration: .2s;
+  --p-datepicker-transition-duration: .2s;
 }

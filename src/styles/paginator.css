@@ -215,14 +215,6 @@ span.p-select-label {
   box-shadow: none;
 }
 
-/*.p-paginator-rpp-dropdown .p-select-dropdown {*/
-/*  background: transparent;*/
-/*  color: var(--color-base-content);*/
-/*  width: 3rem;*/
-/*  border-top-right-radius: 6px;*/
-/*  border-bottom-right-radius: 6px;*/
-/*}*/
-
 .p-select-dropdown {
   display: flex;
   align-items: center;

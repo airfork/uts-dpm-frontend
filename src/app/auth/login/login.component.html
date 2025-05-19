@@ -6,7 +6,7 @@
   >
     <h3 class="text-4xl font-bold mb-3">Login</h3>
 
-    <div class="form-control w-full mb-2">
+    <fieldset class="fieldset w-full mb-2">
       <input
         id="username"
         type="email"
@@ -16,14 +16,10 @@
         (input)="onUserInput()"
         [ngClass]="{ 'input-error': hasErrors(username) || badCredentials() }"
       />
-      <label class="label" for="username">
-        <span class="label-text-alt text-error">
-          {{ getUsernameValidationMessages() }}
-        </span>
-      </label>
-    </div>
+      <p class="label text-error">{{ getUsernameValidationMessages() }}</p>
+    </fieldset>
 
-    <div class="form-control w-full mb-2">
+    <fieldset class="fieldset w-full mb-2">
       <input
         id="password"
         type="password"
@@ -33,12 +29,8 @@
         (input)="onUserInput()"
         [ngClass]="{ 'input-error': hasErrors(password) || badCredentials() }"
       />
-      <label class="label" for="password">
-        <span class="label-text-alt text-error">
-          {{ getPasswordValidationMessages() }}
-        </span>
-      </label>
-    </div>
+      <p class="label text-error">{{ getPasswordValidationMessages() }}</p>
+    </fieldset>
 
     <button
       pRipple

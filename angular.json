@@ -107,16 +107,23 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "inlineStyleLanguage": "scss",
+            "inlineStyleLanguage": "css",
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/ngx-toastr/toastr.css"
+              "src/styles.css",
+              {
+                "input": "node_modules/primeicons/primeicons.css",
+                "bundleName": "prime-icons",
+                "inject": true
+              },
+              {
+                "input": "node_modules/ngx-toastr/toastr.css",
+                "bundleName": "ngx-toastr",
+                "inject": true
+              }
             ],
             "scripts": []
           }

@@ -1,0 +1,107 @@
+<h2 class="text-3xl mb-5 font-bold">Edit DPMs</h2>
+
+<div
+  cdkDropList
+  cdkDropListGroup
+  class="grid grid-cols-1 place-items-center"
+  (cdkDropListDropped)="dropGroups($event)"
+>
+  <div class="w-full lg:w-9/10 xl:w-4/5 grid grid-cols-1 gap-6">
+    <div class="flex justify-end w-full mt-3">
+      <div
+        class="tooltip tooltip-left md:tooltip-top tooltip-primary"
+        data-tip="Add DPM Group"
+      >
+        <button class="btn btn-primary btn-sm ml-2" (click)="addGroup()">
+          <i class="pi pi-plus text-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    @for (group of _dpmGroups(); track group.id) {
+      <div
+        cdkDrag
+        class="card w-full bg-base-100 card-lg shadow-sm cursor-move border-2 border-base-300 last:mb-8"
+      >
+        <div class="card-body">
+          <div class="flex justify-between mb-3 items-center">
+            <textarea
+              #autoResizeTextarea
+              id="dpmGroupName-{{ group.id }}"
+              pInputTextarea
+              [autoResize]="true"
+              rows="1"
+              class="textarea textarea-ghost textarea-xl w-full min-h-0 resize-none"
+              placeholder="Group Name"
+              value="{{ group.name }}"
+            ></textarea>
+
+            <div
+              class="grid"
+              [ngClass]="{ 'grid-cols-2 gap-2': group.dpms.length === 0 }"
+            >
+              <div class="tooltip tooltip-primary" data-tip="Add DPM">
+                <button
+                  class="btn btn-primary btn-xs ml-2"
+                  (click)="addDpmToGroup(group)"
+                >
+                  <i class="pi pi-plus text-sm"></i>
+                </button>
+              </div>
+
+              <div
+                *ngIf="group.dpms.length === 0"
+                class="tooltip tooltip-primary"
+                data-tip="Delete Group"
+              >
+                <button class="btn btn-xs ml-2" (click)="removeGroup(group)">
+                  <i class="pi pi-trash text-sm"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            cdkDropList
+            [cdkDropListData]="group.dpms"
+            class="example-list"
+            (cdkDropListDropped)="dropDpms($event)"
+          >
+            @for (dpm of group.dpms; track dpm.id) {
+              <div class="example-box flex" cdkDrag>
+                <div class="mr-5 w-full">
+                  <textarea
+                    id="dpmName-{{ dpm.id }}"
+                    #autoResizeTextarea
+                    pInputTextarea
+                    [autoResize]="true"
+                    rows="1"
+                    class="textarea textarea-ghost w-full min-h-0 resize-none"
+                    placeholder="DPM Name"
+                    value="{{ dpm.name }}"
+                  ></textarea>
+                </div>
+                <div class="min-w-1/8 flex-none">
+                  <input
+                    id="dpmPoints-{{ dpm.id }}"
+                    class="input input-ghost input-sm w-20"
+                    type="number"
+                    placeholder="Points"
+                    [(ngModel)]="dpm.points"
+                  />
+                </div>
+
+                <button
+                  class="btn btn-xs ml-2"
+                  (click)="removeDpmFromGroup(group, dpm)"
+                >
+                  <i class="pi pi-trash text-xs"></i>
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -2,11 +2,11 @@ import { Route } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { GenerateTitle, TitlePrefix } from '../shared/title-helper';
 import { authGuard } from '../auth/auth.guard';
-import { NewDpmComponent } from './new-dpm/new-dpm.component';
 import { AutogenComponent } from './autogen/autogen.component';
 import { DatagenComponent } from './datagen/datagen.component';
 import { ApprovalsComponent } from './approvals/approvals.component';
 import { DpmsComponent } from './dpms/dpms.component';
+import { DpmPageComponent } from './dpm-page/dpm-page.component';
 
 export const DPM_ROUTES: Route[] = [
   {
@@ -24,8 +24,7 @@ export const DPM_ROUTES: Route[] = [
       },
       {
         path: 'dpm',
-        component: NewDpmComponent,
-        title: GenerateTitle('New DPM'),
+        component: DpmPageComponent,
         canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'ANALYST', 'MANAGER', 'SUPERVISOR'],

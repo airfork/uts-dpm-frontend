@@ -130,6 +130,7 @@
         >
           <span class="text-base-content text-[1rem] mr-6">Full Time</span>
           <input
+            id="fullTimeCheckBox"
             type="checkbox"
             class="checkbox checkbox-lg checkbox-secondary dark:checkbox-primary"
             formControlName="fullTime"
@@ -141,6 +142,7 @@
     <div class="grid place-items-center col-span-3 mt-2">
       <button
         pRipple
+        id="submitButton"
         type="submit"
         class="btn btn-secondary m-auto w-full md:btn-wide"
         [disabled]="isButtonDisabled() || waiting()"

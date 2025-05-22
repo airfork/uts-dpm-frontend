@@ -1,7 +1,7 @@
 <h2 class="text-3xl mb-5 font-bold">New DPM</h2>
 <form
   class="grid grid-cols-3 gap-x-6 gap-y-2 rounded"
-  [formGroup]="homeFormGroup"
+  [formGroup]="homeFormGroup()"
   (ngSubmit)="onSubmit()"
 >
   <fieldset class="fieldset col-span-3 md:col-span-1">
@@ -163,9 +163,10 @@
   <div class="grid place-items-center col-span-3 mt-2">
     <button
       pRipple
+      id="submitButton"
       type="submit"
       class="btn btn-secondary m-auto w-full md:btn-wide"
-      [disabled]="!homeFormGroup.valid"
+      [disabled]="!homeFormGroup().valid"
     >
       Submit
     </button>

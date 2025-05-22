@@ -20,6 +20,10 @@
     opacity: 65% !important;
   }
 
+  textarea::placeholder {
+    opacity: 65% !important;
+  }
+
   .p-datatable-thead > tr {
     background-color: var(--color-primary);
     color: var(--color-primary-content);

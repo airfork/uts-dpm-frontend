@@ -53,6 +53,7 @@
       >
         <span class="text-base-content text-[1rem] mr-3">Get All</span>
         <input
+          id="getAllCheckbox"
           type="checkbox"
           class="checkbox checkbox-lg checkbox-secondary dark:checkbox-primary"
           formControlName="getAll"
@@ -63,6 +64,7 @@
     <div class="grid place-items-center col-span-6 mt-4">
       <button
         pRipple
+        id="submitButton"
         type="submit"
         class="btn btn-secondary m-auto w-full md:btn-wide"
         [disabled]="!dpmDataFormGroup.valid && !getAll?.value"

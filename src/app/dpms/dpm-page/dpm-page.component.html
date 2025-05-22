@@ -1,0 +1,37 @@
+@let active = activeTab();
+<div
+  role="tablist"
+  class="tabs tabs-lg tabs-border mb-5 grid justify-items-center lg:justify-items-start"
+  [appRemoveIfUnauthorized]="editRoles"
+>
+  <div>
+    <a
+      role="tab"
+      class="tab tab-lg tab-bordered"
+      [ngClass]="{ 'tab-active': active.new }"
+      (click)="activateTab('new')"
+      >New</a
+    >
+    <a
+      role="tab"
+      class="tab tab-lg tab-bordered"
+      [ngClass]="{ 'tab-active': active.edit }"
+      (click)="activateTab('edit')"
+      >Edit</a
+    >
+  </div>
+</div>
+
+@if (active.new) {
+  <app-new-dpm
+    [dpmGroups]="dpmGroups()"
+    [isGroupsLoaded]="isGroupsLoaded()"
+    [driverNames]="driverNames()"
+    [homeFormGroup]="homeFormGroup"
+  ></app-new-dpm>
+} @else if (active.edit) {
+  <app-edit-dpms
+    [(dpmGroupsNeedRefresh)]="groupsNeedRefresh"
+    [dpmGroups]="dpmGroups()"
+  ></app-edit-dpms>
+}

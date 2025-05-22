@@ -26,6 +26,7 @@ import { PrimeTemplate } from 'primeng/api';
     Ripple,
     PrimeTemplate,
     TableModule,
+    PointsPipe,
   ],
 })
 export class ApprovalsComponent {

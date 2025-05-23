@@ -1,4 +1,5 @@
 export interface DPMGroup {
+  id?: string;
   groupName: string;
   dpms: DPMType[];
 }

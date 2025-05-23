@@ -22,16 +22,16 @@
   </div>
 </div>
 
-@if (active.new) {
-  <app-new-dpm
-    [dpmGroups]="dpmGroups()"
-    [isGroupsLoaded]="isGroupsLoaded()"
-    [driverNames]="driverNames()"
-    [homeFormGroup]="homeFormGroup"
-  ></app-new-dpm>
-} @else if (active.edit) {
-  <app-edit-dpms
-    [(dpmGroupsNeedRefresh)]="groupsNeedRefresh"
-    [dpmGroups]="dpmGroups()"
-  ></app-edit-dpms>
-}
+<app-new-dpm
+  [dpmGroups]="dpmGroups()"
+  [isGroupsLoaded]="isGroupsLoaded()"
+  [driverNames]="driverNames()"
+  [homeFormGroup]="homeFormGroup"
+  [hidden]="!active.new"
+></app-new-dpm>
+
+<app-edit-dpms
+  [(dpmGroupsNeedRefresh)]="groupsNeedRefresh"
+  [dpmGroupsInput]="dpmGroups()"
+  [hidden]="!active.edit"
+></app-edit-dpms>

@@ -18,14 +18,10 @@
   padding: 10px 15px;
   border-bottom: solid 1px var(--color-base-300);
   color: var(--color-base-content);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
   box-sizing: border-box;
   cursor: move;
   background: var(--color-base-100);
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .cdk-drag-preview {

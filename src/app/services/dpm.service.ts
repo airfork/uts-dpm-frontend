@@ -7,6 +7,7 @@ import HomeDpmDto from '../models/home-dpm-dto';
 import DpmDetailPage from '../models/dpm-detail-page';
 import { ErrorService } from './error.service';
 import { DPMGroup } from '../models/dpm-type';
+import { PutDpmGroup } from '../models/put-dpm-groups';
 
 const BASE_URL = environment.baseUrl + '/dpms';
 
@@ -59,6 +60,17 @@ export class DpmService {
         return this.errorService.errorResponse(
           error,
           'Something went wrong trying to get the list of DPM types'
+        );
+      })
+    );
+  }
+
+  updateDpmGroups(groups: PutDpmGroup[]): Observable<unknown> {
+    return this.http.put(BASE_URL + '/list', groups).pipe(
+      catchError((error) => {
+        return this.errorService.errorResponse(
+          error,
+          'Something went wrong trying to update the DPM types'
         );
       })
     );

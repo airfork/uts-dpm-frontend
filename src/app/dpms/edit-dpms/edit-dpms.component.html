@@ -25,7 +25,7 @@
             data-tip="Reset Changes"
             [hidden]="dpmEditForm.pristine"
           >
-            <button class="btn btn-sm ml-2" (click)="reset()">
+            <button class="btn btn-sm ml-2" (click)="confirmReset()">
               <i class="pi pi-refresh text-lg"></i>
             </button>
           </div>
@@ -88,7 +88,7 @@
                   >
                     <button
                       class="btn btn-xs ml-2"
-                      (click)="removeGroup(groupIndex)"
+                      (click)="confirmRemoveGroup(groupIndex)"
                     >
                       <i class="pi pi-trash text-sm"></i>
                     </button>
@@ -114,7 +114,7 @@
                   groupControl: groupControl,
                   controls: getDpmsFormArray(groupControl).controls,
                 }"
-                class="example-list"
+                class="dpm-list"
                 (cdkDropListDropped)="dropDpms($event, groupControl)"
               >
                 @for (
@@ -122,7 +122,7 @@
                   track dpmControl.value.id;
                   let dpmIndex = $index
                 ) {
-                  <div class="example-box" cdkDrag [formGroupName]="dpmIndex">
+                  <div class="dpm-type-box" cdkDrag [formGroupName]="dpmIndex">
                     <div class="flex flex-row items-center">
                       <div class="mr-5 grow">
                         <textarea
@@ -135,8 +135,12 @@
                           placeholder="DPM Name"
                           formControlName="name"
                           [ngClass]="{
-                            'textarea-error': dpmHasErrors(dpmControl, 'name'),
-                            'textarea-ghost': !dpmHasErrors(dpmControl, 'name'),
+                            'textarea-error':
+                              dpmHasErrors(dpmControl, 'name') ||
+                              dpmNameIsDuplicated(groupControl, dpmControl),
+                            'textarea-ghost':
+                              !dpmHasErrors(dpmControl, 'name') &&
+                              !dpmNameIsDuplicated(groupControl, dpmControl),
                           }"
                         ></textarea>
                       </div>
@@ -156,17 +160,34 @@
                       </div>
 
                       <button
-                        class="btn btn-xs ml-2"
-                        (click)="removeDpmFromGroup(groupControl, dpmIndex)"
+                        class="btn btn-xs ml-2 border-2"
+                        type="button"
+                        [style.border-color]="dpmControl.value.color?.hexCode"
+                        (click)="showColorModal(dpmControl)"
+                      >
+                        <i class="pi pi-palette text-xs"></i>
+                      </button>
+
+                      <button
+                        class="btn btn-xs ml-2 border-2"
+                        type="button"
+                        (click)="
+                          confirmRemoveDpmFromGroup(groupControl, dpmIndex)
+                        "
                       >
                         <i class="pi pi-trash text-xs"></i>
                       </button>
                     </div>
 
-                    @if (getDpmErrorMessages(dpmControl).length > 0) {
+                    @if (
+                      getDpmErrorMessages(groupControl, dpmControl).length > 0
+                    ) {
                       <div class="mt-2">
                         @for (
-                          errorMessage of getDpmErrorMessages(dpmControl);
+                          errorMessage of getDpmErrorMessages(
+                            groupControl,
+                            dpmControl
+                          );
                           track errorMessage
                         ) {
                           <p class="text-error text-xs mt-1 basis-full">
@@ -189,9 +210,16 @@
     <button
       class="btn btn-primary btn-wide mt-5 mb-10"
       [ngClass]="{
-        'btn-active': dpmEditForm.valid && !dpmEditForm.pristine && !isSaving(),
+        'btn-active':
+          dpmEditForm.valid &&
+          !dpmEditForm.pristine &&
+          !formHasNonFormGroupErrors() &&
+          !isSaving(),
         'btn-disabled':
-          !dpmEditForm.valid || dpmEditForm.pristine || isSaving(),
+          !dpmEditForm.valid ||
+          dpmEditForm.pristine ||
+          isSaving() ||
+          formHasNonFormGroupErrors(),
       }"
       (click)="save()"
     >
@@ -199,3 +227,75 @@
     </button>
   </div>
 }
+
+<dialog #colorModal id="colorModal" class="modal cursor-default">
+  <div class="modal-box relative">
+    <h3 class="text-2xl font-bold mb-4">{{ currentModalDpm()?.name }}</h3>
+
+    <form [formGroup]="colorSelectionForm" (ngSubmit)="applyColorSelection()">
+      <p-panel
+        class="cursor-pointer"
+        toggler="header"
+        [collapsed]="true"
+        [toggleable]="true"
+      >
+        <ng-template #header>
+          <div class="flex items-center gap-2">
+            <span class="italic">Info</span>
+          </div>
+        </ng-template>
+        <p class="text-sm">
+          Select a color for this DPM in WhenToWork. This will allow this DPM
+          type to picked up by Autogen when it finds the color
+        </p>
+      </p-panel>
+
+      <fieldset class="fieldset mt-3">
+        <legend class="fieldset-legend text-lg">Color</legend>
+        <select
+          formControlName="selectedColor"
+          id="color-select"
+          class="select select-bordered w-full"
+          [ngClass]="{ 'select-error': selectedColorIsInUse() }"
+        >
+          <option [ngValue]="null">No Color</option>
+          @for (color of dpmColors(); track color.colorId) {
+            <option [ngValue]="color">
+              {{ color.colorName }}
+            </option>
+          }
+        </select>
+
+        <p class="label text-error" [hidden]="!selectedColorIsInUse()">
+          {{ selectedColor }} is already in use by another DPM.
+        </p>
+      </fieldset>
+
+      <div class="modal-action">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="
+            colorSelectionForm.pristine ||
+            !colorSelectionForm.valid ||
+            selectedColorIsInUse()
+          "
+        >
+          Apply
+        </button>
+        <button type="button" class="btn" (click)="closeModalInternal()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button id="dialogCloseButton">close</button>
+  </form>
+</dialog>
+
+<app-confirm-box
+  [message]="confirmModalMessage()"
+  [(isOpen)]="confirmModalOpen"
+  [onConfirm]="confirmModalCallback()"
+></app-confirm-box>

@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   effect,
+  ElementRef,
   HostListener,
   inject,
   input,
@@ -9,6 +10,7 @@ import {
   OnInit,
   QueryList,
   signal,
+  ViewChild,
   ViewChildren,
 } from '@angular/core';
 import {
@@ -35,6 +37,9 @@ import { NotificationService } from '../../services/notification.service';
 import { PutDpmGroup, PutDpmType } from '../../models/put-dpm-groups';
 import { DpmService } from '../../services/dpm.service';
 import { finalize } from 'rxjs';
+import { GetDpmColors } from '../../models/get-dpm-colors';
+import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
+import { Panel } from 'primeng/panel';
 
 interface DpmListDropData {
   groupControl: AbstractControl; // This is the FormGroup for the DPM group
@@ -45,6 +50,10 @@ interface DpmTypeFormValue {
   id: string; // From uuidv4() or existing dpm.id
   name: string | null; // Can be null for new items or if not required initially
   points: number | null; // Can be null or have a default, subject to validators
+  color: {
+    colorId: number;
+    hexCode: string;
+  } | null;
 }
 
 interface DpmGroupFormValue {
@@ -70,14 +79,26 @@ const DPM_GROUP_NAME_VALIDATORS = [Validators.required, Validators.maxLength(500
     NgClass,
     ReactiveFormsModule,
     NgIf,
+    ConfirmBoxComponent,
+    Panel,
   ],
 })
 export class EditDpmsComponent implements OnInit, AfterViewInit {
   dpmGroupsNeedRefresh = model.required<boolean>();
   dpmGroupsInput = input.required<DPMGroup[]>();
   isSaving = signal(false);
+  dpmColors = signal<GetDpmColors[]>([]);
+  currentModalDpm = signal<DpmTypeFormValue | null>(null);
+
+  confirmModalOpen = signal(false);
+  confirmModalMessage = signal('');
+  confirmModalCallback = signal<() => void>(() => {});
+
+  @ViewChild('colorModal') colorModalElement!: ElementRef<HTMLDialogElement>;
 
   dpmEditForm!: FormGroup; // Main form group
+  colorSelectionForm!: FormGroup;
+
   private fb = inject(FormBuilder);
 
   @ViewChildren('autoResizeTextarea') textareaDirectives?: QueryList<Textarea>;
@@ -87,15 +108,17 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
     private dpmService: DpmService
   ) {
     effect(() => {
-      const inputGroups = this.dpmGroupsInput();
-      if (inputGroups) {
-        console.log('Initializing form with input groups');
-        this.initializeForm(inputGroups);
-      }
+      this.initializeForm(this.dpmGroupsInput());
     });
   }
 
   ngOnInit() {
+    this.dpmService.getDpmColors().subscribe((colors) => {
+      this.dpmColors.set(colors);
+    });
+
+    this.initializeColorSelectionModal();
+
     // Initialize form structure, possibly with empty array if input not ready
     this.dpmEditForm = this.fb.group({
       groups: this.fb.array([]),
@@ -115,6 +138,14 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
   @HostListener('window:resize')
   onWindowResize() {
     this.triggerAllTextareasResize();
+  }
+
+  confirmReset() {
+    this.confirmModalOpen.set(true);
+    this.confirmModalMessage.set(
+      'This will reset the form to its initial state and any changes will be lost.'
+    );
+    this.confirmModalCallback.set(() => this.reset());
   }
 
   reset() {
@@ -143,6 +174,7 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
       id: [dpm.id || uuidv4()], // Assuming DPMType might have an id
       name: [dpm.name, DPM_NAME_VALIDATORS],
       points: [dpm.points, DPM_POINTS_VALIDATORS],
+      color: [dpm.dpmColor],
     });
   }
 
@@ -170,27 +202,47 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
       id: [uuidv4()],
       name: [null, DPM_NAME_VALIDATORS],
       points: [1, DPM_POINTS_VALIDATORS],
+      color: [null],
     });
     dpmsArray.push(newDpm);
   }
 
+  confirmRemoveGroup(groupIndex: number) {
+    this.confirmModalOpen.set(true);
+    this.confirmModalMessage.set('This will remove the group (changes still need to be saved).');
+    this.confirmModalCallback.set(() => this.removeGroup(groupIndex));
+  }
+
   removeGroup(groupIndex: number) {
     this.groupsFormArray.removeAt(groupIndex);
+    this.dpmEditForm.markAsDirty();
+  }
+
+  confirmRemoveDpmFromGroup(groupControl: AbstractControl, dpmIndex: number) {
+    this.confirmModalOpen.set(true);
+    this.confirmModalMessage.set(
+      'This will remove the DPM from the group (changes still need to be saved).'
+    );
+    this.confirmModalCallback.set(() => this.removeDpmFromGroup(groupControl, dpmIndex));
   }
 
   removeDpmFromGroup(groupControl: AbstractControl, dpmIndex: number) {
     const dpmsArray = this.getDpmsFormArray(groupControl);
     dpmsArray.removeAt(dpmIndex);
+    this.dpmEditForm.markAsDirty();
   }
 
   // --- Drag and Drop ---
   dropGroups(event: CdkDragDrop<AbstractControl[]>) {
+    if (event.previousIndex == event.currentIndex) return;
+
     moveItemInArray(this.groupsFormArray.controls, event.previousIndex, event.currentIndex);
     this.groupsFormArray.updateValueAndValidity();
     this.groupsFormArray.markAsDirty();
   }
 
   dropDpms(event: CdkDragDrop<DpmListDropData>, targetGroupControl: AbstractControl) {
+    if (event.previousIndex == event.currentIndex) return;
     const targetDpmsArray = this.getDpmsFormArray(targetGroupControl);
     targetDpmsArray.markAsDirty();
 
@@ -248,14 +300,14 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
       this.groupNameHasErrors(groupControl) ||
       !dpmsArray ||
       dpmsArray.length == 0 ||
-      this.dpmsInGroupHaveErrors(groupControl)
+      this.dpmsInGroupHaveErrors(groupControl) ||
+      this.groupNameIsDuplicated(groupControl)
     );
   }
 
   getGroupErrorMessages(groupControl: AbstractControl): string[] {
     const nameControl = groupControl.get('name');
     const dpmsArray = this.getDpmsFormArray(groupControl);
-    if (!this.controlHasErrors(nameControl) && dpmsArray && dpmsArray.length > 0) return [];
 
     const errors: string[] = [];
     if (nameControl?.errors?.['required']) {
@@ -270,6 +322,10 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
       errors.push('Group must have at least one DPM.');
     }
 
+    if (this.groupNameIsDuplicated(groupControl)) {
+      errors.push('Group name must be unique.');
+    }
+
     return errors;
   }
 
@@ -282,11 +338,22 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
     return this.controlHasErrors(control);
   }
 
-  getDpmErrorMessages(dpmControl: AbstractControl): string[] {
+  dpmNameIsDuplicated(groupControl: AbstractControl, dpmControl: AbstractControl): boolean {
+    const nameControl = dpmControl.get('name');
+    if (!nameControl) return false;
+
+    const dpmName = nameControl.value as string;
+    const dpmsArray = this.getDpmsFormArray(groupControl);
+    return dpmsArray.controls.some((dpm) => {
+      const dpmFormGroup = dpm as FormGroup;
+      const dpmValue = dpmFormGroup.value as DpmTypeFormValue;
+      return this.normalizeStringEquals(dpmValue.name, dpmName) && dpmFormGroup !== dpmControl;
+    });
+  }
+
+  getDpmErrorMessages(groupControl: AbstractControl, dpmControl: AbstractControl): string[] {
     const nameControl = this.getDpmFormControl(dpmControl, 'name');
     const pointsControl = this.getDpmFormControl(dpmControl, 'points');
-
-    if (!this.controlHasErrors(nameControl) && !this.controlHasErrors(pointsControl)) return [];
 
     const errors: string[] = [];
     if (nameControl?.errors?.['required']) {
@@ -305,9 +372,118 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
       errors.push('DPM points must be between -100 and 100 (inclusive).');
     }
 
+    if (this.dpmNameIsDuplicated(groupControl, dpmControl)) {
+      errors.push('DPM name must be unique.');
+    }
+
     return errors;
   }
 
+  formHasNonFormGroupErrors(): boolean {
+    const groupsArray = this.groupsFormArray;
+
+    for (const group of groupsArray.controls) {
+      if (this.groupNameIsDuplicated(group)) return true;
+
+      for (const dpm of this.getDpmsFormArray(group).controls) {
+        if (this.dpmNameIsDuplicated(group, dpm)) return true;
+      }
+    }
+
+    return false;
+  }
+
+  // -- Modal functions --
+
+  get selectedColor(): string {
+    const currentDpm = this.currentModalDpm();
+    if (!this.colorSelectionForm || !currentDpm) return '';
+
+    const selectedValue = this.colorSelectionForm.value.selectedColor as GetDpmColors;
+    return selectedValue ? selectedValue.colorName : '';
+  }
+
+  showColorModal(dpmControl: AbstractControl) {
+    const controlData = dpmControl.value as DpmTypeFormValue;
+    this.currentModalDpm.set(controlData);
+
+    const currentColor = this.dpmColors().find(
+      (color) => color.colorId === controlData.color?.colorId
+    );
+
+    this.initializeColorSelectionModal(currentColor);
+    this.showModalInternal();
+  }
+
+  initializeColorSelectionModal(selectedColor: GetDpmColors | null | undefined = null) {
+    this.colorSelectionForm = this.fb.group({
+      selectedColor: selectedColor,
+    });
+  }
+
+  selectedColorIsInUse(): boolean {
+    const currentDpm = this.currentModalDpm();
+    if (!this.colorSelectionForm || !currentDpm) return false;
+
+    const selectedValue = this.colorSelectionForm.value.selectedColor as GetDpmColors;
+    if (selectedValue == null) return false;
+
+    const groups = this.groupsFormArray.controls;
+    for (const groupControl of groups) {
+      const dpmsArray = this.getDpmsFormArray(groupControl);
+      const dpmsContainColor = dpmsArray.controls.some((dc) => {
+        const dpmFormGroup = dc as FormGroup;
+        const dpmValue = dpmFormGroup.value as DpmTypeFormValue;
+        return dpmValue.color?.colorId === selectedValue?.colorId && dpmValue.id !== currentDpm.id;
+      });
+
+      if (dpmsContainColor) return true;
+    }
+
+    return false;
+  }
+
+  applyColorSelection() {
+    const currentDpm = this.currentModalDpm();
+    if (!this.colorSelectionForm || !this.colorSelectionForm.valid || !currentDpm) return;
+
+    const selectedValue = this.colorSelectionForm.value.selectedColor as GetDpmColors;
+    const groups = this.groupsFormArray.controls;
+    for (const groupControl of groups) {
+      const dpmsArray = this.getDpmsFormArray(groupControl);
+      const targetDpmControl = dpmsArray.controls.find((dc) => dc.value.id === currentDpm.id);
+
+      if (targetDpmControl) {
+        (targetDpmControl as FormGroup).get('color')?.setValue(
+          selectedValue
+            ? {
+                colorId: selectedValue.colorId,
+                hexCode: selectedValue.hexCode,
+              }
+            : null
+        );
+        targetDpmControl.markAsDirty(); // Mark the main form control as dirty
+        this.dpmEditForm.markAsDirty();
+        break;
+      }
+    }
+
+    this.closeModalInternal();
+  }
+
+  showModalInternal() {
+    if (this.colorModalElement && this.colorModalElement.nativeElement) {
+      this.colorModalElement.nativeElement.showModal();
+    }
+  }
+
+  closeModalInternal() {
+    if (this.colorModalElement && this.colorModalElement.nativeElement) {
+      this.colorModalElement.nativeElement.close();
+    }
+  }
+
+  // Save updates
   save() {
     this.isSaving.set(true);
 
@@ -327,7 +503,7 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
       const groupDpms: PutDpmType[] = [];
 
       requestData.push({
-        groupName: groupValue.name!,
+        groupName: groupValue.name!.trim(),
         dpms: groupDpms,
       });
       const dpmsArray = this.getDpmsFormArray(groupFormGroup);
@@ -341,13 +517,13 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
         const dpmValue = dpmFormGroup.value as DpmTypeFormValue;
 
         groupDpms.push({
-          dpmType: dpmValue.name!,
+          dpmType: dpmValue.name!.trim(),
           points: dpmValue.points!,
+          colorId: dpmValue.color?.colorId,
         });
       });
     });
 
-    console.log('Saving DPMs:', requestData);
     this.dpmService
       .updateDpmGroups(requestData)
       .pipe(
@@ -383,5 +559,25 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
         }
       });
     }
+  }
+
+  private groupNameIsDuplicated(groupControl: AbstractControl): boolean {
+    const nameControl = groupControl.get('name');
+    if (!nameControl) return false;
+
+    const groupName = nameControl.value as string;
+    const groupsArray = this.groupsFormArray;
+    return groupsArray.controls.some((group) => {
+      const groupFormGroup = group as FormGroup;
+      const groupValue = groupFormGroup.value as DpmGroupFormValue;
+      return (
+        this.normalizeStringEquals(groupValue.name, groupName) && groupFormGroup !== groupControl
+      );
+    });
+  }
+
+  private normalizeStringEquals(s1: string | null, s2: string | null): boolean {
+    if (!s1 || !s2) return false;
+    return s1.trim().toLowerCase() === s2.trim().toLowerCase();
   }
 }

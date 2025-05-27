@@ -8,6 +8,7 @@ import DpmDetailPage from '../models/dpm-detail-page';
 import { ErrorService } from './error.service';
 import { DPMGroup } from '../models/dpm-type';
 import { PutDpmGroup } from '../models/put-dpm-groups';
+import { GetDpmColors } from '../models/get-dpm-colors';
 
 const BASE_URL = environment.baseUrl + '/dpms';
 
@@ -60,6 +61,17 @@ export class DpmService {
         return this.errorService.errorResponse(
           error,
           'Something went wrong trying to get the list of DPM types'
+        );
+      })
+    );
+  }
+
+  getDpmColors(): Observable<GetDpmColors[]> {
+    return this.http.get<GetDpmColors[]>(`${BASE_URL}/colors`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return this.errorService.errorResponse(
+          error,
+          'Something went wrong trying to get the list of DPM colors'
         );
       })
     );

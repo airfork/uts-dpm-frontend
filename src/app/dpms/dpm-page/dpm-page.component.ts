@@ -67,7 +67,6 @@ export class DpmPageComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.getDpmGroups();
     this.route.queryParamMap.pipe(first()).subscribe((value) => {
       const tab = value.get('tab') as DpmTab;
       if (tab) this.activateTab(tab);
@@ -97,7 +96,7 @@ export class DpmPageComponent implements OnInit, AfterViewInit {
         break;
 
       case 'edit':
-        if (this.isNotAdmin()) {
+        if (!this.isAdmin()) {
           this.resetToNewTab();
           return;
         }
@@ -112,9 +111,9 @@ export class DpmPageComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private isNotAdmin(): boolean {
+  isAdmin(): boolean {
     const role = this.authService.userData.role as Roles;
-    return !editRoles.includes(role);
+    return editRoles.includes(role);
   }
 
   private resetToNewTab() {

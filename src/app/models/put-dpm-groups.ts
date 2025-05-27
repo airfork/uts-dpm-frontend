@@ -6,4 +6,5 @@ export interface PutDpmGroup {
 export interface PutDpmType {
   dpmType: string;
   points: number;
+  colorId?: number;
 }

@@ -30,8 +30,10 @@
   [hidden]="!active.new"
 ></app-new-dpm>
 
-<app-edit-dpms
-  [(dpmGroupsNeedRefresh)]="groupsNeedRefresh"
-  [dpmGroupsInput]="dpmGroups()"
-  [hidden]="!active.edit"
-></app-edit-dpms>
+@if (isAdmin()) {
+  <app-edit-dpms
+    [(dpmGroupsNeedRefresh)]="groupsNeedRefresh"
+    [dpmGroupsInput]="dpmGroups()"
+    [hidden]="!active.edit"
+  ></app-edit-dpms>
+}

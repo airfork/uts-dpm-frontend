@@ -11,7 +11,8 @@ export class ConfirmBoxComponent {
   isOpen = model.required<boolean>();
   title = input('Are you sure?');
   message = input.required<string>();
-  outputKey = input.required<string>();
+  outputKey = input<string>('');
+  onConfirm = input<() => void>();
 
   @ViewChild('confirmModal')
   confirmModalElement!: ElementRef<HTMLDialogElement>;
@@ -31,6 +32,9 @@ export class ConfirmBoxComponent {
   confirm() {
     this.confirmed.emit(this.outputKey());
     this.isOpen.set(false);
+
+    const onConfirm = this.onConfirm();
+    if (onConfirm) onConfirm();
   }
 
   requestClose() {

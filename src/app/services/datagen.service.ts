@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { NotificationService } from './notification.service';
 import { environment } from '../../environments/environment';
-import { saveAs } from 'file-saver';
+import * as FileSaver from 'file-saver';
 
 const BASE_URL = environment.baseUrl + '/datagen';
 
@@ -23,7 +23,10 @@ export class DatagenService {
       })
       .subscribe({
         next: (response) => {
-          saveAs(response.body!, this.filenameFromHeaderOrDefault(response, 'Users.xlsx'));
+          FileSaver.saveAs(
+            response.body!,
+            this.filenameFromHeaderOrDefault(response, 'Users.xlsx')
+          );
         },
         error: (error: HttpErrorResponse) => {
           if (error.status === 303) {
@@ -45,7 +48,7 @@ export class DatagenService {
       })
       .subscribe({
         next: (response) => {
-          saveAs(response.body!, this.filenameFromHeaderOrDefault(response, 'DPMs.xlsx'));
+          FileSaver.saveAs(response.body!, this.filenameFromHeaderOrDefault(response, 'DPMs.xlsx'));
           callback();
         },
         error: (error: HttpErrorResponse) => {

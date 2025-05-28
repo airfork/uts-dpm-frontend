@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "./dist/uts-dpm",
+    "public": "./dist/uts-dpm/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -15,7 +15,7 @@
   },
   "emulators": {
     "hosting": {
-      "port": "10000"
+      "port": 10000
     }
   }
 }

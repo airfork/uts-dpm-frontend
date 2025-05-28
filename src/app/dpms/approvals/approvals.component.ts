@@ -59,7 +59,7 @@ export class ApprovalsComponent {
     this.editOpen.set(false);
     const currentDpm = this.currentDpm();
     const currentPoints = this.currentPoints();
-    if (!currentDpm || !currentPoints) return;
+    if (!currentDpm || !currentPoints || currentPoints === currentDpm?.points) return;
 
     currentDpm.points = currentPoints;
     this.currentDpm.set(currentDpm);

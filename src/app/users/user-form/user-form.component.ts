@@ -5,12 +5,15 @@ import {
   Input,
   OnChanges,
   OnInit,
+  signal,
   SimpleChanges,
 } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import GetUserDetailDto from '../../models/get-user-detail-dto';
@@ -22,6 +25,8 @@ import { first } from 'rxjs';
 import { NotificationService } from '../../services/notification.service';
 import CreateUserDto from '../../models/create-user-dto';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NgClass } from '@angular/common';
+import { Ripple } from 'primeng/ripple';
 
 const POINTS_VALIDATORS = [Validators.required, Validators.pattern(/-?\d+/)];
 
@@ -29,16 +34,16 @@ const POINTS_VALIDATORS = [Validators.required, Validators.pattern(/-?\d+/)];
   selector: 'app-user-form',
   templateUrl: './user-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgClass, FormsModule, ReactiveFormsModule, Ripple],
 })
 export class UserFormComponent implements OnInit, OnChanges {
   @Input() @Required layout: 'create' | 'edit' = 'edit';
-  @Input() managers: string[] | null = null;
+  @Input() managers: string[] | null | undefined = undefined;
   @Input() userInfo?: { user: GetUserDetailDto; id: string };
-  user?: GetUserDetailDto;
-  userId?: string;
-  waiting = false;
-
-  roles: string[] = [];
+  user = signal<GetUserDetailDto | null>(null);
+  userId = signal<string | null>(null);
+  waiting = signal(false);
+  roles = signal<string[]>([]);
 
   userFormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -169,16 +174,17 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   private setEditFormData() {
-    if (!this.user) return;
+    const user = this.user();
+    if (!user) return;
 
     this.userFormGroup.reset({
-      email: this.user.email,
-      firstname: this.user.firstname,
-      lastname: this.user.lastname,
-      points: this.user.points,
+      email: user.email,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      points: user.points,
       manager: this.managers![0],
-      role: this.roles[0],
-      fullTime: this.user.fullTime,
+      role: this.roles()[0],
+      fullTime: user.fullTime,
     });
   }
 
@@ -186,11 +192,11 @@ export class UserFormComponent implements OnInit, OnChanges {
     if (this.managers) {
       this.userFormGroup.reset({
         manager: this.managers[0],
-        role: this.roles[0],
+        role: this.roles()[0],
       });
     } else {
       this.userFormGroup.reset({
-        role: this.roles[0],
+        role: this.roles()[0],
       });
     }
     this.points?.removeValidators(POINTS_VALIDATORS);
@@ -222,7 +228,7 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   private initCreateLayout() {
-    this.roles = this.userService.orderRoles('Driver');
+    this.roles.set(this.userService.orderRoles('Driver'));
     this.setCreateFormData();
     this.changeDetector.detectChanges();
   }
@@ -233,17 +239,14 @@ export class UserFormComponent implements OnInit, OnChanges {
       return;
     }
 
-    this.user = this.userInfo.user;
-    this.userId = this.userInfo.id;
-    this.roles = this.userService.orderRoles(this.user.role);
-    this.managers = this.userService.orderManagers(
-      this.user.manager,
-      this.user.managers
-    );
+    const user = this.userInfo.user;
+    this.user.set(user);
+    this.userId.set(this.userInfo.id);
+    this.roles.set(this.userService.orderRoles(user.role));
+    this.managers = this.userService.orderManagers(user.manager, user.managers);
 
     if (
-      this.authService.userData.username.toLowerCase().trim() ===
-      this.user.email.toLowerCase().trim()
+      this.authService.userData.username.toLowerCase().trim() === user.email.toLowerCase().trim()
     ) {
       this.userFormGroup.get('role')!.disable();
     }
@@ -252,30 +255,34 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   private editUser() {
-    this.waiting = true;
+    const userId = this.userId();
+    const user = this.user();
+    if (!userId || !user) return;
+    this.waiting.set(true);
+
     this.userService
-      .updateUser(this.formGroupToUserDetailDto(), this.userId!)
+      .updateUser(this.formGroupToUserDetailDto(), userId)
       .pipe(first())
       .subscribe({
         next: () => {
-          this.waiting = false;
+          this.waiting.set(false);
           this.notificationService.showSuccess('User updated');
 
           const newValues = { ...this.userFormGroup.value };
-          if (!this.user!.fullTime && newValues.fullTime!) {
+          if (!user.fullTime && newValues.fullTime!) {
             newValues.points = 0;
           }
           // role is not set if the formControl is disabled
           // role formControl is disabled if user is viewing themselves
           if (!newValues.role) {
-            newValues.role = this.roles[0];
+            newValues.role = this.roles()[0];
           }
 
           this.userFormGroup.reset({ ...newValues });
           this.userFormGroup.markAsPristine();
         },
         error: () => {
-          this.waiting = false;
+          this.waiting.set(false);
         },
       });
   }
@@ -289,7 +296,7 @@ export class UserFormComponent implements OnInit, OnChanges {
           this.notificationService.showSuccess('User created');
           this.userFormGroup.reset({
             manager: this.managers![0],
-            role: this.roles![0],
+            role: this.roles()[0],
           });
           this.changeDetector.detectChanges();
         },
@@ -305,14 +312,8 @@ export class UserFormComponent implements OnInit, OnChanges {
             this.lastname?.markAsTouched();
             this.changeDetector.detectChanges();
           } else {
-            this.notificationService.showError(
-              'Something went wrong, please try again',
-              'Error'
-            );
-            console.error(
-              'Something went wrong trying to create the user',
-              error
-            );
+            this.notificationService.showError('Something went wrong, please try again', 'Error');
+            console.error('Something went wrong trying to create the user', error);
           }
         },
       });

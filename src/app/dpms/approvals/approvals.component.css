@@ -1,0 +1,15 @@
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+/* Target an inner wrapper of p-table when 'table-is-loading' class is present on p-table */
+:host ::ng-deep .p-datatable.table-is-loading .p-datatable-table-container {
+  min-height: var(--table-loading-min-height);
+}
+
+:host ::ng-deep svg.p-datatable-loading-icon {
+  /* Change the size of the spinner */
+  height: var(--table-spinner-height);
+  width: var(--table-spinner-width);
+}

@@ -24,4 +24,8 @@ export class FormatService {
 
     return formatDate(date, 'MM-dd-yyyy', this.locale);
   }
+
+  pointsWord(points: number): string {
+    return Math.abs(points) === 1 ? 'Point' : 'Points';
+  }
 }

@@ -1,17 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { PrimeNGConfig } from 'primeng/api';
+import { PrimeNG } from 'primeng/config';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['./app.component.css'],
+  imports: [RouterOutlet],
 })
 export class AppComponent implements OnInit {
   title = 'uts-new-dpm';
 
-  constructor(private primengConfig: PrimeNGConfig) {}
+  constructor(private primeNG: PrimeNG) {}
 
   ngOnInit() {
-    this.primengConfig.ripple = true;
+    this.primeNG.ripple.set(true);
   }
 }

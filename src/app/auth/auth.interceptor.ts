@@ -12,12 +12,12 @@ import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
-  intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  intercept<T>(req: HttpRequest<T>, next: HttpHandler): Observable<HttpEvent<T>> {
     if (this.authService.isAuthenticated()) {
       req = req.clone({
         setHeaders: {
@@ -29,14 +29,11 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       tap({
         next: () => {},
-        error: (error) => {
+        error: (error: unknown) => {
           if (error instanceof HttpErrorResponse) {
             if (
               error.status === 401 &&
-              !(
-                req.url.includes('/api/auth/login') ||
-                req.url.includes('/api/auth/changePassword')
-              )
+              !(req.url.includes('/api/auth/login') || req.url.includes('/api/auth/changePassword'))
             ) {
               console.log('Not authorized, redirecting to login page');
               this.router.navigate(['/login']);

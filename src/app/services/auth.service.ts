@@ -56,23 +56,17 @@ export class AuthService {
   changePasswordRequired(): Observable<boolean> {
     return this.http.get<{ required: boolean }>(BASE_URL + '/changeCheck').pipe(
       catchError((error: HttpErrorResponse) => {
-        this.notificationService.showError(
-          'Something went wrong, please try again.',
-          'Error'
-        );
+        this.notificationService.showError('Something went wrong, please try again.', 'Error');
         console.error(error);
         return throwError(
-          () =>
-            new Error(
-              'Something went wrong trying to check the change password status'
-            )
+          () => new Error('Something went wrong trying to check the change password status')
         );
       }),
       map(({ required }) => required)
     );
   }
 
-  changePassword(dto: ChangePasswordDto): Observable<any> {
+  changePassword(dto: ChangePasswordDto): Observable<unknown> {
     return this.http.patch(BASE_URL + '/changePassword', dto);
   }
 

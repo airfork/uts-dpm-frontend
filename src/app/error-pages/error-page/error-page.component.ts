@@ -1,12 +1,14 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-error-page',
   templateUrl: './error-page.component.html',
+  imports: [RouterLink],
 })
 export class ErrorPageComponent {
-  @Input() errorCode: string = '';
-  @Input() message: string = '';
+  errorCode = input.required<string>();
+  message = input.required<string>();
 
   constructor() {}
 }

@@ -1,7 +1,7 @@
 <div class="navbar bg-base-100">
   <div class="navbar-start w-[40%]">
     <div class="dropdown">
-      <label id="menuButton" tabindex="0" class="btn btn-ghost lg:hidden">
+      <span id="menuButton" tabindex="0" class="btn btn-ghost lg:hidden">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5"
@@ -16,54 +16,72 @@
             d="M4 6h16M4 12h8m-8 6h16"
           />
         </svg>
-      </label>
+      </span>
 
       <ul
         tabindex="0"
         class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
       >
-        <li
-          *ngFor="let link of links"
-          [appRemoveIfUnauthorized]="link.allowedRoles"
-          class="mb-2 last:mb-0"
-        >
-          <a
-            *ngIf="link.path"
-            routerLink="{{ link.path }}"
-            routerLinkActive="active"
-            [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
-            (click)="menuItemClick()"
-            >{{ link.name }}</a
+        @for (link of links; track link) {
+          <li
+            [appRemoveIfUnauthorized]="link.allowedRoles"
+            class="mb-2 last:mb-0"
           >
-
-          <a *ngIf="!link.path" (click)="logoutClick()">{{ link.name }}</a>
-        </li>
+            @if (link.path) {
+              <button
+                class="btn btn-ghost font-normal text-base"
+                routerLink="{{ link.path }}"
+                routerLinkActive="btn-active btn-primary"
+                [queryParamsHandling]="
+                  link.name === 'Users' ? 'preserve' : null
+                "
+                (click)="menuItemClick()"
+              >
+                {{ link.name }}
+              </button>
+            }
+            @if (!link.path) {
+              <button
+                class="btn btn-ghost font-normal text-base"
+                (click)="logoutClick()"
+              >
+                {{ link.name }}
+              </button>
+            }
+          </li>
+        }
       </ul>
     </div>
 
-    <a routerLink="/" class="btn btn-ghost normal-case text-2xl">UTS DPM</a>
+    <button routerLink="/" class="btn btn-ghost normal-case text-2xl">
+      UTS DPM
+    </button>
   </div>
 
   <div class="navbar-end w-[60%] hidden lg:flex">
     <ul class="menu menu-horizontal p-0">
-      <li
-        class="mx-1"
-        *ngFor="let link of links"
-        [appRemoveIfUnauthorized]="link.allowedRoles"
-      >
-        <a
-          *ngIf="link.path"
-          routerLink="{{ link.path }}"
-          routerLinkActive="active"
-          [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
-        >
-          {{ link.name }}
-        </a>
-
-        <a *ngIf="!link.path" (click)="logoutClick()">
-          {{ link.name }}
-        </a>
-      </li>
+      @for (link of links; track link) {
+        <li class="mx-1" [appRemoveIfUnauthorized]="link.allowedRoles">
+          @if (link.path) {
+            <button
+              class="btn btn-ghost font-normal text-base"
+              routerLink="{{ link.path }}"
+              routerLinkActive="btn-active btn-primary"
+              [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
+            >
+              {{ link.name }}
+            </button>
+          }
+          @if (!link.path) {
+            <button
+              class="btn btn-ghost font-normal text-base"
+              (click)="logoutClick()"
+            >
+              {{ link.name }}
+            </button>
+          }
+        </li>
+      }
     </ul>
   </div>
 </div>

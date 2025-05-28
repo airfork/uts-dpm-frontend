@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
+  signal,
 } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import UsernameDto from '../../models/username-dto';
@@ -10,26 +11,38 @@ import { FormatService } from '../../services/format.service';
 import { first } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListTab } from '../shared/tab.types';
-import {
-  LIST_EMAIL_MESSAGE,
-  LIST_RESET_MESSAGE,
-  ListOutputKey,
-} from '../shared/confirm-box-info';
+import { LIST_EMAIL_MESSAGE, LIST_RESET_MESSAGE, ListOutputKey } from '../shared/confirm-box-info';
 import { NotificationService } from '../../services/notification.service';
+import { UserFormComponent } from '../user-form/user-form.component';
+import { TableModule } from 'primeng/table';
+import { AutoFocus } from 'primeng/autofocus';
+import { NgClass } from '@angular/common';
+import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
+import { NamePipe } from '../../shared/pipes/NamePipe';
+import { LoadingComponent } from '../../shared/loading/loading.component';
 
 @Component({
   selector: 'app-users-list',
   templateUrl: './users-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    UserFormComponent,
+    TableModule,
+    AutoFocus,
+    NgClass,
+    ConfirmBoxComponent,
+    NamePipe,
+    LoadingComponent,
+  ],
 })
 export class UsersListComponent implements OnInit {
-  users?: UsernameDto[];
-  filteredUsers: UsernameDto[] = [];
-  activeTab = { actions: false, create: false, search: true };
-  managers: string[] | null = null;
-  modalOpen = false;
-  modalMessage = '';
-  outputKey: ListOutputKey = 'email';
+  users = signal<UsernameDto[] | null>(null);
+  filteredUsers = signal<UsernameDto[]>([]);
+  activeTab = signal({ actions: false, create: false, search: true });
+  managers = signal<string[] | null>(null);
+  modalOpen = signal(false);
+  modalMessage = signal('');
+  outputKey = signal<ListOutputKey>('email');
 
   constructor(
     private userService: UserService,
@@ -51,8 +64,8 @@ export class UsersListComponent implements OnInit {
       .getUserNames()
       .pipe(first())
       .subscribe((users) => {
-        this.users = users;
-        this.filteredUsers = users;
+        this.users.set(users);
+        this.filteredUsers.set(users);
         this.changeDetector.detectChanges();
       });
   }
@@ -61,40 +74,41 @@ export class UsersListComponent implements OnInit {
     switch (tab) {
       case 'actions':
         this.saveTabInUrl(tab);
-        this.activeTab = { actions: true, create: false, search: false };
+        this.activeTab.set({ actions: true, create: false, search: false });
         break;
 
       case 'create':
         this.saveTabInUrl(tab);
-        if (!this.managers) {
+        if (!this.managers()) {
           this.userService
             .getManagers()
             .pipe(first())
             .subscribe((managers) => {
-              this.managers = managers;
+              this.managers.set(managers);
               this.changeDetector.detectChanges();
             });
         }
-        this.activeTab = { actions: false, create: true, search: false };
+        this.activeTab.set({ actions: false, create: true, search: false });
         break;
 
       case 'search':
         this.saveTabInUrl(tab);
-        this.activeTab = { actions: false, create: false, search: true };
+        this.activeTab.set({ actions: false, create: false, search: true });
         break;
       default:
         console.warn(`Unknown tab: ${tab}`);
-        this.activeTab = { actions: false, create: false, search: true };
+        this.activeTab.set({ actions: false, create: false, search: true });
         this.clearQueryParams();
     }
   }
 
   filterUsers($event: Event) {
-    if (!this.users) return;
+    const users = this.users();
+    if (!users) return;
 
     const target = $event.target as HTMLInputElement;
-    this.filteredUsers = this.users?.filter((user) =>
-      user.name.toLowerCase().includes(target.value.toLowerCase())
+    this.filteredUsers.set(
+      users.filter((user) => user.name.toLowerCase().includes(target.value.toLowerCase()))
     );
   }
 
@@ -103,15 +117,15 @@ export class UsersListComponent implements OnInit {
   }
 
   sendEmailClick() {
-    this.outputKey = 'email';
-    this.modalMessage = LIST_EMAIL_MESSAGE;
-    this.modalOpen = true;
+    this.outputKey.set('email');
+    this.modalMessage.set(LIST_EMAIL_MESSAGE);
+    this.modalOpen.set(true);
   }
 
   resetPointsClick() {
-    this.outputKey = 'reset';
-    this.modalMessage = LIST_RESET_MESSAGE;
-    this.modalOpen = true;
+    this.outputKey.set('reset');
+    this.modalMessage.set(LIST_RESET_MESSAGE);
+    this.modalOpen.set(true);
   }
 
   handleConfirmEvent($event: string) {
@@ -133,12 +147,11 @@ export class UsersListComponent implements OnInit {
 
   private resetPointBalances() {
     this.userService
+
       .resetPointBalances()
       .pipe(first())
       .subscribe(() =>
-        this.notificationService.showSuccess(
-          'Part-timer point balances have been reset'
-        )
+        this.notificationService.showSuccess('Part-timer point balances have been reset')
       );
   }
 
@@ -163,8 +176,6 @@ export class UsersListComponent implements OnInit {
     this.userService
       .sendPointsBalanceAll()
       .pipe(first())
-      .subscribe(() =>
-        this.notificationService.showSuccess('Emails have been queued')
-      );
+      .subscribe(() => this.notificationService.showSuccess('Emails have been queued'));
   }
 }

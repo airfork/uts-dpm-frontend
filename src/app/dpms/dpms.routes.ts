@@ -1,15 +1,14 @@
-import { RouterModule, Routes } from '@angular/router';
-import { NgModule } from '@angular/core';
-import { DpmsComponent } from './dpms/dpms.component';
+import { Route } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { NewDpmComponent } from './new-dpm/new-dpm.component';
+import { GenerateTitle, TitlePrefix } from '../shared/title-helper';
+import { authGuard } from '../auth/auth.guard';
 import { AutogenComponent } from './autogen/autogen.component';
 import { DatagenComponent } from './datagen/datagen.component';
 import { ApprovalsComponent } from './approvals/approvals.component';
-import { GenerateTitle, TitlePrefix } from '../shared/title-helper';
-import { AuthGuard } from '../auth/auth.guard';
+import { DpmsComponent } from './dpms/dpms.component';
+import { DpmPageComponent } from './dpm-page/dpm-page.component';
 
-const routes: Routes = [
+export const DPM_ROUTES: Route[] = [
   {
     path: '',
     component: DpmsComponent,
@@ -18,16 +17,15 @@ const routes: Routes = [
         path: '',
         component: HomeComponent,
         title: TitlePrefix,
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'ANALYST', 'DRIVER', 'MANAGER', 'SUPERVISOR'],
         },
       },
       {
         path: 'dpm',
-        component: NewDpmComponent,
-        title: GenerateTitle('New DPM'),
-        canActivate: [AuthGuard],
+        component: DpmPageComponent,
+        canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'ANALYST', 'MANAGER', 'SUPERVISOR'],
         },
@@ -36,7 +34,7 @@ const routes: Routes = [
         path: 'autogen',
         component: AutogenComponent,
         title: GenerateTitle('Autogenerate DPMs'),
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'ANALYST', 'MANAGER', 'SUPERVISOR'],
         },
@@ -45,7 +43,7 @@ const routes: Routes = [
         path: 'datagen',
         component: DatagenComponent,
         title: GenerateTitle('Generate Data'),
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'ANALYST', 'MANAGER'],
         },
@@ -54,7 +52,7 @@ const routes: Routes = [
         path: 'approvals',
         component: ApprovalsComponent,
         title: GenerateTitle('Approvals'),
-        canActivate: [AuthGuard],
+        canActivate: [authGuard],
         data: {
           allowedRoles: ['ADMIN', 'MANAGER'],
         },
@@ -62,9 +60,3 @@ const routes: Routes = [
     ],
   },
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class DpmsRoutingModule {}

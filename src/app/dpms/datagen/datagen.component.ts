@@ -1,18 +1,22 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormatService } from '../../services/format.service';
 import { environment } from '../../../environments/environment';
 import { MixedDateValidator } from '../mixed-date.directive';
 import { DatagenService } from '../../services/datagen.service';
+import { NgClass } from '@angular/common';
+import { Ripple } from 'primeng/ripple';
+import { DatePicker } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-datagen',
   templateUrl: './datagen.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [ReactiveFormsModule, NgClass, Ripple, DatePicker],
 })
 export class DatagenComponent implements OnInit {
   private BASE_URL = environment.baseUrl + '/datagen';
-  mobileMode = false;
+  mobileMode = signal(false);
 
   dpmDataFormGroup = new FormGroup(
     {
@@ -31,11 +35,9 @@ export class DatagenComponent implements OnInit {
   ngOnInit() {
     const ua = navigator.userAgent;
     if (
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(
-        ua
-      )
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua)
     ) {
-      this.mobileMode = true;
+      this.mobileMode.set(true);
     }
   }
 
@@ -78,8 +80,7 @@ export class DatagenComponent implements OnInit {
   }
 
   generateDownloadUrl(): string {
-    if (this.dpmDataFormGroup.invalid && !this.dpmDataFormGroup.value.getAll)
-      return '#';
+    if (this.dpmDataFormGroup.invalid && !this.dpmDataFormGroup.value.getAll) return '#';
 
     const values = this.dpmDataFormGroup.value;
 
@@ -91,16 +92,12 @@ export class DatagenComponent implements OnInit {
     let endDateParam = '';
 
     if (values.startDate) {
-      startDateParam = `?startDate=${this.format.datagenDate(
-        values.startDate
-      )}`;
+      startDateParam = `?startDate=${this.format.datagenDate(values.startDate)}`;
     }
 
     if (values.endDate) {
       const prefix = values.startDate ? '&' : '?';
-      endDateParam = `${prefix}endDate=${this.format.datagenDate(
-        values.endDate
-      )}`;
+      endDateParam = `${prefix}endDate=${this.format.datagenDate(values.endDate)}`;
     }
 
     return `${this.BASE_URL}/dpms${startDateParam}${endDateParam}`;

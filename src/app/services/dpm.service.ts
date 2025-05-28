@@ -6,6 +6,9 @@ import { environment } from '../../environments/environment';
 import HomeDpmDto from '../models/home-dpm-dto';
 import DpmDetailPage from '../models/dpm-detail-page';
 import { ErrorService } from './error.service';
+import { DPMGroup } from '../models/dpm-type';
+import { PutDpmGroup } from '../models/put-dpm-groups';
+import { GetDpmColors } from '../models/get-dpm-colors';
 
 const BASE_URL = environment.baseUrl + '/dpms';
 
@@ -13,7 +16,10 @@ const BASE_URL = environment.baseUrl + '/dpms';
   providedIn: 'root',
 })
 export class DpmService {
-  constructor(private http: HttpClient, private errorService: ErrorService) {}
+  constructor(
+    private http: HttpClient,
+    private errorService: ErrorService
+  ) {}
 
   getCurrentDpms(): Observable<HomeDpmDto[]> {
     return this.http.get<HomeDpmDto[]>(BASE_URL + '/current').pipe(
@@ -27,7 +33,7 @@ export class DpmService {
     );
   }
 
-  create(dpm: PostDpmDto): Observable<any> {
+  create(dpm: PostDpmDto): Observable<unknown> {
     return this.http.post(BASE_URL, dpm).pipe(
       catchError((error) => {
         return this.errorService.errorResponse(
@@ -38,16 +44,47 @@ export class DpmService {
     );
   }
 
-  getAll(id: string, page: number, size: number): Observable<DpmDetailPage> {
-    return this.http
-      .get<DpmDetailPage>(`${BASE_URL}/user/${id}?page=${page}&size=${size}`)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          return this.errorService.errorResponse(
-            error,
-            "Something went wrong trying to get the user' dpms"
-          );
-        })
-      );
+  getAllForUser(id: string, page: number, size: number): Observable<DpmDetailPage> {
+    return this.http.get<DpmDetailPage>(`${BASE_URL}/user/${id}?page=${page}&size=${size}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return this.errorService.errorResponse(
+          error,
+          "Something went wrong trying to get the user' dpms"
+        );
+      })
+    );
+  }
+
+  getDpmGroups(): Observable<DPMGroup[]> {
+    return this.http.get<DPMGroup[]>(`${BASE_URL}/list`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return this.errorService.errorResponse(
+          error,
+          'Something went wrong trying to get the list of DPM types'
+        );
+      })
+    );
+  }
+
+  getDpmColors(): Observable<GetDpmColors[]> {
+    return this.http.get<GetDpmColors[]>(`${BASE_URL}/colors`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return this.errorService.errorResponse(
+          error,
+          'Something went wrong trying to get the list of DPM colors'
+        );
+      })
+    );
+  }
+
+  updateDpmGroups(groups: PutDpmGroup[]): Observable<unknown> {
+    return this.http.put(BASE_URL + '/list', groups).pipe(
+      catchError((error) => {
+        return this.errorService.errorResponse(
+          error,
+          'Something went wrong trying to update the DPM types'
+        );
+      })
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { first } from 'rxjs';
 import { Router } from '@angular/router';
@@ -7,27 +7,28 @@ import {
   AbstractControl,
   FormControl,
   FormGroup,
+  ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { PasswordsEqualValidator } from '../directives/passwords-equal.directive';
 import { PasswordsNotEqualValidator } from '../directives/passwords-not-equal.directive';
 import ChangePasswordDto from '../../models/change-password-dto';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Ripple } from 'primeng/ripple';
+import { LoadingComponent } from '../../shared/loading/loading.component';
 
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
+  imports: [ReactiveFormsModule, Ripple, LoadingComponent],
 })
 export class ChangePasswordComponent implements OnInit {
-  isLoading = true;
-  waitingForResponse = false;
+  isLoading = signal(true);
+  waitingForResponse = signal(false);
   changePasswordFormGroup = new FormGroup(
     {
       currentPassword: new FormControl('', [Validators.required]),
-      newPassword: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-      ]),
+      newPassword: new FormControl('', [Validators.required, Validators.minLength(8)]),
       confirmPassword: new FormControl('', [Validators.required]),
     },
     { validators: [PasswordsEqualValidator, PasswordsNotEqualValidator] }
@@ -44,19 +45,17 @@ export class ChangePasswordComponent implements OnInit {
       .changePasswordRequired()
       .pipe(first())
       .subscribe((required) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         if (!required) {
           this.router.navigate(['/']).then(() => {
-            this.notificationService.showWarning(
-              'Cannot change password currently'
-            );
+            this.notificationService.showWarning('Cannot change password currently');
           });
         }
       });
   }
 
   onSubmit() {
-    this.waitingForResponse = true;
+    this.waitingForResponse.set(true);
     this.authService
       .changePassword(this.formGroupToDto())
       .pipe(first())
@@ -65,18 +64,13 @@ export class ChangePasswordComponent implements OnInit {
           this.changePasswordFormGroup.reset();
           this.router
             .navigate(['/'])
-            .then(() =>
-              this.notificationService.showSuccess('Password has been changed')
-            );
+            .then(() => this.notificationService.showSuccess('Password has been changed'));
         },
         error: (error: HttpErrorResponse) => {
-          this.waitingForResponse = false;
+          this.waitingForResponse.set(false);
           const values = this.changePasswordFormGroup.value;
           if (error.status === 401) {
-            this.notificationService.showError(
-              'Current password is incorrect',
-              'Error'
-            );
+            this.notificationService.showError('Current password is incorrect', 'Error');
             this.changePasswordFormGroup.reset({
               ...values,
               currentPassword: '',
@@ -94,10 +88,7 @@ export class ChangePasswordComponent implements OnInit {
             this.currentPassword?.markAsTouched();
           } else {
             console.error(error);
-            this.notificationService.showError(
-              'Something went wrong. please try again',
-              'Error'
-            );
+            this.notificationService.showError('Something went wrong. please try again', 'Error');
           }
         },
       });
@@ -123,17 +114,11 @@ export class ChangePasswordComponent implements OnInit {
 
     if (this.hasErrors(control)) return prefix + 'error';
 
-    if (
-      control === this.confirmPassword &&
-      this.getConfirmPasswordValidationMessages() !== ''
-    ) {
+    if (control === this.confirmPassword && this.getConfirmPasswordValidationMessages() !== '') {
       return prefix + 'error';
     }
 
-    if (
-      control === this.newPassword &&
-      this.getNewPasswordValidationMessages() !== ''
-    ) {
+    if (control === this.newPassword && this.getNewPasswordValidationMessages() !== '') {
       return prefix + 'error';
     }
 
@@ -152,10 +137,7 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   getNewPasswordValidationMessages(): string {
-    if (
-      this.hasErrors(this.newPassword) &&
-      this.newPassword?.errors?.['required']
-    ) {
+    if (this.hasErrors(this.newPassword) && this.newPassword?.errors?.['required']) {
       return 'New password is required';
     }
 
@@ -171,10 +153,7 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   getConfirmPasswordValidationMessages(): string {
-    if (
-      this.hasErrors(this.confirmPassword) &&
-      this.confirmPassword?.errors?.['required']
-    ) {
+    if (this.hasErrors(this.confirmPassword) && this.confirmPassword?.errors?.['required']) {
       return 'Confirm password is required';
     }
 

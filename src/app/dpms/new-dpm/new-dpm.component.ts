@@ -1,93 +1,69 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { AfterViewInit, Component, input, signal } from '@angular/core';
+import { AbstractControl, FormGroup, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { DpmService } from '../../services/dpm.service';
-import { UserService } from '../../services/user.service';
 import { NotificationService } from '../../services/notification.service';
 import { FormatService } from '../../services/format.service';
 import PostDpmDto from '../../models/post-dpm-dto';
 import UsernameDto from '../../models/username-dto';
 import { first } from 'rxjs';
-import { DPMTypes } from '../../models/dpm-type';
+import { DPMGroup } from '../../models/dpm-type';
+import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
+import { DatePicker } from 'primeng/datepicker';
+import { NgClass } from '@angular/common';
+import { Ripple } from 'primeng/ripple';
 
 type startEndTime = 'Start Time' | 'End Time';
-const regex24HourTime = /^(?:[01][0-9]|2[0-3])[0-5][0-9](?::[0-5][0-9])?$/;
-
-interface queryResult {
-  originalEvent: InputEvent;
-  query: string;
-}
 
 @Component({
   selector: 'app-new-dpm',
   templateUrl: './new-dpm.component.html',
+  imports: [AutoComplete, ReactiveFormsModule, DatePicker, NgClass, Ripple],
 })
-export class NewDpmComponent implements OnInit {
-  dpmTypes = DPMTypes;
-  private driverNames: UsernameDto[] = [];
-  private defaultDpmType = this.dpmTypes[0].names[0];
-
-  homeFormGroup = new FormGroup({
-    dpmDate: new FormControl(new Date(), [Validators.required]),
-    startTime: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(4),
-      Validators.minLength(4),
-      Validators.pattern(regex24HourTime),
-    ]),
-    endTime: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(4),
-      Validators.minLength(4),
-      Validators.pattern(regex24HourTime),
-    ]),
-    name: new FormControl('', [Validators.required]),
-    block: new FormControl('', [Validators.required, Validators.maxLength(5)]),
-    location: new FormControl('', [
-      Validators.required,
-      Validators.maxLength(5),
-    ]),
-    type: new FormControl(this.defaultDpmType),
-    notes: new FormControl(''),
-  });
-
-  mobileMode = false;
-  autocompleteResults: string[] = [];
+export class NewDpmComponent implements AfterViewInit {
+  homeFormGroup = input.required<FormGroup>();
+  driverNames = input.required<UsernameDto[]>();
+  autocompleteResults = signal<string[]>([]);
+  dpmGroups = input.required<DPMGroup[]>();
+  isGroupsLoaded = input.required<boolean>();
 
   constructor(
-    private userService: UserService,
     private dpmService: DpmService,
     private notificationService: NotificationService,
     private formatService: FormatService
   ) {}
 
-  ngOnInit() {
-    const ua = navigator.userAgent;
-    if (
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(
-        ua
-      )
-    ) {
-      this.mobileMode = true;
-    }
-
-    this.userService
-      .getUserNames()
-      .pipe(first())
-      .subscribe((users) => (this.driverNames = users));
+  ngAfterViewInit() {
+    // additional check after view init in case the above wasn't enough
+    setTimeout(() => {
+      if (this.isGroupsLoaded() && !this.homeFormGroup().get('type')?.value) {
+        this.setDefaultDpmType();
+      }
+    }, 0);
   }
 
-  search(event: queryResult) {
-    this.autocompleteResults = this.driverNames
-      .filter((user) =>
-        user.name.toLowerCase().includes(event.query.toLowerCase())
-      )
-      .map((user) => user.name);
+  // New helper method to set the default DPM type
+  private setDefaultDpmType() {
+    const groups = this.dpmGroups();
+    if (groups && groups.length > 0 && groups[0].dpms && groups[0].dpms.length > 0) {
+      this.homeFormGroup().patchValue({
+        type: groups[0].dpms[0].id,
+      });
+
+      // Force detection of the change
+      setTimeout(() => {
+        this.homeFormGroup().updateValueAndValidity();
+      }, 0);
+    } else {
+      console.warn('No DPM groups or types found to set as default');
+    }
+  }
+
+  search(event: AutoCompleteCompleteEvent) {
+    this.autocompleteResults.set(
+      this.driverNames()
+        .filter((user) => user.name.toLowerCase().includes(event.query.toLowerCase()))
+        .map((user) => user.name)
+    );
   }
 
   errorsOrSuccess(control: AbstractControl | null): string {
@@ -109,9 +85,10 @@ export class NewDpmComponent implements OnInit {
       .pipe(first())
       .subscribe(() => {
         this.notificationService.showSuccess('DPM Created', 'Success');
-        this.homeFormGroup.reset({
+        const groups = this.dpmGroups();
+        this.homeFormGroup().reset({
           dpmDate: new Date(),
-          type: this.defaultDpmType,
+          type: groups[0].dpms[0].id,
         });
       });
   }
@@ -190,37 +167,49 @@ export class NewDpmComponent implements OnInit {
   }
 
   get dpmDate() {
-    return this.homeFormGroup.get('dpmDate');
+    return this.homeFormGroup().get('dpmDate');
   }
 
   get startTime() {
-    return this.homeFormGroup.get('startTime');
+    return this.homeFormGroup().get('startTime');
   }
 
   get endTime() {
-    return this.homeFormGroup.get('endTime');
+    return this.homeFormGroup().get('endTime');
   }
 
   get name() {
-    return this.homeFormGroup.get('name');
+    return this.homeFormGroup().get('name');
   }
 
   get block() {
-    return this.homeFormGroup.get('block');
+    return this.homeFormGroup().get('block');
   }
 
   get location() {
-    return this.homeFormGroup.get('location');
+    return this.homeFormGroup().get('location');
   }
 
   get format() {
     return this.formatService;
   }
 
+  formatPoints(points: number): string {
+    let strPoints: string;
+    if (points > 0) {
+      strPoints = `+${points}`;
+    } else {
+      strPoints = points.toString();
+    }
+
+    const pointLabel = Math.abs(points) > 1 ? 'Points' : 'Point';
+    return `(${strPoints} ${pointLabel})`;
+  }
+
   private getTimeValidationMessages(
     title: startEndTime,
     errors: ValidationErrors | null | undefined,
-    value: String | undefined
+    value: string | undefined
   ): string {
     if (errors?.['required']) {
       return `${title} is required`;
@@ -241,7 +230,7 @@ export class NewDpmComponent implements OnInit {
   }
 
   private formGroupToDto(): PostDpmDto {
-    const values = this.homeFormGroup.value;
+    const values = this.homeFormGroup().value;
     const dto: PostDpmDto = {
       driver: values.name!,
       block: values.block!,

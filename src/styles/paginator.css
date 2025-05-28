@@ -1,5 +1,3 @@
-@import "variables";
-
 [_nghost-xeb-c95] .p-datatable.p-datatable-customers .p-paginator {
   padding: 1rem;
 }
@@ -15,9 +13,9 @@
 }
 
 .p-paginator {
-  background: $base1;
-  color: $baseContent;
-  border: 0 solid $base3;
+  background: var(--color-base-100);
+  color: var(--color-base-content);
+  border: 0 solid var(--color-base-300);
   padding: 0.5rem 1rem;
   border-radius: 6px;
 }
@@ -25,7 +23,7 @@
 .p-paginator .p-paginator-current {
   background-color: transparent;
   border: 0 none;
-  color: $baseContent;
+  color: var(--color-base-content);
   min-width: 3rem;
   height: 3rem;
   margin: 0.143rem;
@@ -57,7 +55,7 @@
 .p-paginator .p-paginator-first, .p-paginator .p-paginator-prev, .p-paginator .p-paginator-next, .p-paginator .p-paginator-last {
   background-color: transparent;
   border: 0 none;
-  color: $baseContent;
+  color: var(--color-base-content);
   min-width: 3rem;
   height: 3rem;
   margin: 0.143rem;
@@ -89,7 +87,7 @@
 }
 
 .p-disabled, .p-disabled * {
-  cursor: default!important;
+  cursor: default !important;
   pointer-events: none;
 }
 
@@ -114,21 +112,21 @@
 .p-ink {
   display: block;
   position: absolute;
-  background: rgba(255,255,255,.5);
+  background: rgba(255, 255, 255, .5);
   border-radius: 100%;
   transform: scale(0);
 }
 
-.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-  background: $base2;
-  border-color: $base3;
-  color: $baseContent;
+.p-paginator .p-paginator-pages .p-paginator-page.p-paginator-page-selected {
+  background: var(--color-base-200);
+  border-color: var(--color-base-300);
+  color: var(--color-base-content);
 }
 
 .p-paginator .p-paginator-pages .p-paginator-page {
   background-color: transparent;
   border: 0 none;
-  color: $baseContent;
+  color: var(--color-base-content);
   min-width: 3rem;
   height: 3rem;
   margin: 0.143rem;
@@ -148,8 +146,8 @@
   position: relative;
   -webkit-user-select: none;
   user-select: none;
-  background: $base1;
-  border: 1px solid $base2;
+  background: var(--color-base-100);
+  border: 1px solid var(--color-base-200);
   transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
   border-radius: 6px;
 }
@@ -169,20 +167,20 @@
   transform: scale(0);
 }
 
-[_nghost-xeb-c95] .p-datatable.p-datatable-customers .p-dropdown-label:not(.p-placeholder) {
+[_nghost-xeb-c95] .p-datatable.p-datatable-customers .p-select-label:not(.p-placeholder) {
   text-transform: uppercase;
 }
 
-.p-paginator .p-dropdown .p-dropdown-label {
+.p-paginator .p-paginator-rpp-dropdown .p-select-label {
   padding-right: 0;
 }
 
-.p-dropdown .p-dropdown-label {
+.p-paginator-rpp-dropdown .p-select-label {
   background: transparent;
   border: 0 none;
 }
 
-.p-dropdown-label {
+.p-select-label {
   display: block;
   white-space: nowrap;
   overflow: hidden;
@@ -192,67 +190,81 @@
   cursor: pointer;
 }
 
-span.p-inputtext {
+span.p-select-label {
   margin: 0;
   font-size: 1rem;
-  color: $baseContent;
-  background: $base1;
+  color: var(--color-base-content);
+  background: var(--color-base-100);
   padding: 0.75rem 0.75rem;
-  border: 1px solid $base2;
+  border: 1px solid var(--color-base-200);
   transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
   appearance: none;
   border-radius: 6px;
 }
 
-.p-dropdown .p-dropdown-trigger {
-  background: transparent;
-  color: $baseContent;
-  width: 3rem;
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-}
-
-.p-dropdown .p-dropdown-panel {
-  min-width: 100%;
-}
-
-.p-dropdown-panel {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.p-dropdown-panel {
-  background: $base1;
-  color: $baseContent;
-  border: 0 none;
-  border-radius: 6px;
-  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
-}
-
-.p-dropdown-panel .p-dropdown-items {
-  padding: 0.75rem 0;
-}
-
-.p-dropdown-item {
+.p-select {
+  display: inline-flex;
   cursor: pointer;
-  font-weight: 400;
+  position: relative;
+  user-select: none;
+  background: var(--color-base-100);
+  border: 1px solid var(--color-base-content);
+  transition: background var(--p-select-transition-duration), color var(--p-select-transition-duration), border-color var(--p-select-transition-duration), outline-color var(--p-select-transition-duration), box-shadow var(--p-select-transition-duration);
+  border-radius: 4px;
+  outline-color: transparent;
+  box-shadow: none;
+}
+
+.p-select-dropdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: transparent;
+  color: var(--color-base-content);
+  width: 2.5rem;
+  border-start-end-radius: 4px;
+  border-end-end-radius: 4px;
+}
+
+.p-select-overlay {
+  cursor: default;
+  background: var(--color-base-100);
+  color: var(--color-base-content);
+  border: 1px solid var(--color-base-100);
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, .2), 0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12);
+}
+
+.p-select-list {
+  margin: 0;
+  list-style-type: none;
+  padding: .5rem 0;
+  gap: 0;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.p-select-option {
+  cursor: pointer;
+  font-weight: normal;
   white-space: nowrap;
   position: relative;
   overflow: hidden;
-}
-
-.p-dropdown-panel .p-dropdown-items .p-dropdown-item {
-  margin: 0;
-  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
   border: 0 none;
-  color: $baseContent;
-  background: transparent;
-  transition: box-shadow 0.2s;
   border-radius: 0;
 }
 
-.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
-  color: $accent;
-  background: $base1;
+.p-select-option.p-select-option-selected {
+  background: var(--color-base-200);
+  color: var(--color-base-content);
+}
+
+.p-select-option:not(.p-select-option-selected):not(.p-disabled).p-focus {
+  background: var(--color-base-300);
+  color: var(--color-base-content);
 }

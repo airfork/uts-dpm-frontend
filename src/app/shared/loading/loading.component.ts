@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-loading',
   templateUrl: './loading.component.html',
+  imports: [NgClass],
 })
 export class LoadingComponent {
   public _halfScreen: boolean = false;
@@ -12,12 +14,8 @@ export class LoadingComponent {
     return this._halfScreen;
   }
 
-  set halfScreen(value: any) {
-    this._halfScreen = this.coerceBooleanProperty(value);
-  }
-
-  coerceBooleanProperty(value: any): boolean {
-    return value != null && `${value}` !== 'false';
+  set halfScreen(value: boolean) {
+    this._halfScreen = value;
   }
 
   constructor() {}

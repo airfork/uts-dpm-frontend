@@ -1,0 +1,149 @@
+@layer app, daisyui, tailwind, primeng;
+@import "tailwindcss";
+@import "./fonts.css";
+@import "./styles/toast.css";
+@import "./styles/autocomplete.css";
+@import "./styles/paginator.css";
+@import "./styles/calendar.css";
+
+@plugin "tailwindcss-primeui";
+
+@layer app {
+  html,
+  body {
+    height: 100%;
+    font-family: Poppins, system-ui;
+    background-color: var(--color-base-100);
+  }
+
+  input::placeholder {
+    opacity: 65% !important;
+  }
+
+  textarea::placeholder {
+    opacity: 65% !important;
+  }
+
+  .p-datatable-thead > tr {
+    background-color: var(--color-primary);
+    color: var(--color-primary-content);
+
+    :first-child {
+      position: relative !important;
+    }
+  }
+
+  thead > tr {
+    background-color: var(--color-primary);
+    color: var(--color-primary-content);
+
+    :first-child {
+      position: relative !important;
+    }
+  }
+
+  .p-paginator-current {
+    font-size: .875rem;
+  }
+}
+
+html,
+body {
+  height: 100%;
+  font-family: Poppins, system-ui;
+  background-color: var(--color-base-100);
+}
+
+/* WebKit browsers */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+
+@plugin "daisyui";
+@plugin "daisyui/theme" {
+  name: light;
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+  --color-base-100: oklch(1 0 0);
+  --color-base-200: oklch(0.92 0 0);
+  --color-base-300: oklch(0.85 0 0);
+  --color-base-content: oklch(0.51 0 0);
+  --color-primary: oklch(0.31 0.0566 268.94);
+  --color-primary-content: oklch(1 0 0);
+  --color-secondary: oklch(0.68 0.171441 53.0829);
+  --color-secondary-content: oklch(0.31 0.0566 268.94);
+  --color-accent: oklch(0.65 0.1889 42.94);
+  --color-accent-content: oklch(28% 0.091 267.935);
+  --color-neutral: oklch(0.31 0.0311 324.13);
+  --color-neutral-content: oklch(92% 0.004 286.32);
+  --color-info: oklch(0.67 0.143484 235.7191);
+  --color-info-content: oklch(29% 0.066 243.157);
+  --color-success: oklch(0.71 0.1769 139.12);
+  --color-success-content: oklch(37% 0.077 168.94);
+  --color-warning: oklch(82% 0.189 84.429);
+  --color-warning-content: oklch(41% 0.112 45.904);
+  --color-error: oklch(0.59 0.2208 18.5);
+  --color-error-content: oklch(27% 0.105 12.094);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.3125rem;
+  --size-field: 0.3125rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+  name: dark;
+  default: false;
+  prefersdark: true;
+  color-scheme: dark;
+  --color-base-100: oklch(0.28 0.0299 256.85);
+  --color-base-200: oklch(0.26 0.0269 256.85);
+  --color-base-300: oklch(0.25 0.0253 256.84);
+  --color-base-content: oklch(0.85 0.0502 256.8);
+  --color-primary: oklch(0.68 0.171441 53.0829);
+  --color-primary-content: oklch(0.3 0.0562 268.92);
+  --color-secondary: oklch(0.3 0.0562 268.92);
+  --color-secondary-content: oklch(1 0 0);
+  --color-accent: oklch(0.65 0.1889 42.94);
+  --color-accent-content: oklch(1 0 0);
+  --color-neutral: hsl(296, 14%, 20%);
+  --color-neutral-content: oklch(0.85 0 0);
+  --color-info: oklch(0.67 0.143484 235.7191);
+  --color-info-content: oklch(0.23 0.0453 228.52);
+  --color-success: oklch(0.71 0.1769 139.12);
+  --color-success-content: oklch(0.28 0.0893 139.19);
+  --color-warning: oklch(0.83 0.1435 83.23);
+  --color-warning-content: oklch(0.3 0.0618 81.39);
+  --color-error: oklch(0.59 0.2228 21.59);
+  --color-error-content: oklch(0.89 0.0585 8.23);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.3125rem;
+  --size-field: 0.3125rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+@theme {
+  --text-base--line-height: calc(1.8 / 1);
+  --table-spinner-height: 25px;
+  --table-spinner-width: 25px;
+  --table-loading-min-height: 200px;
+  --p-select-transition-duration: .2s;
+  --p-inputtext-transition-duration: .2s;
+  --p-datepicker-transition-duration: .2s;
+}

@@ -106,34 +106,35 @@
             </table>
             @if (!editOpen()) {
               <div class="modal-action">
-                <label
+                <button
                   pRipple
-                  for="dpmModal"
                   class="btn btn-success btn-outline"
                   (click)="approveDpm(); closeModalInternal()"
-                  >Approve</label
                 >
-                <label
+                  Approve
+                </button>
+                <button
                   pRipple
-                  for="dpmModal"
                   class="btn btn-error btn-outline"
                   (click)="denyDpm(); closeModalInternal()"
-                  >Deny</label
                 >
-                <label
+                  Deny
+                </button>
+                <button
                   pRipple
-                  for="dpmModal"
                   class="btn btn-info btn-outline"
                   (click)="showEdit($event)"
-                  >Edit</label
                 >
+                  Edit
+                </button>
               </div>
             } @else {
-              <div class="modal-action flex flex-row justify-around">
-                <div class="flex-1">
-                  <label class="self-center mr-2">Update points:</label>
+              <div class="modal-action flex flex-row">
+                <div class="flex">
+                  <p class="self-center mr-2">Update points:</p>
                 </div>
                 <input
+                  #pointsInput
                   class="input input-bordered input-info flex-1 min-w-0"
                   type="number"
                   placeholder="Points"

@@ -41,6 +41,7 @@ export class ApprovalsComponent {
   currentPoints = signal<number | undefined>(0);
 
   @ViewChild('dpmModal') dpmModalElement!: ElementRef<HTMLDialogElement>;
+  @ViewChild('pointsInput') pointsInput!: ElementRef;
 
   constructor(
     private approvalsService: ApprovalsService,
@@ -50,6 +51,7 @@ export class ApprovalsComponent {
 
   showApprovalModal(dpm: ApprovalDpmDto) {
     this.currentDpm.set(dpm);
+    this.editOpen.set(false);
     this.showModalInternal();
   }
 
@@ -71,6 +73,9 @@ export class ApprovalsComponent {
     $event.stopPropagation();
     this.currentPoints.set(this.currentDpm()?.points);
     this.editOpen.set(true);
+    setTimeout(() => {
+      this.pointsInput.nativeElement.focus();
+    }, 0);
   }
 
   approveDpm() {

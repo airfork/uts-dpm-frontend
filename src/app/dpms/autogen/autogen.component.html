@@ -22,11 +22,15 @@
           <tbody>
             @for (dpm of autogenDpms(); track dpm) {
               <tr>
-                <td class="break-words whitespace-normal">{{ dpm.name }}</td>
-                <td class="break-words whitespace-normal">
+                <td class="text-base break-words whitespace-normal">
+                  {{ dpm.name }}
+                </td>
+                <td class="text-base break-words whitespace-normal">
                   {{ dpm.block }} {{ dpm.startTime }}-{{ dpm.endTime }}
                 </td>
-                <td class="break-words whitespace-normal">{{ dpm.type }}</td>
+                <td class="text-base break-words whitespace-normal">
+                  {{ dpm.type }}
+                </td>
               </tr>
             }
           </tbody>

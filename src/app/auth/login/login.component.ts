@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -19,6 +19,10 @@ import { Ripple } from 'primeng/ripple';
   imports: [NgClass, ReactiveFormsModule, Ripple],
 })
 export class LoginComponent {
+  private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
+
   loginFormGroup = new FormGroup({
     username: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
@@ -26,12 +30,6 @@ export class LoginComponent {
 
   badCredentials = signal(false);
   loading = signal(false);
-
-  constructor(
-    private authService: AuthService,
-    private notificationService: NotificationService,
-    private router: Router
-  ) {}
 
   onSubmit() {
     this.loading.set(true);

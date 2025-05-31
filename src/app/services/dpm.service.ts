@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { catchError, Observable, retry } from 'rxjs';
 import PostDpmDto from '../models/post-dpm-dto';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -16,10 +16,8 @@ const BASE_URL = environment.baseUrl + '/dpms';
   providedIn: 'root',
 })
 export class DpmService {
-  constructor(
-    private http: HttpClient,
-    private errorService: ErrorService
-  ) {}
+  private http = inject(HttpClient);
+  private errorService = inject(ErrorService);
 
   getCurrentDpms(): Observable<HomeDpmDto[]> {
     return this.http.get<HomeDpmDto[]>(BASE_URL + '/current').pipe(

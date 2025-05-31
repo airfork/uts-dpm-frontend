@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, Input, OnInit, inject } from '@angular/core';
 import { Roles } from '../roles.types';
 import { AuthService } from '../../services/auth.service';
 
@@ -6,12 +6,10 @@ import { AuthService } from '../../services/auth.service';
   selector: '[appRemoveIfUnauthorized]',
 })
 export class RemoveIfUnauthorizedDirective implements OnInit {
-  @Input('appRemoveIfUnauthorized') roles: Roles[] = [];
+  private authService = inject(AuthService);
+  private el = inject(ElementRef);
 
-  constructor(
-    private authService: AuthService,
-    private el: ElementRef
-  ) {}
+  @Input('appRemoveIfUnauthorized') roles: Roles[] = [];
 
   ngOnInit() {
     const role = this.authService.userData.role as Roles;

@@ -1,4 +1,4 @@
-import { Component, ElementRef, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, signal, ViewChild, inject } from '@angular/core';
 import { ApprovalsService } from '../../services/approvals.service';
 import { FormatService } from '../../services/format.service';
 import { first } from 'rxjs';
@@ -30,6 +30,10 @@ import { PrimeTemplate } from 'primeng/api';
   ],
 })
 export class ApprovalsComponent {
+  private approvalsService = inject(ApprovalsService);
+  private formatService = inject(FormatService);
+  private notificationService = inject(NotificationService);
+
   private lastLazyLoadEvent?: TableLazyLoadEvent;
 
   dpms = signal<ApprovalDpmDto[]>([]);
@@ -42,12 +46,6 @@ export class ApprovalsComponent {
 
   @ViewChild('dpmModal') dpmModalElement!: ElementRef<HTMLDialogElement>;
   @ViewChild('pointsInput') pointsInput!: ElementRef;
-
-  constructor(
-    private approvalsService: ApprovalsService,
-    private formatService: FormatService,
-    private notificationService: NotificationService
-  ) {}
 
   showApprovalModal(dpm: ApprovalDpmDto) {
     this.currentDpm.set(dpm);

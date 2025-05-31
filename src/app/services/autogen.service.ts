@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { catchError, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -11,10 +11,8 @@ const BASE_URL = environment.baseUrl + '/autogen';
   providedIn: 'root',
 })
 export class AutogenService {
-  constructor(
-    private http: HttpClient,
-    private errorService: ErrorService
-  ) {}
+  private http = inject(HttpClient);
+  private errorService = inject(ErrorService);
 
   getAutogenDpms(): Observable<AutogenWrapper> {
     return this.http.get<AutogenWrapper>(BASE_URL).pipe(

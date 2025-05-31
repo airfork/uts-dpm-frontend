@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { NotificationService } from './notification.service';
 import { environment } from '../../environments/environment';
@@ -10,10 +10,8 @@ const BASE_URL = environment.baseUrl + '/datagen';
   providedIn: 'root',
 })
 export class DatagenService {
-  constructor(
-    private http: HttpClient,
-    private notificationService: NotificationService
-  ) {}
+  private http = inject(HttpClient);
+  private notificationService = inject(NotificationService);
 
   downloadUserData() {
     this.http

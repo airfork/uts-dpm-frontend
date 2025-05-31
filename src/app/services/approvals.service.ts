@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { DpmService } from './dpm.service';
+import { Injectable, inject } from '@angular/core';
 import { catchError, Observable, retry } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -12,11 +11,8 @@ const BASE_URL = environment.baseUrl + '/dpms';
   providedIn: 'root',
 })
 export class ApprovalsService {
-  constructor(
-    private dpmService: DpmService,
-    private http: HttpClient,
-    private errorService: ErrorService
-  ) {}
+  private http = inject(HttpClient);
+  private errorService = inject(ErrorService);
 
   getApprovalDpms(page: number, size: number): Observable<ApprovalDpmPage> {
     return this.http.get<ApprovalDpmPage>(`${BASE_URL}/approvals?page=${page}&size=${size}`).pipe(

@@ -1,4 +1,4 @@
-import { Component, Inject, LOCALE_ID, OnInit, signal } from '@angular/core';
+import { Component, LOCALE_ID, OnInit, signal, inject } from '@angular/core';
 import { AutogenService } from '../../services/autogen.service';
 import { formatDate } from '@angular/common';
 import { NotificationService } from '../../services/notification.service';
@@ -13,16 +13,14 @@ import { Ripple } from 'primeng/ripple';
   imports: [LoadingComponent, Ripple],
 })
 export class AutogenComponent implements OnInit {
+  private autogenService = inject(AutogenService);
+  private locale = inject(LOCALE_ID);
+  private notificationService = inject(NotificationService);
+
   autogenDpms = signal<AutogenDpm[]>([]);
   loading = signal(true);
   submittedTime = signal<string | null>(null);
   empty = signal(false);
-
-  constructor(
-    private autogenService: AutogenService,
-    @Inject(LOCALE_ID) private locale: string,
-    private notificationService: NotificationService
-  ) {}
 
   ngOnInit() {
     this.autogenService

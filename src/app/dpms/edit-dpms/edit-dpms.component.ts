@@ -84,6 +84,9 @@ const DPM_GROUP_NAME_VALIDATORS = [Validators.required, Validators.maxLength(500
   ],
 })
 export class EditDpmsComponent implements OnInit, AfterViewInit {
+  private notificationService = inject(NotificationService);
+  private dpmService = inject(DpmService);
+
   dpmGroupsNeedRefresh = model.required<boolean>();
   dpmGroupsInput = input.required<DPMGroup[]>();
   isSaving = signal(false);
@@ -103,10 +106,7 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
 
   @ViewChildren('autoResizeTextarea') textareaDirectives?: QueryList<Textarea>;
 
-  constructor(
-    private notificationService: NotificationService,
-    private dpmService: DpmService
-  ) {
+  constructor() {
     effect(() => {
       this.initializeForm(this.dpmGroupsInput());
     });

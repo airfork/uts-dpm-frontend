@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormatService } from '../../services/format.service';
 import { environment } from '../../../environments/environment';
@@ -15,6 +15,9 @@ import { DatePicker } from 'primeng/datepicker';
   imports: [ReactiveFormsModule, NgClass, Ripple, DatePicker],
 })
 export class DatagenComponent implements OnInit {
+  private formatService = inject(FormatService);
+  private datagenService = inject(DatagenService);
+
   private BASE_URL = environment.baseUrl + '/datagen';
   mobileMode = signal(false);
 
@@ -26,11 +29,6 @@ export class DatagenComponent implements OnInit {
     },
     { validators: MixedDateValidator }
   );
-
-  constructor(
-    private formatService: FormatService,
-    private datagenService: DatagenService
-  ) {}
 
   ngOnInit() {
     const ua = navigator.userAgent;

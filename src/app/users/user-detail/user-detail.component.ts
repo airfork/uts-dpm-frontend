@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, signal, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import GetUserDetailDto from '../../models/get-user-detail-dto';
 import { first } from 'rxjs';
@@ -45,6 +45,15 @@ import { Ripple } from 'primeng/ripple';
   ],
 })
 export class UserDetailComponent implements OnInit {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private userService = inject(UserService);
+  private titleService = inject(Title);
+  private notificationService = inject(NotificationService);
+  private dpmService = inject(DpmService);
+  private approvalsService = inject(ApprovalsService);
+  private authService = inject(AuthService);
+
   private lastLazyLoadEvent?: TableLazyLoadEvent;
 
   userId = signal('');
@@ -58,17 +67,6 @@ export class UserDetailComponent implements OnInit {
   modalMessage = signal('');
   outputKey = signal<DetailOutputKey>('email');
   @ViewChild('dpmModal') dpmModalElement!: ElementRef<HTMLDialogElement>;
-
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private userService: UserService,
-    private titleService: Title,
-    private notificationService: NotificationService,
-    private dpmService: DpmService,
-    private approvalsService: ApprovalsService,
-    private authService: AuthService
-  ) {}
 
   ngOnInit() {
     this.route.params.pipe(first()).subscribe((value) => {

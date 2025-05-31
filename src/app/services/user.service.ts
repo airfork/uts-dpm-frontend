@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { catchError, Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -17,12 +17,10 @@ const ROLES = ['Admin', 'Analyst', 'Driver', 'Manager', 'Supervisor'];
   providedIn: 'root',
 })
 export class UserService {
-  constructor(
-    private http: HttpClient,
-    private notificationService: NotificationService,
-    private router: Router,
-    private errorService: ErrorService
-  ) {}
+  private http = inject(HttpClient);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
+  private errorService = inject(ErrorService);
 
   getUserNames(): Observable<UsernameDto[]> {
     return this.http.get<UsernameDto[]>(`${BASE_URL}/names`).pipe(

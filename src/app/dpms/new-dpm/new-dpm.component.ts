@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, input, signal } from '@angular/core';
+import { AfterViewInit, Component, input, signal, inject } from '@angular/core';
 import { AbstractControl, FormGroup, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { DpmService } from '../../services/dpm.service';
 import { NotificationService } from '../../services/notification.service';
@@ -20,17 +20,15 @@ type startEndTime = 'Start Time' | 'End Time';
   imports: [AutoComplete, ReactiveFormsModule, DatePicker, NgClass, Ripple],
 })
 export class NewDpmComponent implements AfterViewInit {
+  private dpmService = inject(DpmService);
+  private notificationService = inject(NotificationService);
+  private formatService = inject(FormatService);
+
   homeFormGroup = input.required<FormGroup>();
   driverNames = input.required<UsernameDto[]>();
   autocompleteResults = signal<string[]>([]);
   dpmGroups = input.required<DPMGroup[]>();
   isGroupsLoaded = input.required<boolean>();
-
-  constructor(
-    private dpmService: DpmService,
-    private notificationService: NotificationService,
-    private formatService: FormatService
-  ) {}
 
   ngAfterViewInit() {
     // additional check after view init in case the above wasn't enough

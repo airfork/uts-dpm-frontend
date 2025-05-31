@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, effect, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, effect, OnInit, signal, inject } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { DPMGroup } from '../../models/dpm-type';
 import { DpmService } from '../../services/dpm.service';
@@ -26,6 +26,13 @@ const editRoles: Roles[] = ['ADMIN'];
   styleUrl: './dpm-page.component.css',
 })
 export class DpmPageComponent implements OnInit, AfterViewInit {
+  private dpmService = inject(DpmService);
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private titleService = inject(Title);
+
   dpmGroups = signal<DPMGroup[]>([]);
   isGroupsLoaded = signal<boolean>(false);
   groupsNeedRefresh = signal(true);
@@ -53,14 +60,7 @@ export class DpmPageComponent implements OnInit, AfterViewInit {
     notes: new FormControl(''),
   });
 
-  constructor(
-    private dpmService: DpmService,
-    private userService: UserService,
-    private authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private titleService: Title
-  ) {
+  constructor() {
     effect(() => {
       if (this.groupsNeedRefresh()) this.getDpmGroups();
     });

@@ -4,6 +4,7 @@ import {
   Component,
   OnInit,
   signal,
+  inject,
 } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import UsernameDto from '../../models/username-dto';
@@ -36,6 +37,13 @@ import { LoadingComponent } from '../../shared/loading/loading.component';
   ],
 })
 export class UsersListComponent implements OnInit {
+  private userService = inject(UserService);
+  private formatService = inject(FormatService);
+  private notificationService = inject(NotificationService);
+  private changeDetector = inject(ChangeDetectorRef);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   users = signal<UsernameDto[] | null>(null);
   filteredUsers = signal<UsernameDto[]>([]);
   activeTab = signal({ actions: false, create: false, search: true });
@@ -43,15 +51,6 @@ export class UsersListComponent implements OnInit {
   modalOpen = signal(false);
   modalMessage = signal('');
   outputKey = signal<ListOutputKey>('email');
-
-  constructor(
-    private userService: UserService,
-    private formatService: FormatService,
-    private notificationService: NotificationService,
-    private changeDetector: ChangeDetectorRef,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
 
   ngOnInit() {
     // jump to tab based on query param

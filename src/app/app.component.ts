@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { PrimeNG } from 'primeng/config';
 import { RouterOutlet } from '@angular/router';
 
@@ -9,9 +9,9 @@ import { RouterOutlet } from '@angular/router';
   imports: [RouterOutlet],
 })
 export class AppComponent implements OnInit {
-  title = 'uts-new-dpm';
+  private primeNG = inject(PrimeNG);
 
-  constructor(private primeNG: PrimeNG) {}
+  title = 'uts-new-dpm';
 
   ngOnInit() {
     this.primeNG.ripple.set(true);

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, ElementRef, signal, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  signal,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { DpmService } from '../../services/dpm.service';
 import { FormatService } from '../../services/format.service';
 import HomeDpmDto from '../../models/home-dpm-dto';
@@ -17,16 +24,14 @@ import { TableModule } from 'primeng/table';
   imports: [PointsPipe, BlockPipe, UpperCasePipe, FormsModule, LoadingComponent, TableModule],
 })
 export class HomeComponent {
+  private dpmService = inject(DpmService);
+  private formatService = inject(FormatService);
+
   currentDpms = toSignal(this.dpmService.getCurrentDpms(), {
     initialValue: [],
   });
   currentDpm = signal<HomeDpmDto | null>(null);
   @ViewChild('dpmModal') dpmModalElement!: ElementRef<HTMLDialogElement>;
-
-  constructor(
-    private dpmService: DpmService,
-    private formatService: FormatService
-  ) {}
 
   clickRow(dpm: HomeDpmDto) {
     this.currentDpm.set(dpm);

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { NotificationService } from './notification.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -7,7 +7,7 @@ import { Observable, throwError } from 'rxjs';
   providedIn: 'root',
 })
 export class ErrorService {
-  constructor(private notificationService: NotificationService) {}
+  private notificationService = inject(NotificationService);
 
   errorResponse(error: HttpErrorResponse, detailMessage: string): Observable<never> {
     if (error.status === 303) {

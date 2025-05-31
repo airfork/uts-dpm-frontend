@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
@@ -17,6 +17,10 @@ interface navbarLinks {
   imports: [RouterLink, RouterLinkActive, RemoveIfUnauthorizedDirective],
 })
 export class NavbarComponent {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private notificationService = inject(NotificationService);
+
   links: navbarLinks[] = [
     {
       path: '/dpm',
@@ -44,12 +48,6 @@ export class NavbarComponent {
       allowedRoles: ['ADMIN', 'ANALYST', 'DRIVER', 'MANAGER', 'SUPERVISOR'],
     },
   ];
-
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private notificationService: NotificationService
-  ) {}
 
   menuItemClick() {
     if (document.activeElement instanceof HTMLElement) {

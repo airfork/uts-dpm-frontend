@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { first } from 'rxjs';
 import { Router } from '@angular/router';
@@ -23,6 +23,10 @@ import { LoadingComponent } from '../../shared/loading/loading.component';
   imports: [ReactiveFormsModule, Ripple, LoadingComponent],
 })
 export class ChangePasswordComponent implements OnInit {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private notificationService = inject(NotificationService);
+
   isLoading = signal(true);
   waitingForResponse = signal(false);
   changePasswordFormGroup = new FormGroup(
@@ -33,12 +37,6 @@ export class ChangePasswordComponent implements OnInit {
     },
     { validators: [PasswordsEqualValidator, PasswordsNotEqualValidator] }
   );
-
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private notificationService: NotificationService
-  ) {}
 
   ngOnInit() {
     this.authService

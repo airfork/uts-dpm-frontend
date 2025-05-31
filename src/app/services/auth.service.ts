@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import jwtDecode from 'jwt-decode';
 import TokenPayload from '../models/token-payload';
 import { catchError, map, Observable, throwError } from 'rxjs';
@@ -14,12 +14,12 @@ const BASE_URL = environment.baseUrl + '/auth';
   providedIn: 'root',
 })
 export class AuthService {
+  private http = inject(HttpClient);
+  private notificationService = inject(NotificationService);
+
   userData: UserData;
 
-  constructor(
-    private http: HttpClient,
-    private notificationService: NotificationService
-  ) {
+  constructor() {
     this.userData = new UserData();
     this.setUserData();
   }

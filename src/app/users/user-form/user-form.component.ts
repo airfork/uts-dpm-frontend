@@ -7,6 +7,7 @@ import {
   OnInit,
   signal,
   SimpleChanges,
+  inject,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -37,6 +38,11 @@ const POINTS_VALIDATORS = [Validators.required, Validators.pattern(/-?\d+/)];
   imports: [NgClass, FormsModule, ReactiveFormsModule, Ripple],
 })
 export class UserFormComponent implements OnInit, OnChanges {
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
+  private changeDetector = inject(ChangeDetectorRef);
+
   @Input() @Required layout: 'create' | 'edit' = 'edit';
   @Input() managers: string[] | null | undefined = undefined;
   @Input() userInfo?: { user: GetUserDetailDto; id: string };
@@ -54,13 +60,6 @@ export class UserFormComponent implements OnInit, OnChanges {
     role: new FormControl(''),
     fullTime: new FormControl(false),
   });
-
-  constructor(
-    private userService: UserService,
-    private authService: AuthService,
-    private notificationService: NotificationService,
-    private changeDetector: ChangeDetectorRef
-  ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['managers'] && this.layout === 'create') {

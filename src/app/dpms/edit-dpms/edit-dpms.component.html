@@ -36,10 +36,12 @@
           track groupControl.value.id;
           let groupIndex = $index
         ) {
-          <div
+          <app-card
             [formGroupName]="groupIndex"
             cdkDrag
-            class="card w-full bg-base-100 card-lg shadow-base hover:shadow-md cursor-move border-2 border-base-300 last:mb-5 transition-shadow"
+            variant="default"
+            [hover]="true"
+            class="w-full cursor-move border-2 last:mb-5"
             [ngClass]="{
               'border-base-300':
                 !groupHasErrors(groupControl) &&
@@ -49,158 +51,156 @@
                 dpmsInGroupHaveErrors(groupControl),
             }"
           >
-            <div class="card-body p-6">
-              <div class="flex justify-between items-center mb-4">
-                <textarea
-                  #autoResizeTextarea
-                  id="dpmGroupName-{{ groupControl.value.id }}"
-                  pInputTextarea
-                  [autoResize]="true"
-                  rows="1"
-                  class="textarea textarea-ghost grow textarea-xl min-h-0 resize-none"
-                  placeholder="Group Name"
-                  formControlName="name"
-                  [ngClass]="{
-                    'textarea-error': groupNameHasErrors(groupControl),
-                    'textarea-ghost': !groupNameHasErrors(groupControl),
-                  }"
-                ></textarea>
+            <div class="flex justify-between items-center mb-4">
+              <textarea
+                #autoResizeTextarea
+                id="dpmGroupName-{{ groupControl.value.id }}"
+                pInputTextarea
+                [autoResize]="true"
+                rows="1"
+                class="textarea textarea-ghost grow textarea-xl min-h-0 resize-none"
+                placeholder="Group Name"
+                formControlName="name"
+                [ngClass]="{
+                  'textarea-error': groupNameHasErrors(groupControl),
+                  'textarea-ghost': !groupNameHasErrors(groupControl),
+                }"
+              ></textarea>
+
+              <div
+                class="grid flex-none"
+                [ngClass]="{
+                  'grid-cols-2 gap-2': groupControl.value.dpms.length === 0,
+                }"
+              >
+                <div class="tooltip tooltip-primary" data-tip="Add DPM">
+                  <button
+                    class="btn btn-primary btn-xs ml-2"
+                    (click)="addDpmToGroup(groupControl)"
+                  >
+                    <i class="pi pi-plus text-sm"></i>
+                  </button>
+                </div>
 
                 <div
-                  class="grid flex-none"
-                  [ngClass]="{
-                    'grid-cols-2 gap-2': groupControl.value.dpms.length === 0,
-                  }"
+                  class="tooltip tooltip-primary"
+                  data-tip="Delete Group"
+                  *ngIf="groupControl.value.dpms.length === 0"
                 >
-                  <div class="tooltip tooltip-primary" data-tip="Add DPM">
-                    <button
-                      class="btn btn-primary btn-xs ml-2"
-                      (click)="addDpmToGroup(groupControl)"
-                    >
-                      <i class="pi pi-plus text-sm"></i>
-                    </button>
-                  </div>
-
-                  <div
-                    class="tooltip tooltip-primary"
-                    data-tip="Delete Group"
-                    *ngIf="groupControl.value.dpms.length === 0"
+                  <button
+                    class="btn btn-xs ml-2"
+                    (click)="confirmRemoveGroup(groupIndex)"
                   >
-                    <button
-                      class="btn btn-xs ml-2"
-                      (click)="confirmRemoveGroup(groupIndex)"
-                    >
-                      <i class="pi pi-trash text-sm"></i>
-                    </button>
-                  </div>
+                    <i class="pi pi-trash text-sm"></i>
+                  </button>
                 </div>
               </div>
+            </div>
 
-              @if (groupHasErrors(groupControl)) {
-                <div class="mb-4">
-                  @for (
-                    errorMessage of getGroupErrorMessages(groupControl);
-                    track errorMessage
+            @if (groupHasErrors(groupControl)) {
+              <div class="mb-4">
+                @for (
+                  errorMessage of getGroupErrorMessages(groupControl);
+                  track errorMessage
+                ) {
+                  <p class="text-error text-xs">{{ errorMessage }}</p>
+                }
+              </div>
+            }
+
+            <div
+              cdkDropList
+              formArrayName="dpms"
+              [cdkDropListData]="{
+                groupControl: groupControl,
+                controls: getDpmsFormArray(groupControl).controls,
+              }"
+              class="dpm-list space-y-4"
+              (cdkDropListDropped)="dropDpms($event, groupControl)"
+            >
+              @for (
+                dpmControl of getDpmsFormArray(groupControl).controls;
+                track dpmControl.value.id;
+                let dpmIndex = $index
+              ) {
+                <div class="dpm-type-box" cdkDrag [formGroupName]="dpmIndex">
+                  <div class="flex flex-row items-center">
+                    <div class="mr-5 grow">
+                      <textarea
+                        id="dpmName-{{ dpmControl.value.id }}"
+                        #autoResizeTextarea
+                        pInputTextarea
+                        [autoResize]="true"
+                        rows="1"
+                        class="textarea w-full min-h-0 resize-none"
+                        placeholder="DPM Name"
+                        formControlName="name"
+                        [ngClass]="{
+                          'textarea-error':
+                            dpmHasErrors(dpmControl, 'name') ||
+                            dpmNameIsDuplicated(groupControl, dpmControl),
+                          'textarea-ghost':
+                            !dpmHasErrors(dpmControl, 'name') &&
+                            !dpmNameIsDuplicated(groupControl, dpmControl),
+                        }"
+                      ></textarea>
+                    </div>
+
+                    <div class="min-w-1/10 flex-none">
+                      <input
+                        id="dpmPoints-{{ dpmControl.value.id }}"
+                        class="input input-sm w-20"
+                        formControlName="points"
+                        type="number"
+                        placeholder="Points"
+                        [ngClass]="{
+                          'input-error': dpmHasErrors(dpmControl, 'points'),
+                          'input-ghost': !dpmHasErrors(dpmControl, 'points'),
+                        }"
+                      />
+                    </div>
+
+                    <button
+                      class="btn btn-xs ml-2 border-2"
+                      type="button"
+                      [style.border-color]="dpmControl.value.color?.hexCode"
+                      (click)="showColorModal(dpmControl)"
+                    >
+                      <i class="pi pi-palette text-xs"></i>
+                    </button>
+
+                    <button
+                      class="btn btn-xs ml-2 border-2"
+                      type="button"
+                      (click)="
+                        confirmRemoveDpmFromGroup(groupControl, dpmIndex)
+                      "
+                    >
+                      <i class="pi pi-trash text-xs"></i>
+                    </button>
+                  </div>
+
+                  @if (
+                    getDpmErrorMessages(groupControl, dpmControl).length > 0
                   ) {
-                    <p class="text-error text-xs">{{ errorMessage }}</p>
+                    <div class="mt-2">
+                      @for (
+                        errorMessage of getDpmErrorMessages(
+                          groupControl,
+                          dpmControl
+                        );
+                        track errorMessage
+                      ) {
+                        <p class="text-error text-xs mt-1 basis-full">
+                          {{ errorMessage }}
+                        </p>
+                      }
+                    </div>
                   }
                 </div>
               }
-
-              <div
-                cdkDropList
-                formArrayName="dpms"
-                [cdkDropListData]="{
-                  groupControl: groupControl,
-                  controls: getDpmsFormArray(groupControl).controls,
-                }"
-                class="dpm-list space-y-4"
-                (cdkDropListDropped)="dropDpms($event, groupControl)"
-              >
-                @for (
-                  dpmControl of getDpmsFormArray(groupControl).controls;
-                  track dpmControl.value.id;
-                  let dpmIndex = $index
-                ) {
-                  <div class="dpm-type-box" cdkDrag [formGroupName]="dpmIndex">
-                    <div class="flex flex-row items-center">
-                      <div class="mr-5 grow">
-                        <textarea
-                          id="dpmName-{{ dpmControl.value.id }}"
-                          #autoResizeTextarea
-                          pInputTextarea
-                          [autoResize]="true"
-                          rows="1"
-                          class="textarea w-full min-h-0 resize-none"
-                          placeholder="DPM Name"
-                          formControlName="name"
-                          [ngClass]="{
-                            'textarea-error':
-                              dpmHasErrors(dpmControl, 'name') ||
-                              dpmNameIsDuplicated(groupControl, dpmControl),
-                            'textarea-ghost':
-                              !dpmHasErrors(dpmControl, 'name') &&
-                              !dpmNameIsDuplicated(groupControl, dpmControl),
-                          }"
-                        ></textarea>
-                      </div>
-
-                      <div class="min-w-1/10 flex-none">
-                        <input
-                          id="dpmPoints-{{ dpmControl.value.id }}"
-                          class="input input-sm w-20"
-                          formControlName="points"
-                          type="number"
-                          placeholder="Points"
-                          [ngClass]="{
-                            'input-error': dpmHasErrors(dpmControl, 'points'),
-                            'input-ghost': !dpmHasErrors(dpmControl, 'points'),
-                          }"
-                        />
-                      </div>
-
-                      <button
-                        class="btn btn-xs ml-2 border-2"
-                        type="button"
-                        [style.border-color]="dpmControl.value.color?.hexCode"
-                        (click)="showColorModal(dpmControl)"
-                      >
-                        <i class="pi pi-palette text-xs"></i>
-                      </button>
-
-                      <button
-                        class="btn btn-xs ml-2 border-2"
-                        type="button"
-                        (click)="
-                          confirmRemoveDpmFromGroup(groupControl, dpmIndex)
-                        "
-                      >
-                        <i class="pi pi-trash text-xs"></i>
-                      </button>
-                    </div>
-
-                    @if (
-                      getDpmErrorMessages(groupControl, dpmControl).length > 0
-                    ) {
-                      <div class="mt-2">
-                        @for (
-                          errorMessage of getDpmErrorMessages(
-                            groupControl,
-                            dpmControl
-                          );
-                          track errorMessage
-                        ) {
-                          <p class="text-error text-xs mt-1 basis-full">
-                            {{ errorMessage }}
-                          </p>
-                        }
-                      </div>
-                    }
-                  </div>
-                }
-              </div>
             </div>
-          </div>
+          </app-card>
         }
       </div>
     </div>

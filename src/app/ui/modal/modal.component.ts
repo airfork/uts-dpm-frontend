@@ -15,7 +15,8 @@ export class ModalComponent {
   closeOnEscape = input<boolean>(true);
 
   // Signal output
-  closed = output<void>();
+  // eslint-disable-next-line @angular-eslint/no-output-native
+  close = output<void>();
 
   // Computed classes for modal container
   classes = computed(() => {
@@ -83,7 +84,7 @@ export class ModalComponent {
 
   // Handle close button click
   handleClose(): void {
-    this.closed.emit();
+    this.close.emit();
   }
 
   // Handle backdrop click

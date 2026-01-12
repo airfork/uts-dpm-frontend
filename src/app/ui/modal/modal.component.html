@@ -8,16 +8,19 @@
     <!-- Modal Container -->
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div
+        #modalDialog
         [class]="classes()"
         (click)="$event.stopPropagation()"
         role="dialog"
         aria-modal="true"
+        aria-labelledby="modal-title"
+        tabindex="-1"
       >
         <!-- Header -->
         <div
           class="flex items-start justify-between border-b border-neutral-200 px-6 py-4"
         >
-          <div class="flex-1">
+          <div id="modal-title" class="flex-1">
             <ng-content select="[modal-header]"></ng-content>
           </div>
           <button

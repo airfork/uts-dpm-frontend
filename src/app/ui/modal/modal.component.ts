@@ -1,6 +1,5 @@
-import { Component, input, output, computed, effect } from '@angular/core';
-
-type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
+import { Component, input, output, computed, effect, ViewChild, ElementRef } from '@angular/core';
+import { ModalSize } from './modal.types';
 
 @Component({
   selector: 'app-modal',
@@ -8,6 +7,9 @@ type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
   standalone: true,
 })
 export class ModalComponent {
+  // ViewChild for focus management
+  @ViewChild('modalDialog', { read: ElementRef }) modalDialog?: ElementRef;
+
   // Signal inputs
   open = input.required<boolean>();
   size = input<ModalSize>('md');
@@ -51,13 +53,18 @@ export class ModalComponent {
   });
 
   constructor() {
-    // Effect to handle body scroll lock and escape key
+    // Effect to handle body scroll lock, escape key, and focus management
     effect(() => {
       const isOpen = this.open();
 
       if (isOpen) {
         // Lock body scroll
         document.body.style.overflow = 'hidden';
+
+        // Focus the modal dialog for accessibility
+        setTimeout(() => {
+          this.modalDialog?.nativeElement.focus();
+        }, 0);
 
         // Add escape key listener
         const handleEscape = (event: KeyboardEvent) => {

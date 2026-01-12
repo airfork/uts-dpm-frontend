@@ -1,8 +1,8 @@
 <dialog #confirmModal class="modal cursor-default">
-  <div class="modal-box relative">
-    <h3 class="font-bold text-xl">{{ title() }}</h3>
-    <p class="py-4 text-lg">{{ message() }}</p>
-    <div class="modal-action">
+  <div class="modal-box relative shadow-xl p-6">
+    <h3 class="text-xl font-semibold mb-4">{{ title() }}</h3>
+    <p class="py-4 text-base">{{ message() }}</p>
+    <div class="modal-action mt-6">
       <button pRipple class="btn btn-outline btn-success" (click)="confirm()">
         Yes
       </button>

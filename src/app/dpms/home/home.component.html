@@ -1,5 +1,5 @@
 <dialog #dpmModal class="modal cursor-default">
-  <div class="modal-box relative">
+  <div class="modal-box relative shadow-xl p-6">
     <form method="dialog">
       <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
         ✕
@@ -7,11 +7,9 @@
     </form>
     @if (currentDpm(); as currentDpm) {
       <div>
-        <h3 class="text-xl font-bold mx-4">{{ currentDpm.type }}</h3>
-        <table
-          class="my-4 border-separate border-spacing-x-4 border-spacing-y-1.5"
-        >
-          <tbody class="text-left align-text-top">
+        <h3 class="text-xl font-semibold mb-6">{{ currentDpm.type }}</h3>
+        <table class="border-separate border-spacing-x-4 border-spacing-y-1.5">
+          <tbody class="text-left align-text-top text-base">
             <tr>
               <th>Points:</th>
               <td>{{ currentDpm.points | points }}</td>

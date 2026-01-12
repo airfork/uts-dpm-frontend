@@ -139,14 +139,14 @@
 }
 
 <dialog #dpmModal class="modal cursor-default">
-  <div class="modal-box relative">
+  <div class="modal-box relative shadow-xl p-6">
     @if (currentDpm(); as currentDpm) {
       <div>
-        <h3 class="text-xl font-bold mx-4">{{ currentDpm.type }}</h3>
+        <h3 class="text-xl font-semibold mb-6">{{ currentDpm.type }}</h3>
         <table
-          class="my-2 md:my-4 border-separate border-spacing-x-2 md:border-spacing-x-4 border-spacing-y-1.5 table-auto"
+          class="border-separate border-spacing-x-2 md:border-spacing-x-4 border-spacing-y-1.5 table-auto"
         >
-          <tbody class="text-left align-text-top">
+          <tbody class="text-left align-text-top text-base">
             @if (currentDpm.createdBy) {
               <tr class="whitespace-nowrap">
                 <th>Created By:</th>
@@ -191,7 +191,7 @@
             </tr>
           </tbody>
         </table>
-        <div class="modal-action">
+        <div class="modal-action mt-6">
           <label
             pRipple
             for="dpmModal"

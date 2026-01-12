@@ -57,15 +57,17 @@
         </ng-template>
       </p-table>
     </div>
-    <dialog #dpmModal id="dpmModal" class="modal cursor-default">
-      <div class="modal-box relative">
-        @if (currentDpm(); as dpm) {
+    <app-modal [open]="isModalOpen()" [size]="'lg'" (close)="closeModal()">
+      @if (currentDpm(); as dpm) {
+        <ng-container modal-header>
+          <h3 class="text-xl font-bold">
+            {{ dpm.driver }}
+          </h3>
+        </ng-container>
+        <ng-container modal-body>
           <div>
-            <h3 class="text-xl font-bold mx-2 md:mx-4">
-              {{ dpm.driver }}
-            </h3>
             <table
-              class="my-2 md:my-4 border-separate border-spacing-x-2 md:border-spacing-x-4 border-spacing-y-2 table-auto"
+              class="border-separate border-spacing-x-2 md:border-spacing-x-4 border-spacing-y-2 table-auto"
             >
               <tbody class="text-left align-text-top">
                 @if (dpm.createdBy) {
@@ -112,32 +114,8 @@
                 }
               </tbody>
             </table>
-            @if (!editOpen()) {
-              <div class="modal-action">
-                <button
-                  pRipple
-                  class="btn btn-success btn-outline"
-                  (click)="approveDpm(); closeModalInternal()"
-                >
-                  Approve
-                </button>
-                <button
-                  pRipple
-                  class="btn btn-error btn-outline"
-                  (click)="denyDpm(); closeModalInternal()"
-                >
-                  Deny
-                </button>
-                <button
-                  pRipple
-                  class="btn btn-info btn-outline"
-                  (click)="showEdit($event)"
-                >
-                  Edit
-                </button>
-              </div>
-            } @else {
-              <div class="modal-action flex flex-row">
+            @if (editOpen()) {
+              <div class="flex flex-row mt-4">
                 <div class="flex">
                   <p class="self-center mr-2">Update points:</p>
                 </div>
@@ -152,12 +130,24 @@
               </div>
             }
           </div>
+        </ng-container>
+        @if (!editOpen()) {
+          <ng-container modal-footer>
+            <div class="flex justify-end gap-2">
+              <app-button variant="outline" (click)="approveDpm()">
+                Approve
+              </app-button>
+              <app-button variant="ghost" (click)="denyDpm()">
+                Deny
+              </app-button>
+              <app-button variant="secondary" (click)="showEdit($event)">
+                Edit
+              </app-button>
+            </div>
+          </ng-container>
         }
-      </div>
-      <form method="dialog" class="modal-backdrop">
-        <button id="dialogCloseButton">close</button>
-      </form>
-    </dialog>
+      }
+    </app-modal>
   </div>
 } @else {
   <app-loading></app-loading>

@@ -10,8 +10,9 @@ import { LoadingComponent } from '../../shared/loading/loading.component';
 import { UpperCasePipe } from '@angular/common';
 import { BlockPipe } from '../../shared/pipes/BlockPipe';
 import { PointsPipe } from '../../shared/pipes/PointsPipe';
-import { Ripple } from 'primeng/ripple';
 import { PrimeTemplate } from 'primeng/api';
+import { ModalComponent } from '../../ui/modal/modal.component';
+import { ButtonComponent } from '../../ui/button/button.component';
 
 @Component({
   selector: 'app-approvals',
@@ -23,10 +24,11 @@ import { PrimeTemplate } from 'primeng/api';
     UpperCasePipe,
     BlockPipe,
     PointsPipe,
-    Ripple,
     PrimeTemplate,
     TableModule,
     PointsPipe,
+    ModalComponent,
+    ButtonComponent,
   ],
 })
 export class ApprovalsComponent {
@@ -43,14 +45,18 @@ export class ApprovalsComponent {
   currentDpm = signal<ApprovalDpmDto | null>(null);
   editOpen = signal(false);
   currentPoints = signal<number | undefined>(0);
+  isModalOpen = signal(false);
 
-  @ViewChild('dpmModal') dpmModalElement!: ElementRef<HTMLDialogElement>;
   @ViewChild('pointsInput') pointsInput!: ElementRef;
 
   showApprovalModal(dpm: ApprovalDpmDto) {
     this.currentDpm.set(dpm);
     this.editOpen.set(false);
-    this.showModalInternal();
+    this.isModalOpen.set(true);
+  }
+
+  closeModal() {
+    this.isModalOpen.set(false);
   }
 
   hideEdit() {
@@ -80,6 +86,7 @@ export class ApprovalsComponent {
     const currentDpm = this.currentDpm();
     if (!currentDpm) return;
 
+    this.closeModal();
     this.dpms.update((prev) => prev.filter((dto) => dto.id != this.currentDpm()?.id));
     this.approvalsService
       .approveDpm(currentDpm.id)
@@ -94,6 +101,7 @@ export class ApprovalsComponent {
     const currentDpm = this.currentDpm();
     if (!currentDpm) return;
 
+    this.closeModal();
     this.dpms.update((prev) => prev.filter((dto) => dto.id != this.currentDpm()?.id));
     this.approvalsService
       .denyDpm(currentDpm.id)
@@ -129,17 +137,5 @@ export class ApprovalsComponent {
 
   get format() {
     return this.formatService;
-  }
-
-  showModalInternal() {
-    if (this.dpmModalElement && this.dpmModalElement.nativeElement) {
-      this.dpmModalElement.nativeElement.showModal();
-    }
-  }
-
-  closeModalInternal() {
-    if (this.dpmModalElement && this.dpmModalElement.nativeElement) {
-      this.dpmModalElement.nativeElement.close();
-    }
   }
 }

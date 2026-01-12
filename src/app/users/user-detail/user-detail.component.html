@@ -138,11 +138,13 @@
   <app-loading></app-loading>
 }
 
-<dialog #dpmModal class="modal cursor-default">
-  <div class="modal-box relative shadow-xl p-6">
-    @if (currentDpm(); as currentDpm) {
+<app-modal [open]="isModalOpen()" [size]="'md'" (close)="closeModal()">
+  @if (currentDpm(); as currentDpm) {
+    <ng-container modal-header>
+      <h3 class="text-xl font-semibold">{{ currentDpm.type }}</h3>
+    </ng-container>
+    <ng-container modal-body>
       <div>
-        <h3 class="text-xl font-semibold mb-6">{{ currentDpm.type }}</h3>
         <table
           class="border-separate border-spacing-x-2 md:border-spacing-x-4 border-spacing-y-1.5 table-auto"
         >
@@ -191,26 +193,21 @@
             </tr>
           </tbody>
         </table>
-        <div class="modal-action mt-6">
-          <label
-            pRipple
-            for="dpmModal"
-            class="btn btn-outline"
-            (click)="denyDpm()"
-            [ngClass]="{
-              'btn-error': !currentDpm.ignored,
-              'btn-disabled': currentDpm.ignored,
-            }"
-            >Deny</label
-          >
-        </div>
       </div>
-    }
-  </div>
-  <form method="dialog" class="modal-backdrop">
-    <button id="dialogCloseButton">close</button>
-  </form>
-</dialog>
+    </ng-container>
+    <ng-container modal-footer>
+      <div class="flex justify-end gap-2">
+        <app-button
+          variant="ghost"
+          (click)="denyDpm()"
+          [disabled]="currentDpm.ignored"
+        >
+          Deny
+        </app-button>
+      </div>
+    </ng-container>
+  }
+</app-modal>
 
 <app-confirm-box
   [message]="modalMessage()"

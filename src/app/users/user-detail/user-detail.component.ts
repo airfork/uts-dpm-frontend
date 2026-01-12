@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, signal, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import GetUserDetailDto from '../../models/get-user-detail-dto';
 import { first } from 'rxjs';
@@ -24,7 +24,8 @@ import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component'
 import { BlockPipe } from '../../shared/pipes/BlockPipe';
 import { PointsPipe } from '../../shared/pipes/PointsPipe';
 import { LoadingComponent } from '../../shared/loading/loading.component';
-import { Ripple } from 'primeng/ripple';
+import { ModalComponent } from '../../ui/modal/modal.component';
+import { ButtonComponent } from '../../ui/button/button.component';
 
 @Component({
   selector: 'app-user-detail',
@@ -40,8 +41,9 @@ import { Ripple } from 'primeng/ripple';
     BlockPipe,
     PointsPipe,
     LoadingComponent,
-    Ripple,
     RouterLink,
+    ModalComponent,
+    ButtonComponent,
   ],
 })
 export class UserDetailComponent implements OnInit {
@@ -66,7 +68,7 @@ export class UserDetailComponent implements OnInit {
   confirmModalOpen = signal(false);
   modalMessage = signal('');
   outputKey = signal<DetailOutputKey>('email');
-  @ViewChild('dpmModal') dpmModalElement!: ElementRef<HTMLDialogElement>;
+  isModalOpen = signal(false);
 
   ngOnInit() {
     this.route.params.pipe(first()).subscribe((value) => {
@@ -90,11 +92,15 @@ export class UserDetailComponent implements OnInit {
 
   clickRow(dpm: DpmDetailDto) {
     this.currentDpm.set(dpm);
-    this.showModalInternal();
+    this.isModalOpen.set(true);
+  }
+
+  closeModal() {
+    this.isModalOpen.set(false);
   }
 
   denyDpm() {
-    this.closeModalInternal();
+    this.closeModal();
     const currentDpm = this.currentDpm();
     if (!currentDpm) return;
 
@@ -193,18 +199,6 @@ export class UserDetailComponent implements OnInit {
     return (
       this.authService.userData.username.toLowerCase().trim() === user.email.toLowerCase().trim()
     );
-  }
-
-  showModalInternal() {
-    if (this.dpmModalElement && this.dpmModalElement.nativeElement) {
-      this.dpmModalElement.nativeElement.showModal();
-    }
-  }
-
-  closeModalInternal() {
-    if (this.dpmModalElement && this.dpmModalElement.nativeElement) {
-      this.dpmModalElement.nativeElement.close();
-    }
   }
 
   private setTitle() {

@@ -1,21 +1,10 @@
-<dialog #confirmModal class="modal cursor-default">
-  <div class="modal-box relative shadow-xl p-6">
-    <h3 class="text-xl font-semibold mb-4">{{ title() }}</h3>
-    <p class="py-4 text-base">{{ message() }}</p>
-    <div class="modal-action mt-6">
-      <button pRipple class="btn btn-outline btn-success" (click)="confirm()">
-        Yes
-      </button>
-      <button
-        pRipple
-        class="btn btn-outline btn-error"
-        (click)="requestClose()"
-      >
-        No
-      </button>
-    </div>
+<app-modal [open]="isOpen()" [size]="'sm'" (close)="requestClose()">
+  <h3 modal-header class="text-xl font-semibold">{{ title() }}</h3>
+  <div modal-body>
+    <p class="text-base">{{ message() }}</p>
   </div>
-  <form method="dialog" class="modal-backdrop">
-    <button id="dialogCloseButton" (click)="requestClose()">close</button>
-  </form>
-</dialog>
+  <div modal-footer class="flex justify-end gap-2">
+    <app-button variant="outline" (click)="confirm()"> Yes </app-button>
+    <app-button variant="ghost" (click)="requestClose()"> No </app-button>
+  </div>
+</app-modal>

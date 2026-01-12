@@ -228,11 +228,19 @@
   </div>
 }
 
-<dialog #colorModal id="colorModal" class="modal cursor-default">
-  <div class="modal-box relative shadow-lg p-6">
-    <h3 class="text-2xl font-bold mb-6">{{ currentModalDpm()?.name }}</h3>
+<app-modal
+  [open]="isColorModalOpen()"
+  [size]="'lg'"
+  (close)="closeColorModal()"
+>
+  <h3 modal-header class="text-2xl font-bold">{{ currentModalDpm()?.name }}</h3>
 
-    <form [formGroup]="colorSelectionForm" (ngSubmit)="applyColorSelection()">
+  <div modal-body>
+    <form
+      [formGroup]="colorSelectionForm"
+      id="colorSelectionForm"
+      (ngSubmit)="applyColorSelection()"
+    >
       <div class="space-y-4">
         <p-panel
           class="cursor-pointer"
@@ -272,29 +280,27 @@
           </p>
         </fieldset>
       </div>
-
-      <div class="modal-action mt-6">
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="
-            colorSelectionForm.pristine ||
-            !colorSelectionForm.valid ||
-            selectedColorIsInUse()
-          "
-        >
-          Apply
-        </button>
-        <button type="button" class="btn" (click)="closeModalInternal()">
-          Cancel
-        </button>
-      </div>
     </form>
   </div>
-  <form method="dialog" class="modal-backdrop">
-    <button id="dialogCloseButton">close</button>
-  </form>
-</dialog>
+
+  <div modal-footer class="flex justify-end gap-2">
+    <app-button
+      type="submit"
+      form="colorSelectionForm"
+      variant="primary"
+      [disabled]="
+        colorSelectionForm.pristine ||
+        !colorSelectionForm.valid ||
+        selectedColorIsInUse()
+      "
+    >
+      Apply
+    </app-button>
+    <app-button variant="ghost" (click)="closeColorModal()">
+      Cancel
+    </app-button>
+  </div>
+</app-modal>
 
 <app-confirm-box
   [message]="confirmModalMessage()"

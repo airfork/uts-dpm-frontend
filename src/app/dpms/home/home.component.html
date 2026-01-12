@@ -1,13 +1,10 @@
-<dialog #dpmModal class="modal cursor-default">
-  <div class="modal-box relative shadow-xl p-6">
-    <form method="dialog">
-      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-        ✕
-      </button>
-    </form>
-    @if (currentDpm(); as currentDpm) {
+<app-modal [open]="isModalOpen()" [size]="'md'" (close)="closeModal()">
+  @if (currentDpm(); as currentDpm) {
+    <ng-container modal-header>
+      <h3 class="text-xl font-semibold">{{ currentDpm.type }}</h3>
+    </ng-container>
+    <ng-container modal-body>
       <div>
-        <h3 class="text-xl font-semibold mb-6">{{ currentDpm.type }}</h3>
         <table class="border-separate border-spacing-x-4 border-spacing-y-1.5">
           <tbody class="text-left align-text-top text-base">
             <tr>
@@ -41,12 +38,9 @@
           </tbody>
         </table>
       </div>
-    }
-  </div>
-  <form method="dialog" class="modal-backdrop">
-    <button>close</button>
-  </form>
-</dialog>
+    </ng-container>
+  }
+</app-modal>
 
 <ng-template #loading>
   <app-loading></app-loading>

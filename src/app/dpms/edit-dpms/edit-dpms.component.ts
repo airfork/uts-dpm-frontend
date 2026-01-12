@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   Component,
   effect,
-  ElementRef,
   HostListener,
   inject,
   input,
@@ -10,7 +9,6 @@ import {
   OnInit,
   QueryList,
   signal,
-  ViewChild,
   ViewChildren,
 } from '@angular/core';
 import {
@@ -41,6 +39,8 @@ import { GetDpmColors } from '../../models/get-dpm-colors';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
 import { Panel } from 'primeng/panel';
 import { CardComponent } from '../../ui/card/card.component';
+import { ModalComponent } from '../../ui/modal/modal.component';
+import { ButtonComponent } from '../../ui/button/button.component';
 
 interface DpmListDropData {
   groupControl: AbstractControl; // This is the FormGroup for the DPM group
@@ -83,6 +83,8 @@ const DPM_GROUP_NAME_VALIDATORS = [Validators.required, Validators.maxLength(500
     ConfirmBoxComponent,
     Panel,
     CardComponent,
+    ModalComponent,
+    ButtonComponent,
   ],
 })
 export class EditDpmsComponent implements OnInit, AfterViewInit {
@@ -98,8 +100,7 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
   confirmModalOpen = signal(false);
   confirmModalMessage = signal('');
   confirmModalCallback = signal<() => void>(() => {});
-
-  @ViewChild('colorModal') colorModalElement!: ElementRef<HTMLDialogElement>;
+  isColorModalOpen = signal(false);
 
   dpmEditForm!: FormGroup; // Main form group
   colorSelectionForm!: FormGroup;
@@ -414,7 +415,11 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
     );
 
     this.initializeColorSelectionModal(currentColor);
-    this.showModalInternal();
+    this.isColorModalOpen.set(true);
+  }
+
+  closeColorModal() {
+    this.isColorModalOpen.set(false);
   }
 
   initializeColorSelectionModal(selectedColor: GetDpmColors | null | undefined = null) {
@@ -470,19 +475,7 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
       }
     }
 
-    this.closeModalInternal();
-  }
-
-  showModalInternal() {
-    if (this.colorModalElement && this.colorModalElement.nativeElement) {
-      this.colorModalElement.nativeElement.showModal();
-    }
-  }
-
-  closeModalInternal() {
-    if (this.colorModalElement && this.colorModalElement.nativeElement) {
-      this.colorModalElement.nativeElement.close();
-    }
+    this.closeColorModal();
   }
 
   // Save updates

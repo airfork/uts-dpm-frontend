@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  signal,
-  ViewChild,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
 import { DpmService } from '../../services/dpm.service';
 import { FormatService } from '../../services/format.service';
 import HomeDpmDto from '../../models/home-dpm-dto';
@@ -16,12 +9,21 @@ import { UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LoadingComponent } from '../../shared/loading/loading.component';
 import { TableModule } from 'primeng/table';
+import { ModalComponent } from '../../ui/modal/modal.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PointsPipe, BlockPipe, UpperCasePipe, FormsModule, LoadingComponent, TableModule],
+  imports: [
+    PointsPipe,
+    BlockPipe,
+    UpperCasePipe,
+    FormsModule,
+    LoadingComponent,
+    TableModule,
+    ModalComponent,
+  ],
 })
 export class HomeComponent {
   private dpmService = inject(DpmService);
@@ -31,20 +33,18 @@ export class HomeComponent {
     initialValue: [],
   });
   currentDpm = signal<HomeDpmDto | null>(null);
-  @ViewChild('dpmModal') dpmModalElement!: ElementRef<HTMLDialogElement>;
+  isModalOpen = signal(false);
 
   clickRow(dpm: HomeDpmDto) {
     this.currentDpm.set(dpm);
-    this.showModalInternal();
+    this.isModalOpen.set(true);
+  }
+
+  closeModal() {
+    this.isModalOpen.set(false);
   }
 
   get format() {
     return this.formatService;
-  }
-
-  showModalInternal() {
-    if (this.dpmModalElement && this.dpmModalElement.nativeElement) {
-      this.dpmModalElement.nativeElement.showModal();
-    }
   }
 }

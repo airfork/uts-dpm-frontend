@@ -40,6 +40,7 @@ import { finalize } from 'rxjs';
 import { GetDpmColors } from '../../models/get-dpm-colors';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
 import { Panel } from 'primeng/panel';
+import { CardComponent } from '../../ui/card/card.component';
 
 interface DpmListDropData {
   groupControl: AbstractControl; // This is the FormGroup for the DPM group
@@ -81,6 +82,7 @@ const DPM_GROUP_NAME_VALIDATORS = [Validators.required, Validators.maxLength(500
     NgIf,
     ConfirmBoxComponent,
     Panel,
+    CardComponent,
   ],
 })
 export class EditDpmsComponent implements OnInit, AfterViewInit {

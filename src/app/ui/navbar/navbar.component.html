@@ -1,7 +1,13 @@
 <div class="navbar bg-base-100 h-16 px-4 md:px-8 lg:px-12">
   <div class="navbar-start w-[40%]">
     <div class="dropdown">
-      <span id="menuButton" tabindex="0" class="btn btn-ghost lg:hidden px-2">
+      <app-button
+        id="menuButton"
+        tabindex="0"
+        variant="ghost"
+        size="sm"
+        class="lg:hidden px-2"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5"
@@ -16,7 +22,7 @@
             d="M4 6h16M4 12h8m-8 6h16"
           />
         </svg>
-      </span>
+      </app-button>
 
       <ul
         tabindex="0"
@@ -28,34 +34,40 @@
             class="mb-2 last:mb-0"
           >
             @if (link.path) {
-              <button
-                class="btn btn-ghost font-medium text-base leading-normal px-4 py-2"
+              <app-button
+                variant="ghost"
                 routerLink="{{ link.path }}"
-                routerLinkActive="btn-active btn-primary"
+                routerLinkActive="bg-primary-600 text-white"
                 [queryParamsHandling]="
                   link.name === 'Users' ? 'preserve' : null
                 "
                 (click)="menuItemClick()"
+                class="font-medium text-base leading-normal w-full justify-start"
               >
                 {{ link.name }}
-              </button>
+              </app-button>
             }
             @if (!link.path) {
-              <button
-                class="btn btn-ghost font-semibold text-base leading-normal px-4 py-2"
+              <app-button
+                variant="ghost"
                 (click)="logoutClick()"
+                class="font-semibold text-base leading-normal w-full justify-start"
               >
                 {{ link.name }}
-              </button>
+              </app-button>
             }
           </li>
         }
       </ul>
     </div>
 
-    <button routerLink="/" class="btn btn-ghost normal-case text-2xl font-bold">
+    <app-button
+      routerLink="/"
+      variant="ghost"
+      class="normal-case text-2xl font-bold"
+    >
       UTS DPM
-    </button>
+    </app-button>
   </div>
 
   <div class="navbar-end w-[60%] hidden lg:flex">
@@ -63,22 +75,24 @@
       @for (link of links; track link) {
         <li [appRemoveIfUnauthorized]="link.allowedRoles">
           @if (link.path) {
-            <button
-              class="btn btn-ghost font-medium text-base leading-normal px-4 py-2"
+            <app-button
+              variant="ghost"
               routerLink="{{ link.path }}"
-              routerLinkActive="btn-active btn-primary"
+              routerLinkActive="bg-primary-600 text-white"
               [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
+              class="font-medium text-base leading-normal"
             >
               {{ link.name }}
-            </button>
+            </app-button>
           }
           @if (!link.path) {
-            <button
-              class="btn btn-ghost font-semibold text-base leading-normal px-4 py-2"
+            <app-button
+              variant="ghost"
               (click)="logoutClick()"
+              class="font-semibold text-base leading-normal"
             >
               {{ link.name }}
-            </button>
+            </app-button>
           }
         </li>
       }

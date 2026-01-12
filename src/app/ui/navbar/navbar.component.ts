@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
 import { Roles } from '../../auth/roles.types';
 import { RemoveIfUnauthorizedDirective } from '../../auth/directives/remove-if-unauthorized.directive';
+import { ButtonComponent } from '../button/button.component';
 
 interface navbarLinks {
   path?: string;
@@ -14,7 +15,7 @@ interface navbarLinks {
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  imports: [RouterLink, RouterLinkActive, RemoveIfUnauthorizedDirective],
+  imports: [RouterLink, RouterLinkActive, RemoveIfUnauthorizedDirective, ButtonComponent],
 })
 export class NavbarComponent {
   private authService = inject(AuthService);

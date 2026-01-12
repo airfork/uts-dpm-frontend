@@ -1,12 +1,14 @@
-<div>
+<div class="p-6">
   <form
-    class="grid grid-cols-3 gap-x-6 gap-y-2 rounded"
+    class="grid grid-cols-3 gap-x-6 gap-y-6 rounded"
     [formGroup]="userFormGroup"
     (ngSubmit)="onSubmit()"
   >
     <fieldset class="fieldset col-span-3 md:col-span-1">
       <legend
-        class="fieldset-legend text-sm {{ setStatusClass(email, false) }}"
+        class="fieldset-legend text-sm font-medium mb-2 {{
+          setStatusClass(email, false)
+        }}"
       >
         Email
       </legend>
@@ -14,17 +16,23 @@
         id="userEmail"
         type="text"
         placeholder="Email"
-        class="input w-full {{ setStatusClass(email) }}"
+        class="input w-full text-base {{ setStatusClass(email) }}"
         formControlName="email"
         autocomplete="off"
         required
+        aria-required="true"
+        [attr.aria-describedby]="hasErrors(email) ? 'userEmail-error' : null"
       />
-      <p class="label text-error">{{ getEmailValidationMessages() }}</p>
+      <p id="userEmail-error" class="text-sm text-error-600 mt-1">
+        {{ getEmailValidationMessages() }}
+      </p>
     </fieldset>
 
     <fieldset class="fieldset col-span-3 md:col-span-1">
       <legend
-        class="fieldset-legend text-sm {{ setStatusClass(firstname, false) }}"
+        class="fieldset-legend text-sm font-medium mb-2 {{
+          setStatusClass(firstname, false)
+        }}"
       >
         First Name
       </legend>
@@ -32,17 +40,27 @@
         id="firstname"
         type="text"
         placeholder="Jane"
-        class="input w-full capitalize {{ setStatusClass(firstname) }}"
+        class="input w-full text-base capitalize {{
+          setStatusClass(firstname)
+        }}"
         formControlName="firstname"
         autocomplete="off"
         required
+        aria-required="true"
+        [attr.aria-describedby]="
+          hasErrors(firstname) ? 'firstname-error' : null
+        "
       />
-      <p class="label text-error">{{ getFirstnameValidationMessages() }}</p>
+      <p id="firstname-error" class="text-sm text-error-600 mt-1">
+        {{ getFirstnameValidationMessages() }}
+      </p>
     </fieldset>
 
     <fieldset class="fieldset col-span-3 md:col-span-1">
       <legend
-        class="fieldset-legend text-sm {{ setStatusClass(lastname, false) }}"
+        class="fieldset-legend text-sm font-medium mb-2 {{
+          setStatusClass(lastname, false)
+        }}"
       >
         Last Name
       </legend>
@@ -50,18 +68,22 @@
         id="lastname"
         type="text"
         placeholder="Doe"
-        class="input w-full capitalize {{ setStatusClass(lastname) }}"
+        class="input w-full text-base capitalize {{ setStatusClass(lastname) }}"
         formControlName="lastname"
         autocomplete="off"
         required
+        aria-required="true"
+        [attr.aria-describedby]="hasErrors(lastname) ? 'lastname-error' : null"
       />
-      <p class="label text-error">{{ getLastnameValidationMessages() }}</p>
+      <p id="lastname-error" class="text-sm text-error-600 mt-1">
+        {{ getLastnameValidationMessages() }}
+      </p>
     </fieldset>
 
     @if (layout === "edit") {
       <fieldset class="fieldset col-span-3 md:col-span-1">
         <legend
-          class="fieldset-legend text-sm"
+          class="fieldset-legend text-sm font-medium mb-2"
           [ngClass]="{ 'text-error': hasErrors(points) }"
         >
           Points
@@ -70,21 +92,25 @@
           id="points"
           type="text"
           placeholder="0"
-          class="input w-full"
+          class="input w-full text-base"
           formControlName="points"
           autocomplete="off"
           required
+          aria-required="true"
+          [attr.aria-describedby]="hasErrors(points) ? 'points-error' : null"
           [ngClass]="{ 'input-error': hasErrors(points) }"
         />
-        <p class="label text-error">{{ getPointsValidationMessages() }}</p>
+        <p id="points-error" class="text-sm text-error-600 mt-1">
+          {{ getPointsValidationMessages() }}
+        </p>
       </fieldset>
     }
 
     <fieldset class="fieldset col-span-3 md:col-span-1">
-      <legend class="fieldset-legend text-sm">Manager</legend>
+      <legend class="fieldset-legend text-sm font-medium mb-2">Manager</legend>
       <select
         id="manager-select"
-        class="select select-bordered w-full"
+        class="select select-bordered w-full text-base"
         formControlName="manager"
       >
         @for (manager of managers; track manager) {
@@ -93,16 +119,13 @@
           </option>
         }
       </select>
-      <p class="label">
-        <!-- Spacing -->
-      </p>
     </fieldset>
 
     <fieldset class="fieldset col-span-3 md:col-span-1">
-      <legend class="fieldset-legend text-sm">Role</legend>
+      <legend class="fieldset-legend text-sm font-medium mb-2">Role</legend>
       <select
         id="role-select"
-        class="select select-bordered w-full"
+        class="select select-bordered w-full text-base"
         formControlName="role"
       >
         @for (role of roles(); track role) {
@@ -111,9 +134,6 @@
           </option>
         }
       </select>
-      <p class="label">
-        <!-- Spacing -->
-      </p>
     </fieldset>
 
     <div
@@ -125,10 +145,10 @@
     >
       <div class="fieldset" [ngClass]="{ 'self-center': layout === 'create' }">
         <label
-          class="label cursor-pointer justify-center md:justify-start items-center"
+          class="label cursor-pointer justify-center md:justify-start items-center gap-4"
           [ngClass]="{ 'md:mt-4': layout === 'create' }"
         >
-          <span class="text-base-content text-[1rem] mr-6">Full Time</span>
+          <span class="text-base-content text-base font-medium">Full Time</span>
           <input
             id="fullTimeCheckBox"
             type="checkbox"
@@ -139,7 +159,7 @@
       </div>
     </div>
 
-    <div class="grid place-items-center col-span-3 mt-2">
+    <div class="grid place-items-center col-span-3 mt-4">
       <button
         pRipple
         id="submitButton"

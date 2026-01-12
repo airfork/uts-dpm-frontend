@@ -349,3 +349,36 @@ input[type="number"] {
 .btn-primary:hover {
   box-shadow: var(--shadow-lg);
 }
+
+/* Input focus states for accessibility */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px oklch(var(--color-primary-500) / 0.5);
+  border-color: oklch(var(--color-primary-500));
+  transition: all var(--transition-fast);
+}
+
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px oklch(var(--color-primary-500) / 0.5);
+  transition: all var(--transition-fast);
+}
+
+/* PrimeNG input focus states */
+.p-inputtext:focus,
+.p-dropdown:focus,
+.p-calendar input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px oklch(var(--color-primary-500) / 0.5);
+  border-color: oklch(var(--color-primary-500));
+  transition: all var(--transition-fast);
+}

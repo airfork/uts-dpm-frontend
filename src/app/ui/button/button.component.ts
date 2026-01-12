@@ -12,6 +12,8 @@ export class ButtonComponent {
   fullWidth = input<boolean>(false);
   disabled = input<boolean>(false);
   type = input<'button' | 'submit' | 'reset'>('button');
+  id = input<string>();
+  tabindex = input<number>();
 
   // Compute classes based on inputs
   classes = computed(() => {

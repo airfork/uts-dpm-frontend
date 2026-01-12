@@ -1,3 +1,9 @@
-<button [type]="type()" [disabled]="disabled()" [class]="classes()">
+<button
+  [type]="type()"
+  [disabled]="disabled()"
+  [class]="classes()"
+  [id]="id() || undefined"
+  [attr.tabindex]="tabindex() !== undefined ? tabindex() : null"
+>
   <ng-content></ng-content>
 </button>

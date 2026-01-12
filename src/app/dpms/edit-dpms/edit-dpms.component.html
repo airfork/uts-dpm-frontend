@@ -16,18 +16,28 @@
             class="tooltip tooltip-top tooltip-primary"
             data-tip="Add DPM Group"
           >
-            <button class="btn btn-primary btn-sm ml-2" (click)="addGroup()">
+            <app-button
+              variant="primary"
+              size="sm"
+              class="ml-2"
+              (click)="addGroup()"
+            >
               <i class="pi pi-plus text-lg"></i>
-            </button>
+            </app-button>
           </div>
           <div
             class="tooltip tooltip-top tooltip-primary"
             data-tip="Reset Changes"
             [hidden]="dpmEditForm.pristine"
           >
-            <button class="btn btn-sm ml-2" (click)="confirmReset()">
+            <app-button
+              variant="ghost"
+              size="sm"
+              class="ml-2"
+              (click)="confirmReset()"
+            >
               <i class="pi pi-refresh text-lg"></i>
-            </button>
+            </app-button>
           </div>
         </div>
 
@@ -74,12 +84,14 @@
                 }"
               >
                 <div class="tooltip tooltip-primary" data-tip="Add DPM">
-                  <button
-                    class="btn btn-primary btn-xs ml-2"
+                  <app-button
+                    variant="primary"
+                    size="sm"
+                    class="ml-2"
                     (click)="addDpmToGroup(groupControl)"
                   >
                     <i class="pi pi-plus text-sm"></i>
-                  </button>
+                  </app-button>
                 </div>
 
                 <div
@@ -87,12 +99,14 @@
                   data-tip="Delete Group"
                   *ngIf="groupControl.value.dpms.length === 0"
                 >
-                  <button
-                    class="btn btn-xs ml-2"
+                  <app-button
+                    variant="outline"
+                    size="sm"
+                    class="ml-2"
                     (click)="confirmRemoveGroup(groupIndex)"
                   >
                     <i class="pi pi-trash text-sm"></i>
-                  </button>
+                  </app-button>
                 </div>
               </div>
             </div>
@@ -160,24 +174,28 @@
                       />
                     </div>
 
-                    <button
-                      class="btn btn-xs ml-2 border-2"
+                    <app-button
+                      variant="outline"
+                      size="sm"
+                      class="ml-2"
                       type="button"
                       [style.border-color]="dpmControl.value.color?.hexCode"
                       (click)="showColorModal(dpmControl)"
                     >
                       <i class="pi pi-palette text-xs"></i>
-                    </button>
+                    </app-button>
 
-                    <button
-                      class="btn btn-xs ml-2 border-2"
+                    <app-button
+                      variant="outline"
+                      size="sm"
+                      class="ml-2"
                       type="button"
                       (click)="
                         confirmRemoveDpmFromGroup(groupControl, dpmIndex)
                       "
                     >
                       <i class="pi pi-trash text-xs"></i>
-                    </button>
+                    </app-button>
                   </div>
 
                   @if (
@@ -207,24 +225,20 @@
   </form>
 
   <div class="flex w-full justify-center">
-    <button
-      class="btn btn-primary btn-wide mt-5 mb-10"
-      [ngClass]="{
-        'btn-active':
-          dpmEditForm.valid &&
-          !dpmEditForm.pristine &&
-          !formHasNonFormGroupErrors() &&
-          !isSaving(),
-        'btn-disabled':
-          !dpmEditForm.valid ||
-          dpmEditForm.pristine ||
-          isSaving() ||
-          formHasNonFormGroupErrors(),
-      }"
+    <app-button
+      variant="primary"
+      [fullWidth]="true"
+      class="mt-5 mb-10"
+      [disabled]="
+        !dpmEditForm.valid ||
+        dpmEditForm.pristine ||
+        isSaving() ||
+        formHasNonFormGroupErrors()
+      "
       (click)="save()"
     >
       Save
-    </button>
+    </app-button>
   </div>
 }
 

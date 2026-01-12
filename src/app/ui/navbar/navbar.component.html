@@ -1,7 +1,7 @@
-<div class="navbar bg-base-100">
+<div class="navbar bg-base-100 h-16 px-4 md:px-8 lg:px-12">
   <div class="navbar-start w-[40%]">
     <div class="dropdown">
-      <span id="menuButton" tabindex="0" class="btn btn-ghost lg:hidden">
+      <span id="menuButton" tabindex="0" class="btn btn-ghost lg:hidden px-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5"
@@ -20,7 +20,7 @@
 
       <ul
         tabindex="0"
-        class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+        class="menu menu-compact dropdown-content mt-3 p-4 shadow bg-base-100 rounded-box w-52"
       >
         @for (link of links; track link) {
           <li
@@ -29,7 +29,7 @@
           >
             @if (link.path) {
               <button
-                class="btn btn-ghost font-normal text-base"
+                class="btn btn-ghost font-medium text-base leading-normal px-4 py-2"
                 routerLink="{{ link.path }}"
                 routerLinkActive="btn-active btn-primary"
                 [queryParamsHandling]="
@@ -42,7 +42,7 @@
             }
             @if (!link.path) {
               <button
-                class="btn btn-ghost font-normal text-base"
+                class="btn btn-ghost font-semibold text-base leading-normal px-4 py-2"
                 (click)="logoutClick()"
               >
                 {{ link.name }}
@@ -53,18 +53,18 @@
       </ul>
     </div>
 
-    <button routerLink="/" class="btn btn-ghost normal-case text-2xl">
+    <button routerLink="/" class="btn btn-ghost normal-case text-2xl font-bold">
       UTS DPM
     </button>
   </div>
 
   <div class="navbar-end w-[60%] hidden lg:flex">
-    <ul class="menu menu-horizontal p-0">
+    <ul class="menu menu-horizontal p-0 gap-2">
       @for (link of links; track link) {
-        <li class="mx-1" [appRemoveIfUnauthorized]="link.allowedRoles">
+        <li [appRemoveIfUnauthorized]="link.allowedRoles">
           @if (link.path) {
             <button
-              class="btn btn-ghost font-normal text-base"
+              class="btn btn-ghost font-medium text-base leading-normal px-4 py-2"
               routerLink="{{ link.path }}"
               routerLinkActive="btn-active btn-primary"
               [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
@@ -74,7 +74,7 @@
           }
           @if (!link.path) {
             <button
-              class="btn btn-ghost font-normal text-base"
+              class="btn btn-ghost font-semibold text-base leading-normal px-4 py-2"
               (click)="logoutClick()"
             >
               {{ link.name }}

@@ -21,11 +21,15 @@
       >
         <ng-template pTemplate="header">
           <tr>
-            <th class="lg:text-base font-bold break-normal uppercase">Name</th>
-            <th class="lg:text-base font-bold break-normal uppercase">
+            <th class="text-sm font-semibold break-normal uppercase px-6 py-4">
+              Name
+            </th>
+            <th class="text-sm font-semibold break-normal uppercase px-6 py-4">
               Block/Time
             </th>
-            <th class="lg:text-base font-bold break-normal uppercase">Type</th>
+            <th class="text-sm font-semibold break-normal uppercase px-6 py-4">
+              Type
+            </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-dpm>
@@ -33,20 +37,22 @@
             class="hover:bg-base-300 hover:cursor-pointer"
             (click)="showApprovalModal(dpm)"
           >
-            <td class="text-base break-words whitespace-normal">
+            <td class="text-base break-words whitespace-normal px-6 py-4">
               {{ dpm.driver }}
             </td>
-            <td class="text-base break-words whitespace-normal">
+            <td class="text-base break-words whitespace-normal px-6 py-4">
               {{ dpm.block | block }} {{ dpm.time }}
             </td>
-            <td class="text-base break-words whitespace-normal">
+            <td class="text-base break-words whitespace-normal px-6 py-4">
               {{ dpm.type }}
             </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="8">No DPMs found.</td>
+            <td colspan="8" class="text-base text-neutral-600 px-6 py-4">
+              No DPMs found.
+            </td>
           </tr>
         </ng-template>
       </p-table>
@@ -59,47 +65,49 @@
               {{ dpm.driver }}
             </h3>
             <table
-              class="my-2 md:my-4 border-separate border-spacing-x-2 md:border-spacing-x-4 border-spacing-y-1.5 table-auto"
+              class="my-2 md:my-4 border-separate border-spacing-x-2 md:border-spacing-x-4 border-spacing-y-2 table-auto"
             >
               <tbody class="text-left align-text-top">
                 @if (dpm.createdBy) {
                   <tr class="whitespace-nowrap">
-                    <th>Created By:</th>
-                    <td>{{ dpm.createdBy }}</td>
+                    <th class="text-sm font-semibold py-2">Created By:</th>
+                    <td class="text-base py-2">{{ dpm.createdBy }}</td>
                   </tr>
                 }
                 <tr>
-                  <th>Type:</th>
-                  <td>{{ dpm.type }}</td>
+                  <th class="text-sm font-semibold py-2">Type:</th>
+                  <td class="text-base py-2">{{ dpm.type }}</td>
                 </tr>
                 <tr>
-                  <th>Points:</th>
-                  <td>{{ dpm.points | points }}</td>
+                  <th class="text-sm font-semibold py-2">Points:</th>
+                  <td class="text-base py-2">{{ dpm.points | points }}</td>
                 </tr>
                 <tr>
-                  <th>Block:</th>
-                  <td>{{ dpm.block | block }}</td>
+                  <th class="text-sm font-semibold py-2">Block:</th>
+                  <td class="text-base py-2">{{ dpm.block | block }}</td>
                 </tr>
                 <tr>
-                  <th>Location:</th>
-                  <td>{{ dpm.location | uppercase }}</td>
+                  <th class="text-sm font-semibold py-2">Location:</th>
+                  <td class="text-base py-2">{{ dpm.location | uppercase }}</td>
                 </tr>
                 <tr>
-                  <th>Date:</th>
-                  <td>{{ dpm.date }}</td>
+                  <th class="text-sm font-semibold py-2">Date:</th>
+                  <td class="text-base py-2">{{ dpm.date }}</td>
                 </tr>
                 <tr>
-                  <th>Time:</th>
-                  <td>
+                  <th class="text-sm font-semibold py-2">Time:</th>
+                  <td class="text-base py-2">
                     {{ dpm.time }}
                   </td>
                 </tr>
-                <th>Created At:</th>
-                <td>{{ dpm.createdAt }}</td>
+                <tr>
+                  <th class="text-sm font-semibold py-2">Created At:</th>
+                  <td class="text-base py-2">{{ dpm.createdAt }}</td>
+                </tr>
                 @if (dpm.notes) {
                   <tr class="break-words whitespace-normal">
-                    <th>Notes:</th>
-                    <td>{{ dpm.notes }}</td>
+                    <th class="text-sm font-semibold py-2">Notes:</th>
+                    <td class="text-base py-2">{{ dpm.notes }}</td>
                   </tr>
                 }
               </tbody>

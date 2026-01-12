@@ -39,7 +39,7 @@
           <div
             [formGroupName]="groupIndex"
             cdkDrag
-            class="card w-full bg-base-100 card-lg shadow-sm cursor-move border-2 border-base-300 last:mb-5"
+            class="card w-full bg-base-100 card-lg shadow-base hover:shadow-md cursor-move border-2 border-base-300 last:mb-5 transition-shadow"
             [ngClass]="{
               'border-base-300':
                 !groupHasErrors(groupControl) &&
@@ -49,8 +49,8 @@
                 dpmsInGroupHaveErrors(groupControl),
             }"
           >
-            <div class="card-body">
-              <div class="flex justify-between items-center">
+            <div class="card-body p-6">
+              <div class="flex justify-between items-center mb-4">
                 <textarea
                   #autoResizeTextarea
                   id="dpmGroupName-{{ groupControl.value.id }}"
@@ -97,7 +97,7 @@
               </div>
 
               @if (groupHasErrors(groupControl)) {
-                <div class="mb-2">
+                <div class="mb-4">
                   @for (
                     errorMessage of getGroupErrorMessages(groupControl);
                     track errorMessage
@@ -114,7 +114,7 @@
                   groupControl: groupControl,
                   controls: getDpmsFormArray(groupControl).controls,
                 }"
-                class="dpm-list"
+                class="dpm-list space-y-4"
                 (cdkDropListDropped)="dropDpms($event, groupControl)"
               >
                 @for (
@@ -229,49 +229,51 @@
 }
 
 <dialog #colorModal id="colorModal" class="modal cursor-default">
-  <div class="modal-box relative">
-    <h3 class="text-2xl font-bold mb-4">{{ currentModalDpm()?.name }}</h3>
+  <div class="modal-box relative shadow-lg p-6">
+    <h3 class="text-2xl font-bold mb-6">{{ currentModalDpm()?.name }}</h3>
 
     <form [formGroup]="colorSelectionForm" (ngSubmit)="applyColorSelection()">
-      <p-panel
-        class="cursor-pointer"
-        toggler="header"
-        [collapsed]="true"
-        [toggleable]="true"
-      >
-        <ng-template #header>
-          <div class="flex items-center gap-2">
-            <span class="italic">Info</span>
-          </div>
-        </ng-template>
-        <p class="text-sm">
-          Select a color for this DPM in WhenToWork. This will allow this DPM
-          type to picked up by Autogen when it finds the color
-        </p>
-      </p-panel>
-
-      <fieldset class="fieldset mt-3">
-        <legend class="fieldset-legend text-lg">Color</legend>
-        <select
-          formControlName="selectedColor"
-          id="color-select"
-          class="select select-bordered w-full"
-          [ngClass]="{ 'select-error': selectedColorIsInUse() }"
+      <div class="space-y-4">
+        <p-panel
+          class="cursor-pointer"
+          toggler="header"
+          [collapsed]="true"
+          [toggleable]="true"
         >
-          <option [ngValue]="null">No Color</option>
-          @for (color of dpmColors(); track color.colorId) {
-            <option [ngValue]="color">
-              {{ color.colorName }}
-            </option>
-          }
-        </select>
+          <ng-template #header>
+            <div class="flex items-center gap-2">
+              <span class="italic">Info</span>
+            </div>
+          </ng-template>
+          <p class="text-sm">
+            Select a color for this DPM in WhenToWork. This will allow this DPM
+            type to picked up by Autogen when it finds the color
+          </p>
+        </p-panel>
 
-        <p class="label text-error" [hidden]="!selectedColorIsInUse()">
-          {{ selectedColor }} is already in use by another DPM.
-        </p>
-      </fieldset>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend text-lg">Color</legend>
+          <select
+            formControlName="selectedColor"
+            id="color-select"
+            class="select select-bordered w-full"
+            [ngClass]="{ 'select-error': selectedColorIsInUse() }"
+          >
+            <option [ngValue]="null">No Color</option>
+            @for (color of dpmColors(); track color.colorId) {
+              <option [ngValue]="color">
+                {{ color.colorName }}
+              </option>
+            }
+          </select>
 
-      <div class="modal-action">
+          <p class="label text-error" [hidden]="!selectedColorIsInUse()">
+            {{ selectedColor }} is already in use by another DPM.
+          </p>
+        </fieldset>
+      </div>
+
+      <div class="modal-action mt-6">
         <button
           type="submit"
           class="btn btn-primary"

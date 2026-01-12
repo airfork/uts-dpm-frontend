@@ -10,6 +10,15 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
+### Dev Accounts
+
+| Role        | Username           | Password      | Notes                                                                 |
+|-------------|--------------------|---------------|-----------------------------------------------------------------------|
+| Admin       | test@account.com   | testAccount   | Admins have full access to DPMs and user management.                  |
+| Supervisor  | jane@doe.com       | testAccount   | Supervisors have DPM access and can approve DPMs for users they manage.|
+| Analyst     | john@doe.com       | testAccount   | Analysts can create DPMs and generate reports, but cannot approve.    |
+
+
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.

@@ -44,3 +44,8 @@ Thumbs.db
 # Firebase
 .firebase/
 firebase-debug.log
+
+# Playwright
+/playwright-report/
+/playwright/.cache/
+/test-results/

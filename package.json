@@ -8,8 +8,19 @@
     "build:prod": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:headless": "ng test --browsers=ChromeHeadless --watch=false",
+    "test:coverage": "ng test --code-coverage --browsers=ChromeHeadless --watch=false",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
+    "e2e:headed": "playwright test --headed",
     "lint": "eslint \"src/**/*.{ts,html}\"",
-    "lint:fix": "eslint \"src/**/*.{ts,html}\" --fix"
+    "lint:fix": "eslint \"src/**/*.{ts,html}\" --fix",
+    "format": "prettier --write \"src/**/*.{ts,html,css,scss}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,html,css,scss}\"",
+    "analyze": "ng build --configuration=production --stats-json && source-map-explorer dist/uts-dpm/browser/*.js",
+    "analyze:bundle": "ng build --configuration=production --stats-json",
+    "typecheck": "tsc --noEmit",
+    "prepare": "husky"
   },
   "private": true,
   "dependencies": {
@@ -42,6 +53,7 @@
     "@angular/compiler-cli": "^21.0.8",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.26.0",
+    "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4.1.6",
     "@types/file-saver": "^2.0.5",
     "@types/jasmine": "~3.10.0",
@@ -55,12 +67,14 @@
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
+    "husky": "^9.1.7",
     "jasmine-core": "~5.7.1",
     "karma": "~6.4.4",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.1",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "lint-staged": "^16.2.7",
     "postcss": "^8.5.3",
     "prettier": "^3.5.3",
     "sass": "^1.87.0",
@@ -68,5 +82,13 @@
     "tailwindcss": "^4.1.6",
     "tailwindcss-primeui": "^0.6.1",
     "typescript": "5.9"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,html}": [
+      "eslint --fix"
+    ],
+    "src/**/*.{ts,html,css,scss,json,md}": [
+      "prettier --write"
+    ]
   }
 }

@@ -2,13 +2,14 @@
   class="flex items-center justify-between bg-base-100 h-16 px-4 md:px-8 lg:px-12"
 >
   <div class="flex items-center gap-4 w-[40%]">
-    <div class="dropdown">
+    <div class="relative">
       <app-button
         id="menuButton"
         [tabindex]="0"
         variant="ghost"
         size="sm"
         class="lg:hidden px-2"
+        (click)="toggleDropdown()"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -26,41 +27,43 @@
         </svg>
       </app-button>
 
-      <ul
-        tabindex="0"
-        class="menu menu-compact dropdown-content mt-3 p-4 shadow bg-base-100 rounded-box w-52"
-      >
-        @for (link of links; track link) {
-          <li
-            [appRemoveIfUnauthorized]="link.allowedRoles"
-            class="mb-2 last:mb-0"
-          >
-            @if (link.path) {
-              <app-button
-                variant="ghost"
-                routerLink="{{ link.path }}"
-                routerLinkActive="bg-primary-600 text-white"
-                [queryParamsHandling]="
-                  link.name === 'Users' ? 'preserve' : null
-                "
-                (click)="menuItemClick()"
-                class="font-medium text-base leading-normal w-full justify-start"
-              >
-                {{ link.name }}
-              </app-button>
-            }
-            @if (!link.path) {
-              <app-button
-                variant="ghost"
-                (click)="logoutClick()"
-                class="font-semibold text-base leading-normal w-full justify-start"
-              >
-                {{ link.name }}
-              </app-button>
-            }
-          </li>
-        }
-      </ul>
+      @if (isDropdownOpen()) {
+        <ul
+          tabindex="0"
+          class="menu menu-compact absolute left-0 top-full mt-3 p-4 shadow-[var(--shadow-md)] bg-base-100 rounded-lg w-52 z-50"
+        >
+          @for (link of links; track link) {
+            <li
+              [appRemoveIfUnauthorized]="link.allowedRoles"
+              class="mb-2 last:mb-0"
+            >
+              @if (link.path) {
+                <app-button
+                  variant="ghost"
+                  routerLink="{{ link.path }}"
+                  routerLinkActive="bg-primary-600 text-white"
+                  [queryParamsHandling]="
+                    link.name === 'Users' ? 'preserve' : null
+                  "
+                  (click)="menuItemClick()"
+                  class="font-medium text-base leading-normal w-full justify-start"
+                >
+                  {{ link.name }}
+                </app-button>
+              }
+              @if (!link.path) {
+                <app-button
+                  variant="ghost"
+                  (click)="logoutClick()"
+                  class="font-semibold text-base leading-normal w-full justify-start"
+                >
+                  {{ link.name }}
+                </app-button>
+              }
+            </li>
+          }
+        </ul>
+      }
     </div>
 
     <app-button

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
@@ -21,6 +21,8 @@ export class NavbarComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private notificationService = inject(NotificationService);
+
+  isDropdownOpen = signal(false);
 
   links: navbarLinks[] = [
     {
@@ -50,7 +52,16 @@ export class NavbarComponent {
     },
   ];
 
+  toggleDropdown() {
+    this.isDropdownOpen.update((open) => !open);
+  }
+
+  closeDropdown() {
+    this.isDropdownOpen.set(false);
+  }
+
   menuItemClick() {
+    this.closeDropdown();
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }

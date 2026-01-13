@@ -41,7 +41,7 @@
                 <app-button
                   variant="ghost"
                   routerLink="{{ link.path }}"
-                  routerLinkActive="bg-primary-600 text-white"
+                  routerLinkActive="!bg-transparent !bg-primary-600 !text-white hover:!bg-primary-700"
                   [queryParamsHandling]="
                     link.name === 'Users' ? 'preserve' : null
                   "
@@ -84,7 +84,7 @@
             <app-button
               variant="ghost"
               routerLink="{{ link.path }}"
-              routerLinkActive="bg-primary-600 text-white"
+              routerLinkActive="!bg-transparent !bg-primary-600 !text-white hover:!bg-primary-700"
               [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
               class="font-medium text-base leading-normal"
             >

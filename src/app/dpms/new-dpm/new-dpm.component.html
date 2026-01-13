@@ -1,72 +1,87 @@
-<h2 class="text-3xl mb-5 font-bold">New DPM</h2>
+<h2 class="text-3xl mb-6 font-bold text-base-content">New DPM</h2>
 <form
-  class="grid grid-cols-3 gap-x-6 gap-y-2 rounded"
+  class="grid grid-cols-3 gap-x-6 gap-y-6 rounded"
   [formGroup]="homeFormGroup()"
   (ngSubmit)="onSubmit()"
 >
-  <fieldset class="fieldset col-span-3 md:col-span-1">
-    <legend class="fieldset-legend text-sm {{ setStatusClass(name, false) }}">
+  <fieldset class="col-span-3 md:col-span-1 space-y-2">
+    <legend class="text-sm font-medium {{ setStatusClass(name, false) }}">
       Driver Name
     </legend>
     <p-autoComplete
       id="dpmNameInput"
       placeholder="Jane Doe"
       formControlName="name"
-      styleClass="input w-full {{ setStatusClass(name) }}"
-      panelStyleClass="menu bg-base-100"
+      styleClass="w-full px-4 py-3 rounded-md bg-base-100 border-2 text-base-content placeholder:text-base-content/50 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:border-transparent {{
+        getInputBorderClass(name)
+      }}"
+      panelStyleClass="bg-base-200 border border-neutral-300 rounded-md shadow-[var(--shadow-md)] mt-1"
       [required]="true"
       [suggestions]="autocompleteResults()"
       (completeMethod)="search($event)"
       [showEmptyMessage]="true"
       [forceSelection]="true"
     ></p-autoComplete>
-    <p class="label text-error">{{ getNameValidationMessages() }}</p>
+    @if (getNameValidationMessages()) {
+      <p class="text-sm text-error-600 mt-1">
+        {{ getNameValidationMessages() }}
+      </p>
+    }
   </fieldset>
 
-  <fieldset class="fieldset col-span-3 md:col-span-1">
-    <legend class="fieldset-legend text-sm {{ setStatusClass(block, false) }}">
+  <fieldset class="col-span-3 md:col-span-1 space-y-2">
+    <legend class="text-sm font-medium {{ setStatusClass(block, false) }}">
       Block Name
     </legend>
     <input
       id="dpmBlockInput"
       type="text"
       placeholder="11"
-      class="input w-full placeholder:opacity-65 {{ setStatusClass(block) }}"
+      class="w-full px-4 py-3 rounded-md bg-base-100 border-2 text-base-content placeholder:text-base-content/50 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:border-transparent {{
+        getInputBorderClass(block)
+      }}"
       maxlength="5"
       formControlName="block"
       autocomplete="off"
       required
     />
-    <p class="label text-error">{{ getBlockValidationMessages() }}</p>
+    @if (getBlockValidationMessages()) {
+      <p class="text-sm text-error-600 mt-1">
+        {{ getBlockValidationMessages() }}
+      </p>
+    }
   </fieldset>
 
-  <fieldset class="fieldset col-span-3 md:col-span-1">
-    <legend
-      class="fieldset-legend text-sm {{ setStatusClass(location, false) }}"
-    >
+  <fieldset class="col-span-3 md:col-span-1 space-y-2">
+    <legend class="text-sm font-medium {{ setStatusClass(location, false) }}">
       Location
     </legend>
     <input
       id="dpmLocationInput"
       type="text"
       placeholder="OFF"
-      class="input input-bordered w-full uppercase placeholder:opacity-65 {{
-        setStatusClass(location)
+      class="w-full px-4 py-3 rounded-md bg-base-100 border-2 text-base-content placeholder:text-base-content/50 uppercase transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:border-transparent {{
+        getInputBorderClass(location)
       }}"
       maxlength="5"
       formControlName="location"
       autocomplete="off"
       required
     />
-    <p class="label text-error">{{ getLocationValidationMessages() }}</p>
+    @if (getLocationValidationMessages()) {
+      <p class="text-sm text-error-600 mt-1">
+        {{ getLocationValidationMessages() }}
+      </p>
+    }
   </fieldset>
 
-  <fieldset class="fieldset col-span-3 md:col-span-1">
+  <fieldset class="col-span-3 md:col-span-1 space-y-2">
     <legend
-      class="fieldset-legend text-sm"
+      class="text-sm font-medium"
       [ngClass]="{
-        'text-error': hasErrors(dpmDate),
-        'text-success': !hasErrors(dpmDate),
+        'text-error-600': hasErrors(dpmDate),
+        'text-success-600':
+          !hasErrors(dpmDate) && (dpmDate?.dirty || dpmDate?.touched),
       }"
     >
       Date
@@ -75,59 +90,73 @@
       id="dpmDateInput"
       formControlName="dpmDate"
       [placeholder]="format.dpmDate()"
-      styleClass="input input-bordered w-full {{ errorsOrSuccess(dpmDate) }}"
+      styleClass="w-full px-4 py-3 rounded-md bg-base-100 border-2 text-base-content placeholder:text-base-content/50 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:border-transparent {{
+        getInputBorderClass(dpmDate)
+      }}"
       [required]="true"
       [touchUI]="false"
     ></p-date-picker>
-    <p class="label text-error">{{ getDpmDateValidationMessages() }}</p>
+    @if (getDpmDateValidationMessages()) {
+      <p class="text-sm text-error-600 mt-1">
+        {{ getDpmDateValidationMessages() }}
+      </p>
+    }
   </fieldset>
 
-  <fieldset class="fieldset col-span-3 md:col-span-1">
-    <legend
-      class="fieldset-legend text-sm {{ setStatusClass(startTime, false) }}"
-    >
+  <fieldset class="col-span-3 md:col-span-1 space-y-2">
+    <legend class="text-sm font-medium {{ setStatusClass(startTime, false) }}">
       Start Time
     </legend>
     <input
       id="dpmStartTimeInput"
       type="text"
       placeholder="0600"
-      class="input input-bordered w-full {{ setStatusClass(startTime) }}"
+      class="w-full px-4 py-3 rounded-md bg-base-100 border-2 text-base-content placeholder:text-base-content/50 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:border-transparent {{
+        getInputBorderClass(startTime)
+      }}"
       maxlength="4"
       autocomplete="off"
       formControlName="startTime"
       inputmode="numeric"
       required
     />
-    <p class="label text-error">{{ getStartTimeValidationMessages() }}</p>
+    @if (getStartTimeValidationMessages()) {
+      <p class="text-sm text-error-600 mt-1">
+        {{ getStartTimeValidationMessages() }}
+      </p>
+    }
   </fieldset>
 
-  <fieldset class="fieldset col-span-3 md:col-span-1">
-    <legend
-      class="fieldset-legend text-sm {{ setStatusClass(endTime, false) }}"
-    >
+  <fieldset class="col-span-3 md:col-span-1 space-y-2">
+    <legend class="text-sm font-medium {{ setStatusClass(endTime, false) }}">
       End Time
     </legend>
     <input
       id="dpmEndTimeInput"
       type="text"
       placeholder="1000"
-      class="input input-bordered w-full {{ setStatusClass(endTime) }}"
+      class="w-full px-4 py-3 rounded-md bg-base-100 border-2 text-base-content placeholder:text-base-content/50 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:border-transparent {{
+        getInputBorderClass(endTime)
+      }}"
       maxlength="4"
       autocomplete="off"
       formControlName="endTime"
       inputmode="numeric"
       required
     />
-    <p class="label text-error">{{ getEndTimeValidationMessages() }}</p>
+    @if (getEndTimeValidationMessages()) {
+      <p class="text-sm text-error-600 mt-1">
+        {{ getEndTimeValidationMessages() }}
+      </p>
+    }
   </fieldset>
 
-  <div class="grid grid-cols-2 col-span-3 gap-x-6 gap-y-2">
-    <fieldset class="fieldset col-span-2 md:col-span-1">
-      <legend class="fieldset-legend text-sm">DPM Type</legend>
+  <div class="grid grid-cols-2 col-span-3 gap-x-6 gap-y-6">
+    <fieldset class="col-span-2 md:col-span-1 space-y-2">
+      <legend class="text-sm font-medium text-base-content">DPM Type</legend>
       <select
         id="dpmTypeInput"
-        class="select select-bordered w-full"
+        class="w-full px-4 py-3 rounded-md bg-base-100 border-2 border-neutral-300 text-base-content transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent hover:border-neutral-400 cursor-pointer"
         formControlName="type"
       >
         @for (group of dpmGroups(); track group.groupName) {
@@ -140,32 +169,28 @@
           </optgroup>
         }
       </select>
-      <p class="label">
-        <!-- Spacing -->
-      </p>
     </fieldset>
 
-    <fieldset class="fieldset col-span-2 md:col-span-1">
-      <legend class="fieldset-legend text-sm">Additional Notes</legend>
+    <fieldset class="col-span-2 md:col-span-1 space-y-2">
+      <legend class="text-sm font-medium text-base-content">
+        Additional Notes
+      </legend>
       <input
         id="dpmNotesInput"
         type="text"
         placeholder="Abducted by Aliens"
-        class="input input-bordered w-full"
+        class="w-full px-4 py-3 rounded-md bg-base-100 border-2 border-neutral-300 text-base-content placeholder:text-base-content/50 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent hover:border-neutral-400"
         autocomplete="off"
         formControlName="notes"
       />
-      <p class="label">
-        <!-- Spacing -->
-      </p>
     </fieldset>
   </div>
-  <div class="grid place-items-center col-span-3 mt-2">
+
+  <div class="col-span-3 mt-4">
     <button
-      pRipple
       id="submitButton"
       type="submit"
-      class="btn btn-secondary m-auto w-full md:btn-wide"
+      class="w-full md:w-auto md:px-24 px-6 py-3 bg-secondary-600 text-neutral-900 font-medium rounded-md shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] hover:bg-secondary-700 active:bg-secondary-800 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
       [disabled]="!homeFormGroup().valid"
     >
       Submit

@@ -10,14 +10,13 @@ import { DPMGroup } from '../../models/dpm-type';
 import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { DatePicker } from 'primeng/datepicker';
 import { NgClass } from '@angular/common';
-import { Ripple } from 'primeng/ripple';
 
 type startEndTime = 'Start Time' | 'End Time';
 
 @Component({
   selector: 'app-new-dpm',
   templateUrl: './new-dpm.component.html',
-  imports: [AutoComplete, ReactiveFormsModule, DatePicker, NgClass, Ripple],
+  imports: [AutoComplete, ReactiveFormsModule, DatePicker, NgClass],
 })
 export class NewDpmComponent implements AfterViewInit {
   private dpmService = inject(DpmService);
@@ -64,17 +63,26 @@ export class NewDpmComponent implements AfterViewInit {
     );
   }
 
-  errorsOrSuccess(control: AbstractControl | null): string {
-    return this.hasErrors(control) ? 'input-error' : 'input-success';
+  getInputBorderClass(control: AbstractControl | null): string {
+    if (control == null)
+      return 'border-neutral-300 hover:border-neutral-400 focus:ring-primary-500';
+
+    if (this.hasErrors(control)) {
+      return 'border-error-500 focus:ring-error-500';
+    }
+    if (control.dirty || control.touched) {
+      return 'border-success-500 focus:ring-success-500';
+    }
+    return 'border-neutral-300 hover:border-neutral-400 focus:ring-primary-500';
   }
 
   setStatusClass(control: AbstractControl | null, isInput = true): string {
-    if (control == null) return '';
-    const prefix = isInput ? 'input-' : 'text-';
+    if (control == null) return 'text-base-content';
+    const prefix = isInput ? 'border-' : 'text-';
 
-    if (this.hasErrors(control)) return prefix + 'error';
-    if (control.dirty || control.touched) return prefix + 'success';
-    return '';
+    if (this.hasErrors(control)) return prefix + 'error-600';
+    if (control.dirty || control.touched) return prefix + 'success-600';
+    return prefix === 'text-' ? 'text-base-content' : 'border-neutral-300';
   }
 
   onSubmit() {

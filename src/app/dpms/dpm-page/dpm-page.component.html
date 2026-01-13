@@ -1,24 +1,36 @@
 @let active = activeTab();
 <div
   role="tablist"
-  class="tabs tabs-lg tabs-border mb-5 grid justify-items-center lg:justify-items-start"
+  class="mb-6 flex justify-center lg:justify-start border-b-2 border-neutral-300"
   [appRemoveIfUnauthorized]="editRoles"
 >
-  <div>
-    <a
+  <div class="flex gap-1">
+    <button
       role="tab"
-      class="tab tab-lg tab-bordered"
-      [ngClass]="{ 'tab-active': active.new }"
+      type="button"
+      class="px-6 py-3 font-medium text-base transition-all duration-[var(--transition-base)] border-b-2 -mb-[2px] cursor-pointer"
+      [ngClass]="{
+        'border-primary-600 text-primary-600': active.new,
+        'border-transparent text-base-content/60 hover:text-base-content hover:border-neutral-400':
+          !active.new,
+      }"
       (click)="activateTab('new')"
-      >New</a
     >
-    <a
+      New
+    </button>
+    <button
       role="tab"
-      class="tab tab-lg tab-bordered"
-      [ngClass]="{ 'tab-active': active.edit }"
+      type="button"
+      class="px-6 py-3 font-medium text-base transition-all duration-[var(--transition-base)] border-b-2 -mb-[2px] cursor-pointer"
+      [ngClass]="{
+        'border-primary-600 text-primary-600': active.edit,
+        'border-transparent text-base-content/60 hover:text-base-content hover:border-neutral-400':
+          !active.edit,
+      }"
       (click)="activateTab('edit')"
-      >Edit</a
     >
+      Edit
+    </button>
   </div>
 </div>
 

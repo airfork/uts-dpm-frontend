@@ -2,6 +2,11 @@ import { Route } from '@angular/router';
 
 export const APP_ROUTES: Route[] = [
   {
+    path: 'design-preview',
+    loadComponent: () =>
+      import('./design-preview/design-preview.component').then((m) => m.DesignPreviewComponent),
+  },
+  {
     path: 'users',
     loadChildren: () => import('./users/users.routes').then((m) => m.USERS_ROUTES),
   },

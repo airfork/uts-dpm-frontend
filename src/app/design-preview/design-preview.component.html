@@ -1,0 +1,375 @@
+<div class="min-h-screen bg-base-100 px-4 py-8">
+  <div class="max-w-7xl mx-auto space-y-8">
+    <!-- Header -->
+    <div class="text-center space-y-4">
+      <h1 class="text-4xl font-bold text-base-content">Design Style Preview</h1>
+      <p class="text-lg text-base-content/60">
+        Choose a modern design direction for the UTS DPM application
+      </p>
+    </div>
+
+    <!-- Style Selector -->
+    <div class="flex flex-wrap justify-center gap-4">
+      <button
+        type="button"
+        (click)="setStyle('glassmorphism')"
+        [class]="
+          selectedStyle() === 'glassmorphism'
+            ? 'px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg transform scale-105'
+            : 'px-6 py-3 rounded-xl font-semibold text-base-content bg-base-200 border border-neutral-200 dark:border-neutral-700 hover:scale-105 transition-transform'
+        "
+      >
+        Glassmorphism
+      </button>
+      <button
+        type="button"
+        (click)="setStyle('neubrutalism')"
+        [class]="
+          selectedStyle() === 'neubrutalism'
+            ? 'px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg transform scale-105'
+            : 'px-6 py-3 rounded-xl font-semibold text-base-content bg-base-200 border border-neutral-200 dark:border-neutral-700 hover:scale-105 transition-transform'
+        "
+      >
+        Neubrutalism
+      </button>
+      <button
+        type="button"
+        (click)="setStyle('gradient-cards')"
+        [class]="
+          selectedStyle() === 'gradient-cards'
+            ? 'px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-500 shadow-lg transform scale-105'
+            : 'px-6 py-3 rounded-xl font-semibold text-base-content bg-base-200 border border-neutral-200 dark:border-neutral-700 hover:scale-105 transition-transform'
+        "
+      >
+        Gradient Cards
+      </button>
+    </div>
+
+    <!-- Glassmorphism Style -->
+    @if (selectedStyle() === "glassmorphism") {
+      <div class="space-y-6">
+        <!-- Hero Section with Glassmorphism -->
+        <div class="relative overflow-hidden rounded-3xl p-1">
+          <!-- Gradient Border -->
+          <div
+            class="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 rounded-3xl"
+          ></div>
+          <!-- Glass Content -->
+          <div
+            class="relative bg-white/10 dark:bg-black/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20"
+          >
+            <h2 class="text-3xl font-bold text-base-content mb-2">
+              Glassmorphism Design
+            </h2>
+            <p class="text-base-content/70 mb-6">
+              Frosted glass effects with vibrant gradients and smooth
+              transparency
+            </p>
+            <div
+              class="inline-block px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold shadow-lg"
+            >
+              Modern & Elegant
+            </div>
+          </div>
+        </div>
+
+        <!-- DPM Cards with Glassmorphism -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (dpm of sampleDpms; track dpm.id) {
+            <div
+              class="relative overflow-hidden rounded-2xl p-1 cursor-pointer transform hover:scale-105 transition-all duration-300"
+            >
+              <!-- Gradient Border -->
+              <div
+                class="absolute inset-0 bg-gradient-to-br from-purple-500/50 via-pink-500/50 to-blue-500/50 rounded-2xl"
+              ></div>
+              <!-- Glass Card Content -->
+              <div
+                class="relative bg-white/20 dark:bg-black/20 backdrop-blur-2xl rounded-2xl p-6 border border-white/30 h-full"
+              >
+                <div class="space-y-4">
+                  <div class="flex items-start justify-between">
+                    <h3
+                      class="text-lg font-bold text-base-content line-clamp-2"
+                    >
+                      {{ dpm.type }}
+                    </h3>
+                    <span
+                      [class]="
+                        dpm.points.startsWith('-')
+                          ? 'px-3 py-1 rounded-full text-sm font-bold bg-red-500/30 text-red-100 border border-red-400/50'
+                          : 'px-3 py-1 rounded-full text-sm font-bold bg-green-500/30 text-green-100 border border-green-400/50'
+                      "
+                    >
+                      {{ dpm.points }}
+                    </span>
+                  </div>
+                  <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                      <span class="text-base-content/60">Driver:</span>
+                      <span class="font-semibold text-base-content">{{
+                        dpm.driver
+                      }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-base-content/60">Block:</span>
+                      <span class="font-semibold text-base-content">{{
+                        dpm.block
+                      }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-base-content/60">Date:</span>
+                      <span class="font-semibold text-base-content">{{
+                        dpm.date
+                      }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-base-content/60">Time:</span>
+                      <span class="font-semibold text-base-content">{{
+                        dpm.time
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Action Button -->
+        <div class="flex justify-center">
+          <button
+            type="button"
+            class="px-8 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 text-white font-bold rounded-2xl shadow-2xl hover:shadow-purple-500/50 transform hover:scale-105 transition-all duration-300"
+          >
+            Create New DPM
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Neubrutalism Style -->
+    @if (selectedStyle() === "neubrutalism") {
+      <div class="space-y-6">
+        <!-- Hero Section with Neubrutalism -->
+        <div
+          class="bg-yellow-400 rounded-none border-4 border-black dark:border-white p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] transform hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] transition-all duration-200"
+        >
+          <h2 class="text-4xl font-black text-black uppercase mb-2">
+            Neubrutalism Design
+          </h2>
+          <p class="text-black/80 font-bold text-lg mb-6">
+            Bold, unapologetic, and impossibly modern
+          </p>
+          <div
+            class="inline-block px-6 py-2 bg-black text-yellow-400 rounded-none font-black uppercase border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+          >
+            Break The Rules
+          </div>
+        </div>
+
+        <!-- DPM Cards with Neubrutalism -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (dpm of sampleDpms; track dpm.id) {
+            <div
+              [class]="
+                dpm.points.startsWith('-')
+                  ? 'bg-red-400 border-4 border-black dark:border-white rounded-none shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] p-6 cursor-pointer transform hover:translate-x-1 hover:translate-y-1 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] transition-all duration-200'
+                  : 'bg-green-400 border-4 border-black dark:border-white rounded-none shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] p-6 cursor-pointer transform hover:translate-x-1 hover:translate-y-1 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] transition-all duration-200'
+              "
+            >
+              <div class="space-y-4">
+                <div class="flex items-start justify-between gap-3">
+                  <h3
+                    class="text-lg font-black text-black uppercase leading-tight"
+                  >
+                    {{ dpm.type }}
+                  </h3>
+                  <span
+                    class="px-3 py-1 bg-black text-white rounded-none font-black text-sm border-2 border-black whitespace-nowrap"
+                  >
+                    {{ dpm.points }}
+                  </span>
+                </div>
+                <div class="space-y-2 text-sm font-bold">
+                  <div
+                    class="flex justify-between border-b-2 border-black pb-1"
+                  >
+                    <span class="text-black/70 uppercase text-xs">Driver:</span>
+                    <span class="text-black">{{ dpm.driver }}</span>
+                  </div>
+                  <div
+                    class="flex justify-between border-b-2 border-black pb-1"
+                  >
+                    <span class="text-black/70 uppercase text-xs">Block:</span>
+                    <span class="text-black">{{ dpm.block }}</span>
+                  </div>
+                  <div
+                    class="flex justify-between border-b-2 border-black pb-1"
+                  >
+                    <span class="text-black/70 uppercase text-xs">Date:</span>
+                    <span class="text-black">{{ dpm.date }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-black/70 uppercase text-xs">Time:</span>
+                    <span class="text-black">{{ dpm.time }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Action Button -->
+        <div class="flex justify-center">
+          <button
+            type="button"
+            class="px-8 py-4 bg-yellow-400 text-black font-black uppercase rounded-none border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-x-2 hover:translate-y-2 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 text-lg"
+          >
+            Create New DPM
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Gradient Cards Style -->
+    @if (selectedStyle() === "gradient-cards") {
+      <div class="space-y-6">
+        <!-- Hero Section with Gradient Cards -->
+        <div
+          class="relative overflow-hidden rounded-3xl p-8 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 shadow-2xl"
+        >
+          <div class="relative z-10">
+            <h2 class="text-4xl font-bold text-white mb-2">
+              Gradient Cards Design
+            </h2>
+            <p class="text-white/90 text-lg mb-6">
+              Vibrant gradients with smooth animations and modern layouts
+            </p>
+            <div
+              class="inline-block px-6 py-2 bg-white text-purple-600 rounded-full font-bold shadow-lg"
+            >
+              Colorful & Dynamic
+            </div>
+          </div>
+          <!-- Decorative circles -->
+          <div
+            class="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"
+          ></div>
+          <div
+            class="absolute -bottom-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"
+          ></div>
+        </div>
+
+        <!-- DPM Cards with Gradients -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (dpm of sampleDpms; track dpm.id) {
+            <div
+              class="relative overflow-hidden rounded-2xl cursor-pointer transform hover:scale-105 hover:rotate-1 transition-all duration-300 shadow-xl hover:shadow-2xl group"
+            >
+              <!-- Gradient Background -->
+              <div
+                [class]="
+                  dpm.points.startsWith('-')
+                    ? 'absolute inset-0 bg-gradient-to-br from-red-500 via-pink-500 to-orange-500'
+                    : 'absolute inset-0 bg-gradient-to-br from-green-400 via-emerald-500 to-teal-500'
+                "
+              ></div>
+
+              <!-- Content -->
+              <div
+                class="relative z-10 p-6 bg-white/95 dark:bg-black/95 m-[2px] rounded-2xl h-full"
+              >
+                <div class="space-y-4">
+                  <div class="flex items-start justify-between gap-3">
+                    <h3
+                      class="text-lg font-bold text-base-content line-clamp-2 leading-tight"
+                    >
+                      {{ dpm.type }}
+                    </h3>
+                    <span
+                      [class]="
+                        dpm.points.startsWith('-')
+                          ? 'px-4 py-1.5 rounded-full text-sm font-bold bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-md whitespace-nowrap'
+                          : 'px-4 py-1.5 rounded-full text-sm font-bold bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-md whitespace-nowrap'
+                      "
+                    >
+                      {{ dpm.points }}
+                    </span>
+                  </div>
+                  <div class="space-y-3 text-sm">
+                    <div
+                      class="flex justify-between items-center p-2 rounded-lg bg-base-200/50"
+                    >
+                      <span class="text-base-content/60 font-medium"
+                        >Driver:</span
+                      >
+                      <span class="font-semibold text-base-content">{{
+                        dpm.driver
+                      }}</span>
+                    </div>
+                    <div
+                      class="flex justify-between items-center p-2 rounded-lg bg-base-200/50"
+                    >
+                      <span class="text-base-content/60 font-medium"
+                        >Block:</span
+                      >
+                      <span class="font-semibold text-base-content">{{
+                        dpm.block
+                      }}</span>
+                    </div>
+                    <div
+                      class="flex justify-between items-center p-2 rounded-lg bg-base-200/50"
+                    >
+                      <span class="text-base-content/60 font-medium"
+                        >Date:</span
+                      >
+                      <span class="font-semibold text-base-content">{{
+                        dpm.date
+                      }}</span>
+                    </div>
+                    <div
+                      class="flex justify-between items-center p-2 rounded-lg bg-base-200/50"
+                    >
+                      <span class="text-base-content/60 font-medium"
+                        >Time:</span
+                      >
+                      <span class="font-semibold text-base-content">{{
+                        dpm.time
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Hover Glow Effect -->
+              <div
+                class="absolute inset-0 bg-gradient-to-br from-white/0 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"
+              ></div>
+            </div>
+          }
+        </div>
+
+        <!-- Action Button -->
+        <div class="flex justify-center">
+          <button
+            type="button"
+            class="px-8 py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white font-bold rounded-full shadow-2xl hover:shadow-purple-500/50 transform hover:scale-110 transition-all duration-300 text-lg"
+          >
+            Create New DPM
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Back Link -->
+    <div class="flex justify-center pt-8">
+      <a
+        routerLink="/home"
+        class="px-6 py-3 bg-base-200 text-base-content font-semibold rounded-xl border border-neutral-200 dark:border-neutral-700 hover:bg-base-300/50 transition-colors"
+      >
+        ← Back to App
+      </a>
+    </div>
+  </div>
+</div>

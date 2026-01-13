@@ -20,6 +20,7 @@ export class ButtonComponent {
     const baseClasses = [
       'inline-flex items-center justify-center',
       'font-medium rounded-md',
+      'cursor-pointer',
       'transition-all duration-[var(--transition-base)]',
       'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
       'disabled:opacity-50 disabled:cursor-not-allowed',
@@ -37,7 +38,11 @@ export class ButtonComponent {
         'hover:bg-secondary-700 active:bg-secondary-800',
         'shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)]',
       ],
-      ghost: ['bg-transparent text-neutral-700', 'hover:bg-neutral-100 active:bg-neutral-200'],
+      ghost: [
+        'bg-transparent text-neutral-700 dark:text-neutral-100',
+        'hover:bg-neutral-100 hover:dark:bg-neutral-700',
+        'active:bg-neutral-200 active:dark:bg-neutral-600',
+      ],
       outline: [
         'bg-transparent border-2 border-neutral-300 text-neutral-700',
         'hover:border-neutral-400 hover:bg-neutral-50',

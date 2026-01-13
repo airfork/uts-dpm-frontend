@@ -1,42 +1,55 @@
+<!-- DPM Detail Modal -->
 <app-modal [open]="isModalOpen()" [size]="'md'" (close)="closeModal()">
   @if (currentDpm(); as currentDpm) {
     <ng-container modal-header>
-      <h3 class="text-xl font-semibold">{{ currentDpm.type }}</h3>
+      <h3 class="text-xl font-semibold text-base-content">
+        {{ currentDpm.type }}
+      </h3>
     </ng-container>
     <ng-container modal-body>
-      <div>
-        <table class="border-separate border-spacing-x-4 border-spacing-y-1.5">
-          <tbody class="text-left align-text-top text-base">
-            <tr>
-              <th>Points:</th>
-              <td>{{ currentDpm.points | points }}</td>
-            </tr>
-            <tr>
-              <th>Block:</th>
-              <td>{{ currentDpm.block | block }}</td>
-            </tr>
-            <tr>
-              <th>Location:</th>
-              <td>{{ currentDpm.location | uppercase }}</td>
-            </tr>
-            <tr>
-              <th>Date:</th>
-              <td>{{ currentDpm.date }}</td>
-            </tr>
-            <tr>
-              <th>Time:</th>
-              <td>
-                {{ currentDpm.time }}
-              </td>
-            </tr>
-            @if (currentDpm.notes) {
-              <tr class="break-words whitespace-normal">
-                <th>Notes:</th>
-                <td>{{ currentDpm.notes }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
+      <div class="space-y-3">
+        <div
+          class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
+        >
+          <span class="font-medium text-base-content">Points:</span>
+          <span class="text-base-content">{{
+            currentDpm.points | points
+          }}</span>
+        </div>
+        <div
+          class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
+        >
+          <span class="font-medium text-base-content">Block:</span>
+          <span class="text-base-content">{{ currentDpm.block | block }}</span>
+        </div>
+        <div
+          class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
+        >
+          <span class="font-medium text-base-content">Location:</span>
+          <span class="text-base-content">{{
+            currentDpm.location | uppercase
+          }}</span>
+        </div>
+        <div
+          class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
+        >
+          <span class="font-medium text-base-content">Date:</span>
+          <span class="text-base-content">{{ currentDpm.date }}</span>
+        </div>
+        <div
+          class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
+        >
+          <span class="font-medium text-base-content">Time:</span>
+          <span class="text-base-content">{{ currentDpm.time }}</span>
+        </div>
+        @if (currentDpm.notes) {
+          <div class="flex justify-between py-2">
+            <span class="font-medium text-base-content">Notes:</span>
+            <span class="text-base-content text-right">{{
+              currentDpm.notes
+            }}</span>
+          </div>
+        }
       </div>
     </ng-container>
   }
@@ -47,15 +60,18 @@
 </ng-template>
 
 @if (currentDpms(); as dpms) {
-  <div class="px-4 py-6 md:px-8 md:py-8 lg:px-12 lg:py-10">
-    <div class="space-y-6 md:space-y-8 lg:space-y-10">
-      <h2 class="text-3xl font-bold">Current DPMs</h2>
-      <div class="rounded-box bg-base-100">
+  <div class="px-4 py-6 md:px-6 md:py-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+      <h2 class="text-2xl font-semibold text-base-content">Current DPMs</h2>
+
+      <div
+        class="bg-base-200 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-sm overflow-hidden"
+      >
         <p-table
           #dt
           [value]="dpms"
           dataKey="id"
-          styleClass="table"
+          styleClass="w-full"
           [rowHover]="true"
           [rows]="10"
           [showCurrentPageReport]="true"
@@ -65,32 +81,49 @@
           [paginator]="true"
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         >
-          <ng-template pTemplate="header" class="table">
-            <tr>
-              <th class="lg:text-base break-words">Type</th>
-              <th class="lg:text-base break-words">Points</th>
-              <th class="lg:text-base break-words">Date</th>
+          <ng-template pTemplate="header">
+            <tr class="bg-base-300/30">
+              <th
+                class="px-6 py-4 text-left text-sm font-semibold text-base-content"
+              >
+                Type
+              </th>
+              <th
+                class="px-6 py-4 text-left text-sm font-semibold text-base-content"
+              >
+                Points
+              </th>
+              <th
+                class="px-6 py-4 text-left text-sm font-semibold text-base-content"
+              >
+                Date
+              </th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-dpm>
             <tr
-              class="hover:bg-base-300 hover:cursor-pointer"
+              class="border-t border-neutral-200 dark:border-neutral-700 hover:bg-base-300/30 transition-colors duration-150 cursor-pointer"
               (click)="clickRow(dpm)"
             >
-              <td class="text-base break-words whitespace-normal">
+              <td class="px-6 py-4 text-sm text-base-content">
                 {{ dpm.type }}
               </td>
-              <td class="text-base break-words whitespace-normal">
+              <td class="px-6 py-4 text-sm text-base-content">
                 {{ dpm.points | points }}
               </td>
-              <td class="text-base break-words whitespace-normal">
+              <td class="px-6 py-4 text-sm text-base-content">
                 {{ dpm.date }}
               </td>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td colspan="8">No DPMs found.</td>
+              <td
+                colspan="3"
+                class="px-6 py-8 text-center text-base-content/60"
+              >
+                No DPMs found.
+              </td>
             </tr>
           </ng-template>
         </p-table>

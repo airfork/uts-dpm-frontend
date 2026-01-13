@@ -38,27 +38,26 @@
               class="mb-2 last:mb-0"
             >
               @if (link.path) {
-                <app-button
-                  variant="ghost"
+                <a
                   routerLink="{{ link.path }}"
-                  routerLinkActive="!bg-transparent !bg-primary-600 !text-white hover:!bg-primary-700"
+                  routerLinkActive="bg-primary-600 text-white"
                   [queryParamsHandling]="
                     link.name === 'Users' ? 'preserve' : null
                   "
                   (click)="menuItemClick()"
-                  class="font-medium text-base leading-normal w-full justify-start"
+                  class="block px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer hover:bg-base-300/50 text-base-content/80 hover:text-base-content w-full text-left"
                 >
                   {{ link.name }}
-                </app-button>
+                </a>
               }
               @if (!link.path) {
-                <app-button
-                  variant="ghost"
-                  (click)="logoutClick()"
-                  class="font-semibold text-base leading-normal w-full justify-start"
+                <button
+                  type="button"
+                  (click)="logoutClick(); menuItemClick()"
+                  class="block px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer hover:bg-base-300/50 text-base-content/80 hover:text-base-content w-full text-left"
                 >
                   {{ link.name }}
-                </app-button>
+                </button>
               }
             </li>
           }
@@ -77,28 +76,27 @@
   </div>
 
   <div class="flex items-center justify-end gap-2 w-[60%] hidden lg:flex">
-    <ul class="flex flex-row items-center p-0 gap-2">
+    <ul class="flex flex-row items-center p-0 gap-1">
       @for (link of links; track link) {
         <li [appRemoveIfUnauthorized]="link.allowedRoles">
           @if (link.path) {
-            <app-button
-              variant="ghost"
+            <a
               routerLink="{{ link.path }}"
-              routerLinkActive="!bg-transparent !bg-primary-600 !text-white hover:!bg-primary-700"
+              routerLinkActive="bg-primary-600 text-white"
               [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
-              class="font-medium text-base leading-normal"
+              class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer hover:bg-base-300/50 text-base-content/80 hover:text-base-content"
             >
               {{ link.name }}
-            </app-button>
+            </a>
           }
           @if (!link.path) {
-            <app-button
-              variant="ghost"
+            <button
+              type="button"
               (click)="logoutClick()"
-              class="font-semibold text-base leading-normal"
+              class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer hover:bg-base-300/50 text-base-content/80 hover:text-base-content"
             >
               {{ link.name }}
-            </app-button>
+            </button>
           }
         </li>
       }

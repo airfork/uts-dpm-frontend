@@ -24,10 +24,11 @@ export class ModalComponent {
   classes = computed(() => {
     const baseClasses = [
       'relative',
-      'bg-base-100',
-      'rounded-lg',
-      'shadow-[var(--shadow-xl)]',
-      'transform transition-all duration-[var(--transition-base)]',
+      'bg-base-200',
+      'rounded-2xl',
+      'border border-neutral-200 dark:border-neutral-700',
+      'shadow-xl',
+      'transform transition-all duration-200',
       'w-full',
       'mx-4',
     ];

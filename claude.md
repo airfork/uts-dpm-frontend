@@ -410,4 +410,131 @@ Phase 2 completely removed DaisyUI dependency and replaced all DaisyUI component
 
 ---
 
+## Phase 3: Design Exploration (In Progress)
+
+**Started**: 2026-01-13
+**Commits**: `223109f` - `1ec3659` (13 commits)
+**Branch**: `trusting-villani`
+
+### Summary
+
+Phase 3 addresses user feedback that the existing design felt like "tiny evolutions" rather than a modern redesign. Created a design preview showcase at `/design-preview` to explore three completely different modern design directions: Glassmorphism, Neubrutalism, and Gradient Cards.
+
+### Context
+
+After completing Phase 2, user feedback indicated:
+- Existing design still felt like "slightly above avg hobby project"
+- Wanted something that "looks and feels different" and "feels like a modern app"
+- Current iterative approach was not producing meaningful design changes
+- Requested exploring design style options before committing to one direction
+
+### Design Preview Component
+
+Created `/design-preview` route showcasing three distinct modern design styles with live DPM data:
+
+#### 1. Glassmorphism
+**Visual Characteristics**:
+- Frosted glass effects with backdrop blur (`backdrop-blur-xl`, `backdrop-blur-2xl`)
+- Vibrant gradient borders (purple-pink-blue color scheme)
+- Semi-transparent backgrounds (`bg-white/20`, `bg-black/20`)
+- Smooth hover states with scale transforms
+- Rounded corners (`rounded-2xl`, `rounded-3xl`)
+
+**Key Features**:
+- Gradient borders achieved with absolute positioned divs
+- Glass content using backdrop blur and transparency
+- Elegant, modern aesthetic
+- Works well in both light and dark modes
+
+**Colors**: Purple (#7c3aed), Pink (#ec4899), Blue (#3b82f6)
+
+#### 2. Neubrutalism
+**Visual Characteristics**:
+- Bold, high-contrast flat colors (yellow, red, green)
+- Thick black/white borders (`border-4`)
+- Dramatic offset shadows (`shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]`)
+- Sharp corners (`rounded-none`)
+- Uppercase typography (`uppercase`, `font-black`)
+- Brutalist, unapologetic aesthetic
+
+**Key Features**:
+- Shadow movement on hover (translates element to reduce shadow)
+- Color-coded cards (red for negative points, green for positive)
+- High contrast text and borders
+- Playful, bold design language
+
+**Colors**: Yellow (#facc15), Red (#f87171), Green (#4ade80), Black/White borders
+
+#### 3. Gradient Cards
+**Visual Characteristics**:
+- Vibrant gradient borders (red-pink-orange for negative, green-emerald-teal for positive)
+- Clean white/black card interiors with high opacity (`bg-white/95`)
+- Rounded corners throughout (`rounded-2xl`, `rounded-full`)
+- Smooth scale and rotation on hover (`hover:scale-105 hover:rotate-1`)
+- Decorative blurred circles for depth
+- Modern, colorful, dynamic feel
+
+**Key Features**:
+- Gradient backgrounds with clean interior cards
+- Color-coded by points (red/pink/orange vs green/emerald/teal)
+- Glow effects on hover (`group-hover:opacity-100`)
+- Smooth animations and transitions
+- Professional yet vibrant aesthetic
+
+**Colors**:
+- Negative: Red (#ef4444), Pink (#ec4899), Orange (#f97316)
+- Positive: Green (#4ade80), Emerald (#10b981), Teal (#14b8a6)
+
+### Technical Implementation
+
+**Component Structure**:
+```typescript
+export class DesignPreviewComponent {
+  selectedStyle = signal<'glassmorphism' | 'neubrutalism' | 'gradient-cards'>('glassmorphism');
+
+  sampleDpms = [/* 3 sample DPM records */];
+
+  setStyle(style: 'glassmorphism' | 'neubrutalism' | 'gradient-cards') {
+    this.selectedStyle.set(style);
+  }
+}
+```
+
+**Route Configuration**: Unauthenticated route at `/design-preview` using lazy loading
+
+**Features**:
+- Toggle between styles using button selectors
+- Each style displays same DPM data in completely different visual language
+- Responsive grid layout (1 col mobile, 2 col tablet, 3 col desktop)
+- Sample "Create New DPM" button showing action button styling
+- Back link to return to main app
+
+### Commits
+
+1. `223109f` - feat(login): redesign login page with modern, accessible styling
+2. `498804d` - fix(navbar): increase home button size for better visibility
+3. `b396441` - fix: move dark mode @media outside @theme block
+4. `c06a44f` - feat(dpm-page): redesign DPM form with modern styling and improved UX
+5. `d49dd19` - refactor: modern design system overhaul with clean aesthetics
+6. `4a8d63c` - feat: complete user flow redesign
+7. ... (additional bug fixes and improvements)
+8. `1ec3659` - feat(design-preview): add design style showcase with glassmorphism, neubrutalism, and gradient cards
+
+### Next Steps
+
+**Awaiting User Selection**:
+1. User reviews three design directions at `/design-preview`
+2. User selects preferred design style or provides feedback
+3. Implement chosen style across entire application
+4. Refine and polish based on user feedback
+
+### Lessons Learned
+
+1. **Show, Don't Tell**: Creating visual options is more effective than describing design concepts
+2. **Complete Contrast**: Each design style needed to feel completely different, not incremental
+3. **User Feedback Integration**: Listening to "stop being iterative" led to bolder exploration
+4. **Unauthed Routes**: Using `/design-preview` allows experimentation without breaking auth flow
+
+---
+
 Last Updated: 2026-01-13

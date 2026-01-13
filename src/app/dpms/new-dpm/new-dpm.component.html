@@ -1,199 +1,227 @@
-<h2 class="text-3xl mb-6 font-bold text-base-content">New DPM</h2>
-<form
-  class="grid grid-cols-3 gap-x-6 gap-y-6 rounded"
-  [formGroup]="homeFormGroup()"
-  (ngSubmit)="onSubmit()"
+<div
+  class="bg-base-200 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-8 shadow-sm"
 >
-  <fieldset class="col-span-3 md:col-span-1 space-y-2">
-    <legend class="text-sm font-medium {{ setStatusClass(name, false) }}">
-      Driver Name
-    </legend>
-    <p-autoComplete
-      id="dpmNameInput"
-      placeholder="Jane Doe"
-      formControlName="name"
-      styleClass="w-full px-4 py-3 rounded-md bg-base-100 border-2 text-base-content placeholder:text-base-content/50 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:border-transparent {{
-        getInputBorderClass(name)
-      }}"
-      panelStyleClass="bg-base-200 border border-neutral-300 rounded-md shadow-[var(--shadow-md)] mt-1"
-      [required]="true"
-      [suggestions]="autocompleteResults()"
-      (completeMethod)="search($event)"
-      [showEmptyMessage]="true"
-      [forceSelection]="true"
-    ></p-autoComplete>
-    @if (getNameValidationMessages()) {
-      <p class="text-sm text-error-600 mt-1">
-        {{ getNameValidationMessages() }}
-      </p>
-    }
-  </fieldset>
+  <h2 class="text-2xl font-semibold text-base-content mb-8">New DPM</h2>
 
-  <fieldset class="col-span-3 md:col-span-1 space-y-2">
-    <legend class="text-sm font-medium {{ setStatusClass(block, false) }}">
-      Block Name
-    </legend>
-    <input
-      id="dpmBlockInput"
-      type="text"
-      placeholder="11"
-      class="w-full px-4 py-3 rounded-md bg-base-100 border-2 text-base-content placeholder:text-base-content/50 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:border-transparent {{
-        getInputBorderClass(block)
-      }}"
-      maxlength="5"
-      formControlName="block"
-      autocomplete="off"
-      required
-    />
-    @if (getBlockValidationMessages()) {
-      <p class="text-sm text-error-600 mt-1">
-        {{ getBlockValidationMessages() }}
-      </p>
-    }
-  </fieldset>
-
-  <fieldset class="col-span-3 md:col-span-1 space-y-2">
-    <legend class="text-sm font-medium {{ setStatusClass(location, false) }}">
-      Location
-    </legend>
-    <input
-      id="dpmLocationInput"
-      type="text"
-      placeholder="OFF"
-      class="w-full px-4 py-3 rounded-md bg-base-100 border-2 text-base-content placeholder:text-base-content/50 uppercase transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:border-transparent {{
-        getInputBorderClass(location)
-      }}"
-      maxlength="5"
-      formControlName="location"
-      autocomplete="off"
-      required
-    />
-    @if (getLocationValidationMessages()) {
-      <p class="text-sm text-error-600 mt-1">
-        {{ getLocationValidationMessages() }}
-      </p>
-    }
-  </fieldset>
-
-  <fieldset class="col-span-3 md:col-span-1 space-y-2">
-    <legend
-      class="text-sm font-medium"
-      [ngClass]="{
-        'text-error-600': hasErrors(dpmDate),
-        'text-success-600':
-          !hasErrors(dpmDate) && (dpmDate?.dirty || dpmDate?.touched),
-      }"
-    >
-      Date
-    </legend>
-    <p-date-picker
-      id="dpmDateInput"
-      formControlName="dpmDate"
-      [placeholder]="format.dpmDate()"
-      styleClass="w-full px-4 py-3 rounded-md bg-base-100 border-2 text-base-content placeholder:text-base-content/50 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:border-transparent {{
-        getInputBorderClass(dpmDate)
-      }}"
-      [required]="true"
-      [touchUI]="false"
-    ></p-date-picker>
-    @if (getDpmDateValidationMessages()) {
-      <p class="text-sm text-error-600 mt-1">
-        {{ getDpmDateValidationMessages() }}
-      </p>
-    }
-  </fieldset>
-
-  <fieldset class="col-span-3 md:col-span-1 space-y-2">
-    <legend class="text-sm font-medium {{ setStatusClass(startTime, false) }}">
-      Start Time
-    </legend>
-    <input
-      id="dpmStartTimeInput"
-      type="text"
-      placeholder="0600"
-      class="w-full px-4 py-3 rounded-md bg-base-100 border-2 text-base-content placeholder:text-base-content/50 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:border-transparent {{
-        getInputBorderClass(startTime)
-      }}"
-      maxlength="4"
-      autocomplete="off"
-      formControlName="startTime"
-      inputmode="numeric"
-      required
-    />
-    @if (getStartTimeValidationMessages()) {
-      <p class="text-sm text-error-600 mt-1">
-        {{ getStartTimeValidationMessages() }}
-      </p>
-    }
-  </fieldset>
-
-  <fieldset class="col-span-3 md:col-span-1 space-y-2">
-    <legend class="text-sm font-medium {{ setStatusClass(endTime, false) }}">
-      End Time
-    </legend>
-    <input
-      id="dpmEndTimeInput"
-      type="text"
-      placeholder="1000"
-      class="w-full px-4 py-3 rounded-md bg-base-100 border-2 text-base-content placeholder:text-base-content/50 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:border-transparent {{
-        getInputBorderClass(endTime)
-      }}"
-      maxlength="4"
-      autocomplete="off"
-      formControlName="endTime"
-      inputmode="numeric"
-      required
-    />
-    @if (getEndTimeValidationMessages()) {
-      <p class="text-sm text-error-600 mt-1">
-        {{ getEndTimeValidationMessages() }}
-      </p>
-    }
-  </fieldset>
-
-  <div class="grid grid-cols-2 col-span-3 gap-x-6 gap-y-6">
-    <fieldset class="col-span-2 md:col-span-1 space-y-2">
-      <legend class="text-sm font-medium text-base-content">DPM Type</legend>
-      <select
-        id="dpmTypeInput"
-        class="w-full px-4 py-3 rounded-md bg-base-100 border-2 border-neutral-300 text-base-content transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent hover:border-neutral-400 cursor-pointer"
-        formControlName="type"
-      >
-        @for (group of dpmGroups(); track group.groupName) {
-          <optgroup label="{{ group.groupName }}">
-            @for (dpm of group.dpms; track dpm.name) {
-              <option [value]="dpm.id">
-                {{ dpm.name }} {{ formatPoints(dpm.points) }}
-              </option>
-            }
-          </optgroup>
+  <form class="space-y-6" [formGroup]="homeFormGroup()" (ngSubmit)="onSubmit()">
+    <!-- Row 1: Driver Name, Block Name, Location -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="space-y-2">
+        <label
+          for="dpmNameInput"
+          class="block text-sm font-medium text-base-content"
+        >
+          Driver Name
+        </label>
+        <p-autoComplete
+          id="dpmNameInput"
+          placeholder="Jane Doe"
+          formControlName="name"
+          styleClass="w-full px-4 py-2.5 rounded-lg bg-base-100 border text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
+            getInputBorderClass(name)
+          }}"
+          panelStyleClass="bg-base-200 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg mt-1"
+          [required]="true"
+          [suggestions]="autocompleteResults()"
+          (completeMethod)="search($event)"
+          [showEmptyMessage]="true"
+          [forceSelection]="true"
+        ></p-autoComplete>
+        @if (getNameValidationMessages()) {
+          <p class="text-sm text-error-600 mt-1.5">
+            {{ getNameValidationMessages() }}
+          </p>
         }
-      </select>
-    </fieldset>
+      </div>
 
-    <fieldset class="col-span-2 md:col-span-1 space-y-2">
-      <legend class="text-sm font-medium text-base-content">
-        Additional Notes
-      </legend>
-      <input
-        id="dpmNotesInput"
-        type="text"
-        placeholder="Abducted by Aliens"
-        class="w-full px-4 py-3 rounded-md bg-base-100 border-2 border-neutral-300 text-base-content placeholder:text-base-content/50 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent hover:border-neutral-400"
-        autocomplete="off"
-        formControlName="notes"
-      />
-    </fieldset>
-  </div>
+      <div class="space-y-2">
+        <label
+          for="dpmBlockInput"
+          class="block text-sm font-medium text-base-content"
+        >
+          Block Name
+        </label>
+        <input
+          id="dpmBlockInput"
+          type="text"
+          placeholder="11"
+          class="w-full px-4 py-2.5 rounded-lg bg-base-100 border text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
+            getInputBorderClass(block)
+          }}"
+          maxlength="5"
+          formControlName="block"
+          autocomplete="off"
+          required
+        />
+        @if (getBlockValidationMessages()) {
+          <p class="text-sm text-error-600 mt-1.5">
+            {{ getBlockValidationMessages() }}
+          </p>
+        }
+      </div>
 
-  <div class="col-span-3 mt-4">
-    <button
-      id="submitButton"
-      type="submit"
-      class="w-full md:w-auto md:px-24 px-6 py-3 bg-secondary-600 text-neutral-900 font-medium rounded-md shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)] hover:bg-secondary-700 active:bg-secondary-800 transition-all duration-[var(--transition-base)] focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none"
-      [disabled]="!homeFormGroup().valid"
-    >
-      Submit
-    </button>
-  </div>
-</form>
+      <div class="space-y-2">
+        <label
+          for="dpmLocationInput"
+          class="block text-sm font-medium text-base-content"
+        >
+          Location
+        </label>
+        <input
+          id="dpmLocationInput"
+          type="text"
+          placeholder="OFF"
+          class="w-full px-4 py-2.5 rounded-lg bg-base-100 border text-base-content placeholder:text-base-content/40 uppercase transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
+            getInputBorderClass(location)
+          }}"
+          maxlength="5"
+          formControlName="location"
+          autocomplete="off"
+          required
+        />
+        @if (getLocationValidationMessages()) {
+          <p class="text-sm text-error-600 mt-1.5">
+            {{ getLocationValidationMessages() }}
+          </p>
+        }
+      </div>
+    </div>
+
+    <!-- Row 2: Date, Start Time, End Time -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="space-y-2">
+        <label
+          for="dpmDateInput"
+          class="block text-sm font-medium text-base-content"
+        >
+          Date
+        </label>
+        <p-date-picker
+          id="dpmDateInput"
+          formControlName="dpmDate"
+          [placeholder]="format.dpmDate()"
+          styleClass="w-full px-4 py-2.5 rounded-lg bg-base-100 border text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
+            getInputBorderClass(dpmDate)
+          }}"
+          [required]="true"
+          [touchUI]="false"
+        ></p-date-picker>
+        @if (getDpmDateValidationMessages()) {
+          <p class="text-sm text-error-600 mt-1.5">
+            {{ getDpmDateValidationMessages() }}
+          </p>
+        }
+      </div>
+
+      <div class="space-y-2">
+        <label
+          for="dpmStartTimeInput"
+          class="block text-sm font-medium text-base-content"
+        >
+          Start Time
+        </label>
+        <input
+          id="dpmStartTimeInput"
+          type="text"
+          placeholder="0600"
+          class="w-full px-4 py-2.5 rounded-lg bg-base-100 border text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
+            getInputBorderClass(startTime)
+          }}"
+          maxlength="4"
+          autocomplete="off"
+          formControlName="startTime"
+          inputmode="numeric"
+          required
+        />
+        @if (getStartTimeValidationMessages()) {
+          <p class="text-sm text-error-600 mt-1.5">
+            {{ getStartTimeValidationMessages() }}
+          </p>
+        }
+      </div>
+
+      <div class="space-y-2">
+        <label
+          for="dpmEndTimeInput"
+          class="block text-sm font-medium text-base-content"
+        >
+          End Time
+        </label>
+        <input
+          id="dpmEndTimeInput"
+          type="text"
+          placeholder="1000"
+          class="w-full px-4 py-2.5 rounded-lg bg-base-100 border text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
+            getInputBorderClass(endTime)
+          }}"
+          maxlength="4"
+          autocomplete="off"
+          formControlName="endTime"
+          inputmode="numeric"
+          required
+        />
+        @if (getEndTimeValidationMessages()) {
+          <p class="text-sm text-error-600 mt-1.5">
+            {{ getEndTimeValidationMessages() }}
+          </p>
+        }
+      </div>
+    </div>
+
+    <!-- Row 3: DPM Type, Additional Notes -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <label
+          for="dpmTypeInput"
+          class="block text-sm font-medium text-base-content"
+        >
+          DPM Type
+        </label>
+        <select
+          id="dpmTypeInput"
+          class="w-full px-4 py-2.5 rounded-lg bg-base-100 border border-neutral-200 dark:border-neutral-700 text-base-content transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 cursor-pointer"
+          formControlName="type"
+        >
+          @for (group of dpmGroups(); track group.groupName) {
+            <optgroup label="{{ group.groupName }}">
+              @for (dpm of group.dpms; track dpm.name) {
+                <option [value]="dpm.id">
+                  {{ dpm.name }} {{ formatPoints(dpm.points) }}
+                </option>
+              }
+            </optgroup>
+          }
+        </select>
+      </div>
+
+      <div class="space-y-2">
+        <label
+          for="dpmNotesInput"
+          class="block text-sm font-medium text-base-content"
+        >
+          Additional Notes
+        </label>
+        <input
+          id="dpmNotesInput"
+          type="text"
+          placeholder="Abducted by Aliens"
+          class="w-full px-4 py-2.5 rounded-lg bg-base-100 border border-neutral-200 dark:border-neutral-700 text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+          autocomplete="off"
+          formControlName="notes"
+        />
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="pt-4">
+      <button
+        id="submitButton"
+        type="submit"
+        class="px-8 py-3 bg-primary-600 text-white font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-base-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none hover:bg-primary-700 active:scale-[0.98]"
+        [disabled]="!homeFormGroup().valid"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>

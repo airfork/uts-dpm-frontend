@@ -64,16 +64,17 @@ export class NewDpmComponent implements AfterViewInit {
   }
 
   getInputBorderClass(control: AbstractControl | null): string {
-    if (control == null)
-      return 'border-neutral-300 hover:border-neutral-400 focus:ring-primary-500';
+    if (control == null) {
+      return 'border-neutral-200 dark:border-neutral-700 focus:border-primary-500 focus:ring-primary-500/20';
+    }
 
     if (this.hasErrors(control)) {
-      return 'border-error-500 focus:ring-error-500';
+      return 'border-error-500 focus:border-error-500 focus:ring-error-500/20';
     }
     if (control.dirty || control.touched) {
-      return 'border-success-500 focus:ring-success-500';
+      return 'border-success-500 focus:border-success-500 focus:ring-success-500/20';
     }
-    return 'border-neutral-300 hover:border-neutral-400 focus:ring-primary-500';
+    return 'border-neutral-200 dark:border-neutral-700 focus:border-primary-500 focus:ring-primary-500/20';
   }
 
   setStatusClass(control: AbstractControl | null, isInput = true): string {
@@ -82,7 +83,7 @@ export class NewDpmComponent implements AfterViewInit {
 
     if (this.hasErrors(control)) return prefix + 'error-600';
     if (control.dirty || control.touched) return prefix + 'success-600';
-    return prefix === 'text-' ? 'text-base-content' : 'border-neutral-300';
+    return prefix === 'text-' ? 'text-base-content' : 'border-neutral-200 dark:border-neutral-700';
   }
 
   onSubmit() {

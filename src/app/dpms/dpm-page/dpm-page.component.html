@@ -1,37 +1,35 @@
 @let active = activeTab();
 <div
   role="tablist"
-  class="mb-6 flex justify-center lg:justify-start border-b-2 border-neutral-300"
+  class="mb-8 flex justify-center lg:justify-start gap-2"
   [appRemoveIfUnauthorized]="editRoles"
 >
-  <div class="flex gap-1">
-    <button
-      role="tab"
-      type="button"
-      class="px-6 py-3 font-medium text-base transition-all duration-[var(--transition-base)] border-b-2 -mb-[2px] cursor-pointer"
-      [ngClass]="{
-        'border-primary-600 text-primary-600': active.new,
-        'border-transparent text-base-content/60 hover:text-base-content hover:border-neutral-400':
-          !active.new,
-      }"
-      (click)="activateTab('new')"
-    >
-      New
-    </button>
-    <button
-      role="tab"
-      type="button"
-      class="px-6 py-3 font-medium text-base transition-all duration-[var(--transition-base)] border-b-2 -mb-[2px] cursor-pointer"
-      [ngClass]="{
-        'border-primary-600 text-primary-600': active.edit,
-        'border-transparent text-base-content/60 hover:text-base-content hover:border-neutral-400':
-          !active.edit,
-      }"
-      (click)="activateTab('edit')"
-    >
-      Edit
-    </button>
-  </div>
+  <button
+    role="tab"
+    type="button"
+    class="px-5 py-2.5 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer"
+    [ngClass]="{
+      'bg-primary-600 text-white shadow-sm': active.new,
+      'bg-transparent text-base-content/60 hover:text-base-content hover:bg-base-300/50':
+        !active.new,
+    }"
+    (click)="activateTab('new')"
+  >
+    New
+  </button>
+  <button
+    role="tab"
+    type="button"
+    class="px-5 py-2.5 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer"
+    [ngClass]="{
+      'bg-primary-600 text-white shadow-sm': active.edit,
+      'bg-transparent text-base-content/60 hover:text-base-content hover:bg-base-300/50':
+        !active.edit,
+    }"
+    (click)="activateTab('edit')"
+  >
+    Edit
+  </button>
 </div>
 
 <app-new-dpm

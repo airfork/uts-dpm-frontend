@@ -30,7 +30,7 @@
       @if (isDropdownOpen()) {
         <ul
           tabindex="0"
-          class="menu menu-compact absolute left-0 top-full mt-3 p-4 shadow-[var(--shadow-md)] bg-base-100 rounded-lg w-52 z-50"
+          class="flex flex-col gap-0 absolute left-0 top-full mt-3 p-4 shadow-[var(--shadow-md)] bg-base-100 rounded-lg w-52 z-50"
         >
           @for (link of links; track link) {
             <li
@@ -76,7 +76,7 @@
   </div>
 
   <div class="flex items-center justify-end gap-2 w-[60%] hidden lg:flex">
-    <ul class="menu menu-horizontal p-0 gap-2">
+    <ul class="flex flex-row items-center p-0 gap-2">
       @for (link of links; track link) {
         <li [appRemoveIfUnauthorized]="link.allowedRoles">
           @if (link.path) {

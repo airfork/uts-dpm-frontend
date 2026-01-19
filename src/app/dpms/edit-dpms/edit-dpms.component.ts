@@ -306,6 +306,26 @@ export class EditDpmsComponent implements OnInit {
     return errors;
   }
 
+  getGroupErrorCount(groupControl: AbstractControl): number {
+    let count = 0;
+
+    // Count group-level errors
+    if (this.groupNameHasErrors(groupControl)) count++;
+    if (this.groupNameIsDuplicated(groupControl)) count++;
+
+    const dpmsArray = this.getDpmsFormArray(groupControl);
+    if (!dpmsArray || dpmsArray.length === 0) count++;
+
+    // Count DPM-level errors
+    dpmsArray.controls.forEach((dpmControl) => {
+      if (this.dpmHasErrors(dpmControl, 'name')) count++;
+      if (this.dpmHasErrors(dpmControl, 'points')) count++;
+      if (this.dpmNameIsDuplicated(groupControl, dpmControl)) count++;
+    });
+
+    return count;
+  }
+
   getDpmFormControl(dpmControl: AbstractControl, controlName: string): AbstractControl | null {
     return dpmControl.get(controlName);
   }

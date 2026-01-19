@@ -79,6 +79,22 @@
                   }"
                 ></textarea>
 
+                <!-- Error Badge -->
+                @if (
+                  groupHasErrors(groupControl) ||
+                  dpmsInGroupHaveErrors(groupControl)
+                ) {
+                  <span class="group-error-badge">
+                    <i class="pi pi-exclamation-triangle text-xs"></i>
+                    {{ getGroupErrorCount(groupControl) }}
+                    {{
+                      getGroupErrorCount(groupControl) === 1
+                        ? "error"
+                        : "errors"
+                    }}
+                  </span>
+                }
+
                 <div
                   class="grid flex-none"
                   [ngClass]="{
@@ -122,6 +138,22 @@
                   }
                 </div>
               }
+
+              <!-- Column Headers -->
+              <div class="dpm-header-row">
+                <div></div>
+                <div>Name</div>
+                <div>Points</div>
+                <div class="header-color">
+                  Color
+                  <i
+                    class="pi pi-info-circle text-xs cursor-help"
+                    appTooltip="Colors link DPMs to WhenToWork shifts for Autogen"
+                    tooltipPosition="top"
+                  ></i>
+                </div>
+                <div></div>
+              </div>
 
               <div
                 cdkDropList

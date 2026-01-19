@@ -13,6 +13,7 @@ import { PointsPipe } from '../../shared/pipes/PointsPipe';
 import { PrimeTemplate } from 'primeng/api';
 import { ModalComponent } from '../../ui/modal/modal.component';
 import { ButtonComponent } from '../../ui/button/button.component';
+import { AvatarComponent } from '../../ui/avatar/avatar.component';
 
 @Component({
   selector: 'app-approvals',
@@ -29,6 +30,7 @@ import { ButtonComponent } from '../../ui/button/button.component';
     PointsPipe,
     ModalComponent,
     ButtonComponent,
+    AvatarComponent,
   ],
 })
 export class ApprovalsComponent {

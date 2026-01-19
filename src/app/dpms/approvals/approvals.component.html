@@ -24,33 +24,32 @@
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         >
           <ng-template pTemplate="header">
-            <tr class="bg-base-300/30">
-              <th
-                class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-              >
-                Name
+            <tr class="bg-gradient-to-r from-primary-600 to-primary-500">
+              <th class="px-6 py-4 text-left text-sm font-semibold text-white">
+                Driver
               </th>
-              <th
-                class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-              >
+              <th class="px-6 py-4 text-left text-sm font-semibold text-white">
                 Block/Time
               </th>
-              <th
-                class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-              >
+              <th class="px-6 py-4 text-left text-sm font-semibold text-white">
                 Type
               </th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-dpm>
             <tr
-              class="border-t border-neutral-200 dark:border-neutral-700 hover:bg-base-300/30 transition-colors duration-150 cursor-pointer"
+              class="border-t border-neutral-200 dark:border-neutral-700 hover:bg-primary-50/50 dark:hover:bg-primary-900/10 transition-colors duration-150 cursor-pointer"
               (click)="showApprovalModal(dpm)"
             >
-              <td class="px-6 py-4 text-sm text-base-content">
-                {{ dpm.driver }}
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <app-avatar [name]="dpm.driver" size="sm" variant="primary" />
+                  <span class="text-sm font-medium text-base-content">{{
+                    dpm.driver
+                  }}</span>
+                </div>
               </td>
-              <td class="px-6 py-4 text-sm text-base-content">
+              <td class="px-6 py-4 text-sm text-base-content/70">
                 {{ dpm.block | block }} {{ dpm.time }}
               </td>
               <td class="px-6 py-4 text-sm text-base-content">
@@ -162,10 +161,10 @@
           @if (!editOpen()) {
             <ng-container modal-footer>
               <div class="flex justify-end gap-2">
-                <app-button variant="primary" (click)="approveDpm()">
+                <app-button variant="success" (click)="approveDpm()">
                   Approve
                 </app-button>
-                <app-button variant="outline" (click)="denyDpm()">
+                <app-button variant="error" (click)="denyDpm()">
                   Deny
                 </app-button>
                 <app-button variant="ghost" (click)="showEdit($event)">

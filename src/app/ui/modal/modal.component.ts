@@ -1,5 +1,5 @@
 import { Component, input, output, computed, effect, ViewChild, ElementRef } from '@angular/core';
-import { ModalSize } from './modal.types';
+import { ModalSize, ModalHeaderStyle } from './modal.types';
 
 @Component({
   selector: 'app-modal',
@@ -15,6 +15,7 @@ export class ModalComponent {
   size = input<ModalSize>('md');
   closeOnBackdrop = input<boolean>(true);
   closeOnEscape = input<boolean>(true);
+  headerStyle = input<ModalHeaderStyle>('default');
 
   // Signal output
   // eslint-disable-next-line @angular-eslint/no-output-native

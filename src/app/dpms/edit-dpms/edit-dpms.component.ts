@@ -31,6 +31,7 @@ import { CardComponent } from '../../ui/card/card.component';
 import { ModalComponent } from '../../ui/modal/modal.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
+import { PointsDisplayPipe } from '../../shared/pipes/points-display.pipe';
 
 interface DpmListDropData {
   groupControl: AbstractControl; // This is the FormGroup for the DPM group
@@ -76,6 +77,7 @@ const DPM_GROUP_NAME_VALIDATORS = [Validators.required, Validators.maxLength(500
     CollapsibleComponent,
     TooltipDirective,
     PageHeaderComponent,
+    PointsDisplayPipe,
   ],
 })
 export class EditDpmsComponent implements OnInit {

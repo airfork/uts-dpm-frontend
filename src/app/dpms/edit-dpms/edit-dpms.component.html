@@ -195,10 +195,20 @@
                         ></textarea>
                       </div>
 
-                      <div class="flex-none">
+                      <div class="flex-none flex items-center gap-1">
+                        <span
+                          class="text-sm font-medium w-10 text-right"
+                          [ngClass]="{
+                            'points-positive': dpmControl.value.points > 0,
+                            'points-negative': dpmControl.value.points < 0,
+                            'points-zero': dpmControl.value.points === 0,
+                          }"
+                        >
+                          {{ dpmControl.value.points | pointsDisplay }}
+                        </span>
                         <input
                           id="dpmPoints-{{ dpmControl.value.id }}"
-                          class="form-input form-input-sm w-20"
+                          class="form-input form-input-sm w-16"
                           formControlName="points"
                           type="number"
                           placeholder="Pts"

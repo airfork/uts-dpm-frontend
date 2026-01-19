@@ -1,90 +1,126 @@
 <nav
-  class="flex items-center justify-between bg-base-100 h-16 px-4 md:px-8 lg:px-12"
+  class="sticky top-0 z-40 bg-gradient-to-r from-primary-600 to-primary-500 shadow-lg shadow-primary-500/20"
 >
-  <div class="flex items-center gap-4 w-[40%]">
-    <div class="relative">
-      <app-button
-        id="menuButton"
-        [tabindex]="0"
-        variant="ghost"
-        size="sm"
-        class="lg:hidden px-2"
-        (click)="toggleDropdown()"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+  <div class="flex items-center justify-between h-16 px-4 md:px-8 lg:px-12">
+    <!-- Left side: Mobile menu + Logo -->
+    <div class="flex items-center gap-3">
+      <!-- Mobile menu button -->
+      <div class="relative lg:hidden">
+        <button
+          type="button"
+          id="menuButton"
+          [tabindex]="0"
+          (click)="toggleDropdown()"
+          class="p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h8m-8 6h16"
-          />
-        </svg>
-      </app-button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            @if (!isDropdownOpen()) {
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h8m-8 6h16"
+              />
+            }
+            @if (isDropdownOpen()) {
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            }
+          </svg>
+        </button>
 
-      @if (isDropdownOpen()) {
-        <ul
-          tabindex="0"
-          class="flex flex-col gap-0 absolute left-0 top-full mt-3 p-4 shadow-[var(--shadow-md)] bg-base-100 rounded-lg w-52 z-50"
+        <!-- Mobile dropdown menu -->
+        @if (isDropdownOpen()) {
+          <div
+            class="absolute left-0 top-full mt-2 w-56 rounded-xl bg-primary-700/95 backdrop-blur-lg border border-white/20 shadow-xl overflow-hidden"
+          >
+            <div class="py-2">
+              @for (link of links; track link) {
+                <div [appRemoveIfUnauthorized]="link.allowedRoles">
+                  @if (link.path) {
+                    <a
+                      routerLink="{{ link.path }}"
+                      routerLinkActive="bg-white text-primary-600 font-semibold"
+                      [queryParamsHandling]="
+                        link.name === 'Users' ? 'preserve' : null
+                      "
+                      (click)="menuItemClick()"
+                      class="block px-4 py-3 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                    >
+                      {{ link.name }}
+                    </a>
+                  }
+                  @if (!link.path) {
+                    <div class="border-t border-white/20 mt-2 pt-2">
+                      <button
+                        type="button"
+                        (click)="logoutClick(); menuItemClick()"
+                        class="block w-full text-left px-4 py-3 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                      >
+                        {{ link.name }}
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Logo / Home button -->
+      <a
+        routerLink="/"
+        class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-white font-bold text-xl hover:bg-white/10 transition-colors"
+      >
+        <div
+          class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center"
         >
-          @for (link of links; track link) {
-            <li
-              [appRemoveIfUnauthorized]="link.allowedRoles"
-              class="mb-2 last:mb-0"
-            >
-              @if (link.path) {
-                <a
-                  routerLink="{{ link.path }}"
-                  routerLinkActive="bg-primary-600 text-white"
-                  [queryParamsHandling]="
-                    link.name === 'Users' ? 'preserve' : null
-                  "
-                  (click)="menuItemClick()"
-                  class="block px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer hover:bg-base-300/50 text-base-content/80 hover:text-base-content w-full text-left"
-                >
-                  {{ link.name }}
-                </a>
-              }
-              @if (!link.path) {
-                <button
-                  type="button"
-                  (click)="logoutClick(); menuItemClick()"
-                  class="block px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer hover:bg-base-300/50 text-base-content/80 hover:text-base-content w-full text-left"
-                >
-                  {{ link.name }}
-                </button>
-              }
-            </li>
-          }
-        </ul>
-      }
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M8 4h8a4 4 0 014 4v8a2 2 0 01-2 2h-1l-1 2H8l-1-2H6a2 2 0 01-2-2V8a4 4 0 014-4z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 12h12M8 8h.01M16 8h.01M8 16h.01M16 16h.01"
+            />
+          </svg>
+        </div>
+        <span class="hidden sm:inline">UTS DPM</span>
+      </a>
     </div>
 
-    <app-button
-      routerLink="/"
-      variant="ghost"
-      size="lg"
-      class="normal-case text-2xl font-bold"
-    >
-      UTS DPM
-    </app-button>
-  </div>
-
-  <div class="flex items-center justify-end gap-2 w-[60%] hidden lg:flex">
-    <ul class="flex flex-row items-center p-0 gap-1">
+    <!-- Desktop nav links -->
+    <div class="hidden lg:flex items-center gap-1">
       @for (link of links; track link) {
-        <li [appRemoveIfUnauthorized]="link.allowedRoles">
+        <div [appRemoveIfUnauthorized]="link.allowedRoles">
           @if (link.path) {
             <a
               routerLink="{{ link.path }}"
-              routerLinkActive="bg-primary-600 text-white"
+              routerLinkActive="bg-white text-primary-600 shadow-sm"
+              [routerLinkActiveOptions]="{ exact: link.path === '/' }"
               [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
-              class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer hover:bg-base-300/50 text-base-content/80 hover:text-base-content"
+              class="px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all"
             >
               {{ link.name }}
             </a>
@@ -93,13 +129,13 @@
             <button
               type="button"
               (click)="logoutClick()"
-              class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer hover:bg-base-300/50 text-base-content/80 hover:text-base-content"
+              class="ml-2 px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all"
             >
               {{ link.name }}
             </button>
           }
-        </li>
+        </div>
       }
-    </ul>
+    </div>
   </div>
 </nav>

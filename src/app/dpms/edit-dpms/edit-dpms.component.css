@@ -81,14 +81,6 @@
   z-index: 10;
 }
 
-@media (min-width: 768px) {
-  .sticky-save-bar {
-    position: static;
-    border-top: none;
-    background: transparent;
-  }
-}
-
 /* Column header row */
 .dpm-header-row {
   display: grid;

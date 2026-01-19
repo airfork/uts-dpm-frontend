@@ -418,3 +418,48 @@ input[type="radio"]:focus {
   border-color: oklch(var(--color-primary-500));
   transition: all var(--transition-fast);
 }
+
+/* PrimeNG Table Modernization */
+.p-datatable .p-datatable-thead > tr > th {
+  background: transparent !important;
+  border: none !important;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  background: transparent !important;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+  background: oklch(0.95 0.02 var(--primary-hue)) !important;
+}
+
+[data-theme="dark"] .p-datatable .p-datatable-tbody > tr:hover {
+  background: oklch(0.25 0.02 var(--primary-hue)) !important;
+}
+
+/* Paginator styling */
+.p-paginator {
+  background: transparent !important;
+  border: none !important;
+  padding: 1rem 1.5rem !important;
+}
+
+.p-paginator .p-paginator-current {
+  color: var(--color-base-content);
+  opacity: 0.6;
+}
+
+.p-paginator .p-paginator-page.p-highlight {
+  background: linear-gradient(
+    to right,
+    var(--primary-600),
+    var(--primary-500)
+  ) !important;
+  color: white !important;
+  border-radius: 0.5rem !important;
+}
+
+.p-paginator .p-paginator-page:not(.p-highlight):hover {
+  background: var(--color-base-300) !important;
+  border-radius: 0.5rem !important;
+}

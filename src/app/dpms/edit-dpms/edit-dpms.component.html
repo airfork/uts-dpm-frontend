@@ -171,16 +171,17 @@
                   let dpmIndex = $index
                 ) {
                   <div class="dpm-type-box" cdkDrag [formGroupName]="dpmIndex">
-                    <div class="flex flex-row items-center gap-2">
-                      <!-- DPM Drag Handle -->
+                    <div class="dpm-data-row">
+                      <!-- Drag Handle -->
                       <div
-                        class="text-base-content/30 cursor-move"
+                        class="text-base-content/30 cursor-move flex items-center justify-center"
                         cdkDragHandle
                       >
                         <i class="pi pi-ellipsis-v text-sm"></i>
                       </div>
 
-                      <div class="grow">
+                      <!-- Name -->
+                      <div>
                         <textarea
                           appAutoResize
                           id="dpmName-{{ dpmControl.value.id }}"
@@ -195,9 +196,10 @@
                         ></textarea>
                       </div>
 
-                      <div class="flex-none flex items-center gap-1">
+                      <!-- Points -->
+                      <div class="flex items-center gap-1">
                         <span
-                          class="text-sm font-medium w-10 text-right"
+                          class="text-sm font-medium"
                           [ngClass]="{
                             'points-positive': dpmControl.value.points > 0,
                             'points-negative': dpmControl.value.points < 0,
@@ -208,10 +210,9 @@
                         </span>
                         <input
                           id="dpmPoints-{{ dpmControl.value.id }}"
-                          class="form-input form-input-sm w-16"
+                          class="form-input form-input-sm w-14"
                           formControlName="points"
                           type="number"
-                          placeholder="Pts"
                           [ngClass]="{
                             'form-input-error': dpmHasErrors(
                               dpmControl,
@@ -221,6 +222,7 @@
                         />
                       </div>
 
+                      <!-- Color -->
                       <app-color-dropdown
                         [colors]="dpmColors()"
                         [selectedColor]="
@@ -231,24 +233,28 @@
                         (colorSelected)="onColorSelected(dpmControl, $event)"
                       />
 
-                      <app-button
-                        variant="ghost"
-                        size="sm"
-                        type="button"
-                        (click)="
-                          confirmRemoveDpmFromGroup(groupControl, dpmIndex)
-                        "
-                        appTooltip="Delete DPM"
-                        tooltipPosition="top"
-                      >
-                        <i class="pi pi-trash text-xs"></i>
-                      </app-button>
+                      <!-- Actions -->
+                      <div class="flex justify-center">
+                        <app-button
+                          variant="ghost"
+                          size="sm"
+                          type="button"
+                          (click)="
+                            confirmRemoveDpmFromGroup(groupControl, dpmIndex)
+                          "
+                          appTooltip="Delete DPM"
+                          tooltipPosition="top"
+                        >
+                          <i class="pi pi-trash text-xs"></i>
+                        </app-button>
+                      </div>
                     </div>
 
+                    <!-- Error Messages -->
                     @if (
                       getDpmErrorMessages(groupControl, dpmControl).length > 0
                     ) {
-                      <div class="mt-2 pl-6">
+                      <div class="mt-2 pl-8">
                         @for (
                           errorMessage of getDpmErrorMessages(
                             groupControl,

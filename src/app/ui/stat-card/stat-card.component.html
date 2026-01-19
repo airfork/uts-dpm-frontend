@@ -1,0 +1,7 @@
+<div [class]="containerClasses()">
+  <p [class]="titleClasses()">{{ title() }}</p>
+  <p [class]="valueClasses()">{{ value() }}</p>
+  @if (subtitle()) {
+    <p class="text-xs text-white/40 mt-1">{{ subtitle() }}</p>
+  }
+</div>

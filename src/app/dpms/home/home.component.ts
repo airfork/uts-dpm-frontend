@@ -7,8 +7,10 @@ import { LoadingComponent } from '../../shared/loading/loading.component';
 import { StatCardComponent } from '../../ui/stat-card/stat-card.component';
 import { PointsPipe } from '../../shared/pipes/PointsPipe';
 import { BlockPipe } from '../../shared/pipes/BlockPipe';
-import { TableModule } from 'primeng/table';
+import { DataTableComponent } from '../../ui/data-table/data-table.component';
+import { TableColumn } from '../../ui/data-table/data-table.types';
 import HomeDpmDto from '../../models/home-dpm-dto';
+import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-home',
@@ -21,7 +23,8 @@ import HomeDpmDto from '../../models/home-dpm-dto';
     PointsPipe,
     BlockPipe,
     UpperCasePipe,
-    TableModule,
+    DataTableComponent,
+    EmptyStateComponent,
   ],
 })
 export class HomeComponent {
@@ -32,6 +35,12 @@ export class HomeComponent {
   });
   currentDpm = signal<HomeDpmDto | null>(null);
   isModalOpen = signal(false);
+
+  columns: TableColumn<HomeDpmDto>[] = [
+    { field: 'type', header: 'Type' },
+    { field: 'points', header: 'Points' },
+    { field: 'date', header: 'Date' },
+  ];
 
   totalCount = computed(() => this.currentDpms()?.length ?? 0);
 

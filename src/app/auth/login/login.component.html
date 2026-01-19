@@ -60,12 +60,18 @@
               'border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/50 dark:bg-error-900/10':
                 hasErrors(username) || badCredentials(),
             }"
+            [attr.aria-describedby]="
+              getUsernameValidationMessages() ? 'username-error' : null
+            "
             placeholder="Enter your username"
             formControlName="username"
             (input)="onUserInput()"
           />
           @if (getUsernameValidationMessages()) {
-            <p class="text-sm text-error-600 font-medium mt-1.5">
+            <p
+              id="username-error"
+              class="text-sm text-error-600 font-medium mt-1.5"
+            >
               {{ getUsernameValidationMessages() }}
             </p>
           }
@@ -78,26 +84,55 @@
           >
             Password
           </label>
-          <input
-            id="password"
-            type="password"
-            class="w-full px-4 py-3 rounded-lg bg-base-200 border text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
-            [ngClass]="{
-              'border-neutral-200 dark:border-neutral-700 focus:border-primary-500 focus:ring-primary-500/20 focus:bg-primary-50/50 dark:focus:bg-primary-900/10':
-                !(hasErrors(password) || badCredentials()),
-              'border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/50 dark:bg-error-900/10':
-                hasErrors(password) || badCredentials(),
-            }"
-            placeholder="Enter your password"
-            formControlName="password"
-            (input)="onUserInput()"
-          />
+          <div class="relative">
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              class="w-full px-4 py-3 pr-12 rounded-lg bg-base-200 border text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+              [ngClass]="{
+                'border-neutral-200 dark:border-neutral-700 focus:border-primary-500 focus:ring-primary-500/20 focus:bg-primary-50/50 dark:focus:bg-primary-900/10':
+                  !(hasErrors(password) || badCredentials()),
+                'border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/50 dark:bg-error-900/10':
+                  hasErrors(password) || badCredentials(),
+              }"
+              [attr.aria-describedby]="
+                getPasswordValidationMessages() ? 'password-error' : null
+              "
+              placeholder="Enter your password"
+              formControlName="password"
+              (input)="onUserInput()"
+            />
+            <button
+              type="button"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-base-content/40 hover:text-base-content transition-colors"
+              (click)="showPassword.set(!showPassword())"
+              aria-label="Toggle password visibility"
+            >
+              <i [class]="showPassword() ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+            </button>
+          </div>
           @if (getPasswordValidationMessages()) {
-            <p class="text-sm text-error-600 font-medium mt-1.5">
+            <p
+              id="password-error"
+              class="text-sm text-error-600 font-medium mt-1.5"
+            >
               {{ getPasswordValidationMessages() }}
             </p>
           }
         </div>
+
+        @if (badCredentials()) {
+          <div
+            class="rounded-lg bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 p-4"
+          >
+            <p
+              class="text-sm text-error-600 dark:text-error-400 font-medium flex items-center gap-2"
+            >
+              <i class="pi pi-exclamation-circle"></i>
+              Username and/or password is incorrect
+            </p>
+          </div>
+        }
 
         <button
           id="submitButton"

@@ -1,7 +1,6 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { providePrimeNG } from 'primeng/config';
 import { provideToastr } from 'ngx-toastr';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { AUTH_ROUTES } from './app/auth/auth.routes';
@@ -14,19 +13,15 @@ export const AppConfig: ApplicationConfig = {
     provideRouter([...AUTH_ROUTES, ...DPM_ROUTES, ...APP_ROUTES], withComponentInputBinding()),
     provideHttpClient(withInterceptorsFromDi()),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    providePrimeNG({
-      ripple: true,
-      theme: {
-        options: {
-          prefix: 'p',
-          darkModeSelector: 'system',
-          cssLayer: true,
-        },
-      },
-    }),
     provideToastr({
-      timeOut: 1000 * 3,
-      positionClass: 'app-toast-top-center',
+      timeOut: 3000,
+      positionClass: 'toast-top-center',
+      progressBar: true,
+      progressAnimation: 'decreasing',
+      closeButton: true,
+      tapToDismiss: true,
+      newestOnTop: true,
+      preventDuplicates: false,
     }),
     provideAnimations(), // Required for Toastr animations
   ],

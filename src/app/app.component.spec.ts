@@ -1,18 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { PrimeNG } from 'primeng/config';
-import { signal } from '@angular/core';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
-      providers: [
-        {
-          provide: PrimeNG,
-          useValue: { ripple: signal(false) },
-        },
-      ],
     }).compileComponents();
   });
 

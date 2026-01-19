@@ -4,9 +4,9 @@
     [formGroup]="userFormGroup"
     (ngSubmit)="onSubmit()"
   >
-    <fieldset class="fieldset col-span-3 md:col-span-1">
+    <fieldset class="form-fieldset col-span-3 md:col-span-1">
       <legend
-        class="fieldset-legend text-sm font-medium mb-2 {{
+        class="form-fieldset-legend text-sm font-medium mb-2 {{
           setStatusClass(email, false)
         }}"
       >
@@ -16,21 +16,27 @@
         id="userEmail"
         type="text"
         placeholder="Email"
-        class="input w-full text-base {{ setStatusClass(email) }}"
+        class="form-input w-full text-base {{ setStatusClass(email) }}"
         formControlName="email"
         autocomplete="off"
         required
         aria-required="true"
         [attr.aria-describedby]="hasErrors(email) ? 'userEmail-error' : null"
       />
-      <p id="userEmail-error" class="text-sm text-error-600 mt-1">
-        {{ getEmailValidationMessages() }}
-      </p>
+      @if (getEmailValidationMessages()) {
+        <p
+          id="userEmail-error"
+          class="text-error-600 text-sm flex items-center gap-1 mt-1"
+        >
+          <i class="pi pi-exclamation-circle"></i>
+          {{ getEmailValidationMessages() }}
+        </p>
+      }
     </fieldset>
 
-    <fieldset class="fieldset col-span-3 md:col-span-1">
+    <fieldset class="form-fieldset col-span-3 md:col-span-1">
       <legend
-        class="fieldset-legend text-sm font-medium mb-2 {{
+        class="form-fieldset-legend text-sm font-medium mb-2 {{
           setStatusClass(firstname, false)
         }}"
       >
@@ -40,7 +46,7 @@
         id="firstname"
         type="text"
         placeholder="Jane"
-        class="input w-full text-base capitalize {{
+        class="form-input w-full text-base capitalize {{
           setStatusClass(firstname)
         }}"
         formControlName="firstname"
@@ -51,14 +57,20 @@
           hasErrors(firstname) ? 'firstname-error' : null
         "
       />
-      <p id="firstname-error" class="text-sm text-error-600 mt-1">
-        {{ getFirstnameValidationMessages() }}
-      </p>
+      @if (getFirstnameValidationMessages()) {
+        <p
+          id="firstname-error"
+          class="text-error-600 text-sm flex items-center gap-1 mt-1"
+        >
+          <i class="pi pi-exclamation-circle"></i>
+          {{ getFirstnameValidationMessages() }}
+        </p>
+      }
     </fieldset>
 
-    <fieldset class="fieldset col-span-3 md:col-span-1">
+    <fieldset class="form-fieldset col-span-3 md:col-span-1">
       <legend
-        class="fieldset-legend text-sm font-medium mb-2 {{
+        class="form-fieldset-legend text-sm font-medium mb-2 {{
           setStatusClass(lastname, false)
         }}"
       >
@@ -68,22 +80,30 @@
         id="lastname"
         type="text"
         placeholder="Doe"
-        class="input w-full text-base capitalize {{ setStatusClass(lastname) }}"
+        class="form-input w-full text-base capitalize {{
+          setStatusClass(lastname)
+        }}"
         formControlName="lastname"
         autocomplete="off"
         required
         aria-required="true"
         [attr.aria-describedby]="hasErrors(lastname) ? 'lastname-error' : null"
       />
-      <p id="lastname-error" class="text-sm text-error-600 mt-1">
-        {{ getLastnameValidationMessages() }}
-      </p>
+      @if (getLastnameValidationMessages()) {
+        <p
+          id="lastname-error"
+          class="text-error-600 text-sm flex items-center gap-1 mt-1"
+        >
+          <i class="pi pi-exclamation-circle"></i>
+          {{ getLastnameValidationMessages() }}
+        </p>
+      }
     </fieldset>
 
     @if (layout === "edit") {
-      <fieldset class="fieldset col-span-3 md:col-span-1">
+      <fieldset class="form-fieldset col-span-3 md:col-span-1">
         <legend
-          class="fieldset-legend text-sm font-medium mb-2"
+          class="form-fieldset-legend text-sm font-medium mb-2"
           [ngClass]="{ 'text-error': hasErrors(points) }"
         >
           Points
@@ -92,25 +112,33 @@
           id="points"
           type="text"
           placeholder="0"
-          class="input w-full text-base"
+          class="form-input w-full text-base"
           formControlName="points"
           autocomplete="off"
           required
           aria-required="true"
           [attr.aria-describedby]="hasErrors(points) ? 'points-error' : null"
-          [ngClass]="{ 'input-error': hasErrors(points) }"
+          [ngClass]="{ 'form-input-error': hasErrors(points) }"
         />
-        <p id="points-error" class="text-sm text-error-600 mt-1">
-          {{ getPointsValidationMessages() }}
-        </p>
+        @if (getPointsValidationMessages()) {
+          <p
+            id="points-error"
+            class="text-error-600 text-sm flex items-center gap-1 mt-1"
+          >
+            <i class="pi pi-exclamation-circle"></i>
+            {{ getPointsValidationMessages() }}
+          </p>
+        }
       </fieldset>
     }
 
-    <fieldset class="fieldset col-span-3 md:col-span-1">
-      <legend class="fieldset-legend text-sm font-medium mb-2">Manager</legend>
+    <fieldset class="form-fieldset col-span-3 md:col-span-1">
+      <legend class="form-fieldset-legend text-sm font-medium mb-2">
+        Manager
+      </legend>
       <select
         id="manager-select"
-        class="select select-bordered w-full text-base"
+        class="form-select w-full text-base"
         formControlName="manager"
       >
         @for (manager of managers; track manager) {
@@ -121,11 +149,13 @@
       </select>
     </fieldset>
 
-    <fieldset class="fieldset col-span-3 md:col-span-1">
-      <legend class="fieldset-legend text-sm font-medium mb-2">Role</legend>
+    <fieldset class="form-fieldset col-span-3 md:col-span-1">
+      <legend class="form-fieldset-legend text-sm font-medium mb-2">
+        Role
+      </legend>
       <select
         id="role-select"
-        class="select select-bordered w-full text-base"
+        class="form-select w-full text-base"
         formControlName="role"
       >
         @for (role of roles(); track role) {
@@ -143,7 +173,10 @@
         'md:col-span-1 md:justify-items-start': layout === 'create',
       }"
     >
-      <div class="fieldset" [ngClass]="{ 'self-center': layout === 'create' }">
+      <div
+        class="form-fieldset"
+        [ngClass]="{ 'self-center': layout === 'create' }"
+      >
         <label
           class="label cursor-pointer justify-center md:justify-start items-center gap-4"
           [ngClass]="{ 'md:mt-4': layout === 'create' }"
@@ -152,7 +185,7 @@
           <input
             id="fullTimeCheckBox"
             type="checkbox"
-            class="checkbox checkbox-lg checkbox-secondary dark:checkbox-primary"
+            class="w-5 h-5 rounded border-neutral-300 dark:border-neutral-600 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-900 transition-colors cursor-pointer"
             formControlName="fullTime"
           />
         </label>
@@ -161,10 +194,9 @@
 
     <div class="grid place-items-center col-span-3 mt-4">
       <button
-        pRipple
         id="submitButton"
         type="submit"
-        class="btn btn-secondary m-auto w-full md:btn-wide"
+        class="px-8 py-3 bg-primary-600 text-white font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary-700 active:scale-[0.98] w-full md:w-auto"
         [disabled]="isButtonDisabled() || waiting()"
       >
         {{ layout === "edit" ? "Update" : "Create" }}

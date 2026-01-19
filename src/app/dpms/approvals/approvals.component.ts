@@ -4,16 +4,18 @@ import { FormatService } from '../../services/format.service';
 import { first } from 'rxjs';
 import ApprovalDpmDto from '../../models/approval-dpm-dto';
 import { NotificationService } from '../../services/notification.service';
-import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
 import { LoadingComponent } from '../../shared/loading/loading.component';
 import { UpperCasePipe } from '@angular/common';
 import { BlockPipe } from '../../shared/pipes/BlockPipe';
 import { PointsPipe } from '../../shared/pipes/PointsPipe';
-import { PrimeTemplate } from 'primeng/api';
 import { ModalComponent } from '../../ui/modal/modal.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { AvatarComponent } from '../../ui/avatar/avatar.component';
+import { DataTableComponent } from '../../ui/data-table/data-table.component';
+import { TableColumn, LazyLoadEvent } from '../../ui/data-table/data-table.types';
+import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
+import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-approvals',
@@ -25,12 +27,12 @@ import { AvatarComponent } from '../../ui/avatar/avatar.component';
     UpperCasePipe,
     BlockPipe,
     PointsPipe,
-    PrimeTemplate,
-    TableModule,
-    PointsPipe,
     ModalComponent,
     ButtonComponent,
     AvatarComponent,
+    DataTableComponent,
+    PageHeaderComponent,
+    EmptyStateComponent,
   ],
 })
 export class ApprovalsComponent {
@@ -38,11 +40,22 @@ export class ApprovalsComponent {
   private formatService = inject(FormatService);
   private notificationService = inject(NotificationService);
 
-  private lastLazyLoadEvent?: TableLazyLoadEvent;
+  private lastLazyLoadEvent?: LazyLoadEvent;
 
   dpms = signal<ApprovalDpmDto[]>([]);
   loadingDpms = signal(true);
   totalRecords = signal(0);
+
+  columns: TableColumn<ApprovalDpmDto>[] = [
+    { field: 'driver', header: 'Driver' },
+    { field: 'block', header: 'Block/Time' },
+    { field: 'type', header: 'Type' },
+  ];
+
+  constructor() {
+    // Trigger initial load
+    this.lazyLoadEvent({ first: 0, rows: 10 });
+  }
 
   currentDpm = signal<ApprovalDpmDto | null>(null);
   editOpen = signal(false);
@@ -114,25 +127,18 @@ export class ApprovalsComponent {
       });
   }
 
-  lazyLoadEvent(event: TableLazyLoadEvent) {
+  lazyLoadEvent(event: LazyLoadEvent) {
     this.lastLazyLoadEvent = event;
     this.loadingDpms.set(true);
-    let size = 10;
-    if (event.rows) {
-      size = event.rows;
-    }
-
-    let page = 0;
-    if (event.first) {
-      page = event.first / size;
-    }
+    const size = event.rows;
+    const page = event.first / size;
 
     this.approvalsService
       .getApprovalDpms(page, size)
       .pipe(first())
-      .subscribe(async (page) => {
-        this.dpms.set(page.content);
-        this.totalRecords.set(page.totalElements);
+      .subscribe(async (pageData) => {
+        this.dpms.set(pageData.content);
+        this.totalRecords.set(pageData.totalElements);
         this.loadingDpms.set(false);
       });
   }

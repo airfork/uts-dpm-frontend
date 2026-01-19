@@ -12,6 +12,7 @@ export class ConfirmBoxComponent {
   isOpen = model.required<boolean>();
   title = input('Are you sure?');
   message = input.required<string>();
+  confirmText = input<string>('');
   outputKey = input<string>('');
   onConfirm = input<() => void>();
 

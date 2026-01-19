@@ -11,7 +11,7 @@
           id="menuButton"
           [tabindex]="0"
           (click)="toggleDropdown()"
-          class="p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors"
+          class="p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors cursor-pointer"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +42,7 @@
         <!-- Mobile dropdown menu -->
         @if (isDropdownOpen()) {
           <div
-            class="absolute left-0 top-full mt-2 w-56 rounded-xl bg-primary-700/95 backdrop-blur-lg border border-white/20 shadow-xl overflow-hidden"
+            class="absolute left-0 top-full mt-2 w-56 rounded-xl bg-primary-700/95 backdrop-blur-lg border border-white/20 shadow-xl overflow-hidden z-50"
           >
             <div class="py-2">
               @for (link of links; track link) {
@@ -50,7 +50,7 @@
                   @if (link.path) {
                     <a
                       routerLink="{{ link.path }}"
-                      routerLinkActive="bg-white text-primary-600 font-semibold"
+                      routerLinkActive="bg-white text-primary-700 font-semibold shadow-sm"
                       [queryParamsHandling]="
                         link.name === 'Users' ? 'preserve' : null
                       "
@@ -65,7 +65,7 @@
                       <button
                         type="button"
                         (click)="logoutClick(); menuItemClick()"
-                        class="block w-full text-left px-4 py-3 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        class="block w-full text-left px-4 py-3 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                       >
                         {{ link.name }}
                       </button>
@@ -110,14 +110,14 @@
       </a>
     </div>
 
-    <!-- Desktop nav links -->
+    <!-- Right side: Desktop nav links + Theme switcher -->
     <div class="hidden lg:flex items-center gap-1">
       @for (link of links; track link) {
         <div [appRemoveIfUnauthorized]="link.allowedRoles">
           @if (link.path) {
             <a
               routerLink="{{ link.path }}"
-              routerLinkActive="bg-white text-primary-600 shadow-sm"
+              routerLinkActive="bg-white text-primary-700 font-semibold shadow-sm"
               [routerLinkActiveOptions]="{ exact: link.path === '/' }"
               [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
               class="px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all"
@@ -129,13 +129,58 @@
             <button
               type="button"
               (click)="logoutClick()"
-              class="ml-2 px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all"
+              class="ml-2 px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
             >
               {{ link.name }}
             </button>
           }
         </div>
       }
+
+      <!-- Theme toggle button -->
+      <button
+        type="button"
+        (click)="toggleTheme()"
+        class="ml-2 p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+        [attr.aria-label]="
+          currentTheme() === 'light'
+            ? 'Switch to dark mode'
+            : 'Switch to light mode'
+        "
+      >
+        @if (currentTheme() === "light") {
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+            />
+          </svg>
+        }
+        @if (currentTheme() === "dark") {
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+            />
+          </svg>
+        }
+      </button>
     </div>
   </div>
 </nav>

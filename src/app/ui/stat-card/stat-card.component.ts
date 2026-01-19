@@ -29,22 +29,22 @@ export class StatCardComponent {
 
   titleClasses = computed(() => {
     const variantClasses: Record<StatCardVariant, string> = {
-      default: 'text-white/60',
-      success: 'text-success-200',
-      error: 'text-error-200',
-      warning: 'text-warning-200',
-      info: 'text-info-200',
+      default: 'text-white/70',
+      success: 'text-success-100',
+      error: 'text-error-100',
+      warning: 'text-warning-100',
+      info: 'text-info-100',
     };
-    return `text-xs uppercase tracking-wide ${variantClasses[this.variant()]}`;
+    return `text-xs uppercase tracking-wide font-medium ${variantClasses[this.variant()]}`;
   });
 
   valueClasses = computed(() => {
     const variantClasses: Record<StatCardVariant, string> = {
       default: 'text-white',
-      success: 'text-success-300',
-      error: 'text-error-300',
-      warning: 'text-warning-300',
-      info: 'text-info-300',
+      success: 'text-white',
+      error: 'text-white',
+      warning: 'text-white',
+      info: 'text-white',
     };
     return `text-2xl font-bold mt-1 ${variantClasses[this.variant()]}`;
   });

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
@@ -22,6 +22,21 @@ export class NavbarComponent {
   private notificationService = inject(NotificationService);
 
   isDropdownOpen = signal(false);
+  currentTheme = signal<'light' | 'dark'>(
+    typeof window !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'dark'
+      ? 'dark'
+      : 'light'
+  );
+
+  constructor() {
+    effect(() => {
+      if (this.isDropdownOpen()) {
+        this.addDocumentListeners();
+      } else {
+        this.removeDocumentListeners();
+      }
+    });
+  }
 
   links: navbarLinks[] = [
     {
@@ -70,5 +85,36 @@ export class NavbarComponent {
     this.menuItemClick();
     this.authService.logout();
     this.router.navigate(['/login']).then(() => this.notificationService.showInfo('Logged out'));
+  }
+
+  toggleTheme() {
+    const newTheme = this.currentTheme() === 'light' ? 'dark' : 'light';
+    this.currentTheme.set(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+  }
+
+  handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    const dropdown = document.getElementById('menuButton')?.closest('.relative');
+    if (dropdown && !dropdown.contains(target)) {
+      this.closeDropdown();
+    }
+  };
+
+  handleEscapeKey = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      this.closeDropdown();
+    }
+  };
+
+  addDocumentListeners() {
+    document.addEventListener('click', this.handleClickOutside);
+    document.addEventListener('keydown', this.handleEscapeKey);
+  }
+
+  removeDocumentListeners() {
+    document.removeEventListener('click', this.handleClickOutside);
+    document.removeEventListener('keydown', this.handleEscapeKey);
   }
 }

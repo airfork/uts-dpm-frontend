@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import GetUserDetailDto from '../../models/get-user-detail-dto';
-import { first } from 'rxjs';
+import { first, catchError, of } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { NotificationService } from '../../services/notification.service';
 import DpmDetailDto from '../../models/dpm-detail-dto';
@@ -16,8 +16,9 @@ import {
   DetailOutputKey,
 } from '../shared/confirm-box-info';
 import { AuthService } from '../../services/auth.service';
-import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { NgClass, UpperCasePipe } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
+import { DataTableComponent } from '../../ui/data-table/data-table.component';
+import { TableColumn, LazyLoadEvent } from '../../ui/data-table/data-table.types';
 import { FormsModule } from '@angular/forms';
 import { UserFormComponent } from '../user-form/user-form.component';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
@@ -26,14 +27,14 @@ import { PointsPipe } from '../../shared/pipes/PointsPipe';
 import { LoadingComponent } from '../../shared/loading/loading.component';
 import { ModalComponent } from '../../ui/modal/modal.component';
 import { ButtonComponent } from '../../ui/button/button.component';
+import { TabsComponent } from '../../ui/tabs/tabs.component';
+import { Tab } from '../../ui/tabs/tabs.types';
 
 @Component({
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.css'],
   imports: [
-    NgClass,
-    TableModule,
     FormsModule,
     UpperCasePipe,
     UserFormComponent,
@@ -44,6 +45,8 @@ import { ButtonComponent } from '../../ui/button/button.component';
     RouterLink,
     ModalComponent,
     ButtonComponent,
+    DataTableComponent,
+    TabsComponent,
   ],
 })
 export class UserDetailComponent implements OnInit {
@@ -56,12 +59,24 @@ export class UserDetailComponent implements OnInit {
   private approvalsService = inject(ApprovalsService);
   private authService = inject(AuthService);
 
-  private lastLazyLoadEvent?: TableLazyLoadEvent;
+  private lastLazyLoadEvent?: LazyLoadEvent;
 
   userId = signal('');
+
+  columns: TableColumn<DpmDetailDto>[] = [
+    { field: 'type', header: 'Type' },
+    { field: 'date', header: 'Date' },
+    { field: 'status', header: 'Status' },
+  ];
   loadingDpms = signal(true);
   totalRecords = signal(0);
-  activeTab = signal({ info: true, dpms: false, actions: false });
+  activeTabName = signal<string>('info');
+  activeTabIndex = signal(0);
+  tabs: Tab[] = [
+    { name: 'info', label: 'Info' },
+    { name: 'dpms', label: 'DPMs' },
+    { name: 'detail-actions', label: 'Actions' },
+  ];
   user = signal<GetUserDetailDto | null>(null);
   currentDpm = signal<DpmDetailDto | null>(null);
   dpms = signal<DpmDetailDto[]>([]);
@@ -113,42 +128,43 @@ export class UserDetailComponent implements OnInit {
       });
   }
 
-  activateTab(tab: DetailTab) {
-    switch (tab) {
-      case 'detail-actions':
-        this.saveTabInUrl(tab);
-        this.activeTab.set({ info: false, dpms: false, actions: true });
-        break;
-      case 'dpms':
-        this.saveTabInUrl(tab);
-        this.activeTab.set({ info: false, dpms: true, actions: false });
-        break;
-      case 'info':
-        this.saveTabInUrl(tab);
-        this.activeTab.set({ info: true, dpms: false, actions: false });
-        break;
-      default:
-        console.error(`Unknown tab: ${tab}`);
+  activateTab(tab: DetailTab | string) {
+    this.activeTabName.set(tab);
+    this.saveTabInUrl(tab as DetailTab);
+
+    const tabIndex = this.tabs.findIndex((t) => t.name === tab);
+    if (tabIndex !== -1) {
+      this.onTabChange(tabIndex);
     }
   }
 
-  lazyLoadEvent(event: TableLazyLoadEvent) {
+  onTabChange(index: number): void {
+    this.activeTabIndex.set(index);
+
+    if (index === 1 && this.dpms().length === 0 && !this.loadingDpms()) {
+      this.lazyLoadEvent({ first: 0, rows: 10 });
+    }
+  }
+
+  lazyLoadEvent(event: LazyLoadEvent) {
     this.lastLazyLoadEvent = event;
     this.loadingDpms.set(true);
-    let size = 10;
-    if (event.rows) size = event.rows;
-
-    let page = 0;
-    if (event.first) {
-      page = event.first / size;
-    }
+    const size = event.rows;
+    const page = event.first / size;
 
     this.dpmService
       .getAllForUser(this.userId(), page, size)
-      .pipe(first())
-      .subscribe((page) => {
-        this.dpms.set(page.content);
-        this.totalRecords.set(page.totalElements);
+      .pipe(
+        first(),
+        catchError(() => {
+          this.loadingDpms.set(false);
+          this.notificationService.showError('Failed to load DPMs');
+          return of({ content: [], totalElements: 0 });
+        })
+      )
+      .subscribe((pageData) => {
+        this.dpms.set(pageData.content);
+        this.totalRecords.set(pageData.totalElements);
         this.loadingDpms.set(false);
       });
   }

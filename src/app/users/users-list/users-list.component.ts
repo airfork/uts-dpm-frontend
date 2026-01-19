@@ -15,12 +15,15 @@ import { ListTab } from '../shared/tab.types';
 import { LIST_EMAIL_MESSAGE, LIST_RESET_MESSAGE, ListOutputKey } from '../shared/confirm-box-info';
 import { NotificationService } from '../../services/notification.service';
 import { UserFormComponent } from '../user-form/user-form.component';
-import { TableModule } from 'primeng/table';
-import { AutoFocus } from 'primeng/autofocus';
-import { NgClass } from '@angular/common';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
 import { NamePipe } from '../../shared/pipes/NamePipe';
 import { LoadingComponent } from '../../shared/loading/loading.component';
+import { DataTableComponent } from '../../ui/data-table/data-table.component';
+import { TableColumn } from '../../ui/data-table/data-table.types';
+import { TabsComponent } from '../../ui/tabs/tabs.component';
+import { Tab } from '../../ui/tabs/tabs.types';
+import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
+import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-users-list',
@@ -28,12 +31,13 @@ import { LoadingComponent } from '../../shared/loading/loading.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     UserFormComponent,
-    TableModule,
-    AutoFocus,
-    NgClass,
     ConfirmBoxComponent,
     NamePipe,
     LoadingComponent,
+    DataTableComponent,
+    TabsComponent,
+    PageHeaderComponent,
+    EmptyStateComponent,
   ],
 })
 export class UsersListComponent implements OnInit {
@@ -46,11 +50,21 @@ export class UsersListComponent implements OnInit {
 
   users = signal<UsernameDto[] | null>(null);
   filteredUsers = signal<UsernameDto[]>([]);
-  activeTab = signal({ actions: false, create: false, search: true });
+  activeTabName = signal<string>('search');
+  tabs: Tab[] = [
+    { name: 'search', label: 'Search' },
+    { name: 'create', label: 'Create' },
+    { name: 'actions', label: 'Actions' },
+  ];
   managers = signal<string[] | null>(null);
   modalOpen = signal(false);
   modalMessage = signal('');
   outputKey = signal<ListOutputKey>('email');
+
+  columns: TableColumn<UsernameDto>[] = [
+    { field: 'name', header: 'Last Name' },
+    { field: 'name', header: 'First Name' },
+  ];
 
   ngOnInit() {
     // jump to tab based on query param
@@ -69,35 +83,19 @@ export class UsersListComponent implements OnInit {
       });
   }
 
-  activateTab(tab: ListTab) {
-    switch (tab) {
-      case 'actions':
-        this.saveTabInUrl(tab);
-        this.activeTab.set({ actions: true, create: false, search: false });
-        break;
+  activateTab(tab: ListTab | string) {
+    this.activeTabName.set(tab);
+    this.saveTabInUrl(tab as ListTab);
 
-      case 'create':
-        this.saveTabInUrl(tab);
-        if (!this.managers()) {
-          this.userService
-            .getManagers()
-            .pipe(first())
-            .subscribe((managers) => {
-              this.managers.set(managers);
-              this.changeDetector.detectChanges();
-            });
-        }
-        this.activeTab.set({ actions: false, create: true, search: false });
-        break;
-
-      case 'search':
-        this.saveTabInUrl(tab);
-        this.activeTab.set({ actions: false, create: false, search: true });
-        break;
-      default:
-        console.warn(`Unknown tab: ${tab}`);
-        this.activeTab.set({ actions: false, create: false, search: true });
-        this.clearQueryParams();
+    // Load managers when switching to create tab
+    if (tab === 'create' && !this.managers()) {
+      this.userService
+        .getManagers()
+        .pipe(first())
+        .subscribe((managers) => {
+          this.managers.set(managers);
+          this.changeDetector.detectChanges();
+        });
     }
   }
 

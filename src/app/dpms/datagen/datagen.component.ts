@@ -5,14 +5,21 @@ import { environment } from '../../../environments/environment';
 import { MixedDateValidator } from '../mixed-date.directive';
 import { DatagenService } from '../../services/datagen.service';
 import { NgClass } from '@angular/common';
-import { Ripple } from 'primeng/ripple';
-import { DatePicker } from 'primeng/datepicker';
+import { DatePickerComponent } from '../../ui/date-picker/date-picker.component';
+import { ButtonComponent } from '../../ui/button/button.component';
+import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
 
 @Component({
   selector: 'app-datagen',
   templateUrl: './datagen.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, NgClass, Ripple, DatePicker],
+  imports: [
+    ReactiveFormsModule,
+    NgClass,
+    DatePickerComponent,
+    ButtonComponent,
+    PageHeaderComponent,
+  ],
 })
 export class DatagenComponent implements OnInit {
   private formatService = inject(FormatService);
@@ -47,14 +54,6 @@ export class DatagenComponent implements OnInit {
     this.datagenService.downloadDpmData(this.generateDownloadUrl(), () =>
       this.dpmDataFormGroup.reset({ endDate: new Date() })
     );
-  }
-
-  errorsOrEmpty(): string {
-    if (this.dpmDataFormGroup.errors?.['mixedDate'] && !this.getAll?.value) {
-      return 'input-error';
-    }
-
-    return '';
   }
 
   getStartTimeValidationMessages(): string {

@@ -1,0 +1,191 @@
+<div class="overflow-x-auto">
+  <table class="w-full">
+    <!-- Header -->
+    <thead>
+      @if (headerTemplate) {
+        <ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
+      } @else {
+        <tr class="bg-gradient-to-r from-primary-600 to-primary-500">
+          @for (column of columns(); track column.field) {
+            <th
+              class="px-6 py-4 text-left text-sm font-semibold text-white"
+              [class]="column.headerClass ?? ''"
+            >
+              {{ column.header }}
+            </th>
+          }
+        </tr>
+      }
+    </thead>
+
+    <!-- Body -->
+    <tbody>
+      @if (loading()) {
+        <tr>
+          <td
+            [attr.colspan]="columns().length"
+            class="px-6 py-12 text-center text-base-content/60"
+          >
+            <div class="flex items-center justify-center gap-3">
+              <svg
+                class="animate-spin h-5 w-5 text-primary-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              <span>Loading...</span>
+            </div>
+          </td>
+        </tr>
+      } @else if (paginatedData().length === 0) {
+        @if (emptyTemplate) {
+          <ng-container *ngTemplateOutlet="emptyTemplate"></ng-container>
+        } @else {
+          <tr>
+            <td
+              [attr.colspan]="columns().length"
+              class="px-6 py-8 text-center text-base-content/60"
+            >
+              {{ emptyMessage() }}
+            </td>
+          </tr>
+        }
+      } @else {
+        @for (item of paginatedData(); track $index) {
+          @if (bodyTemplate) {
+            <ng-container
+              *ngTemplateOutlet="bodyTemplate; context: { $implicit: item }"
+            ></ng-container>
+          } @else {
+            <tr
+              class="border-t border-neutral-200 dark:border-neutral-700"
+              [class.row-hoverable]="rowHover()"
+              (click)="onRowClick(item)"
+            >
+              @for (column of columns(); track column.field) {
+                <td
+                  class="px-6 py-4 text-sm text-base-content"
+                  [class]="column.cellClass ?? ''"
+                >
+                  @if (column.template) {
+                    <ng-container
+                      *ngTemplateOutlet="
+                        column.template;
+                        context: { $implicit: item, column: column }
+                      "
+                    ></ng-container>
+                  } @else {
+                    {{ getCellValue(item, column.field) }}
+                  }
+                </td>
+              }
+            </tr>
+          }
+        }
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+@if (paginator() && !loading() && paginatedData().length > 0) {
+  <div
+    class="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-t border-neutral-200 dark:border-neutral-700"
+  >
+    <!-- Page report -->
+    @if (showCurrentPageReport()) {
+      <div class="text-sm text-base-content/60">
+        Showing {{ displayedRecords().first }} to
+        {{ displayedRecords().last }} of {{ displayedRecords().total }} entries
+      </div>
+    }
+
+    <div class="flex items-center gap-2">
+      <!-- Pagination buttons -->
+      <div class="flex items-center gap-1">
+        <button
+          type="button"
+          class="w-9 h-9 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          [disabled]="currentPage() === 0"
+          (click)="goToFirstPage()"
+          aria-label="First page"
+        >
+          <i class="pi pi-angle-double-left"></i>
+        </button>
+
+        <button
+          type="button"
+          class="w-9 h-9 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          [disabled]="currentPage() === 0"
+          (click)="goToPreviousPage()"
+          aria-label="Previous page"
+        >
+          <i class="pi pi-angle-left"></i>
+        </button>
+
+        @for (page of pageNumbers(); track page) {
+          <button
+            type="button"
+            class="w-9 h-9 text-sm rounded-lg border transition-colors"
+            [class]="
+              page === currentPage()
+                ? 'bg-primary-500 border-primary-500 text-white font-semibold'
+                : 'border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20'
+            "
+            (click)="goToPage(page)"
+          >
+            {{ page + 1 }}
+          </button>
+        }
+
+        <button
+          type="button"
+          class="w-9 h-9 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          [disabled]="currentPage() >= totalPages() - 1"
+          (click)="goToNextPage()"
+          aria-label="Next page"
+        >
+          <i class="pi pi-angle-right"></i>
+        </button>
+
+        <button
+          type="button"
+          class="w-9 h-9 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          [disabled]="currentPage() >= totalPages() - 1"
+          (click)="goToLastPage()"
+          aria-label="Last page"
+        >
+          <i class="pi pi-angle-double-right"></i>
+        </button>
+      </div>
+
+      <!-- Rows per page selector -->
+      <div class="flex items-center gap-2 ml-4">
+        <select
+          class="px-3 py-1.5 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-base-100 text-base-content focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 cursor-pointer"
+          [value]="currentRows()"
+          (change)="onRowsChange($event)"
+          aria-label="Rows per page"
+        >
+          @for (option of rowsPerPageOptions(); track option) {
+            <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+}

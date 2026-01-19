@@ -1,590 +1,838 @@
-<div class="min-h-screen bg-base-100 px-4 py-8">
-  <div class="max-w-7xl mx-auto space-y-8">
-    <!-- Header -->
-    <div class="text-center space-y-4">
-      <h1 class="text-4xl font-bold text-base-content">Design Style Preview</h1>
-      <p class="text-lg text-base-content/60">
-        Choose a modern design direction for the UTS DPM application
-      </p>
-    </div>
-
-    <!-- Style Selector -->
-    <div class="flex flex-wrap justify-center gap-4">
-      <button
-        type="button"
-        (click)="setStyle('glassmorphism')"
-        [class]="
-          selectedStyle() === 'glassmorphism'
-            ? 'px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg transform scale-105'
-            : 'px-6 py-3 rounded-xl font-semibold text-base-content bg-base-200 border border-neutral-200 dark:border-neutral-700 hover:scale-105 transition-transform'
-        "
-      >
-        Glassmorphism
-      </button>
-      <button
-        type="button"
-        (click)="setStyle('neubrutalism')"
-        [class]="
-          selectedStyle() === 'neubrutalism'
-            ? 'px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg transform scale-105'
-            : 'px-6 py-3 rounded-xl font-semibold text-base-content bg-base-200 border border-neutral-200 dark:border-neutral-700 hover:scale-105 transition-transform'
-        "
-      >
-        Neubrutalism
-      </button>
-      <button
-        type="button"
-        (click)="setStyle('gradient-cards')"
-        [class]="
-          selectedStyle() === 'gradient-cards'
-            ? 'px-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-500 to-cyan-500 shadow-lg transform scale-105'
-            : 'px-6 py-3 rounded-xl font-semibold text-base-content bg-base-200 border border-neutral-200 dark:border-neutral-700 hover:scale-105 transition-transform'
-        "
-      >
-        Gradient Cards
-      </button>
-    </div>
-
-    <!-- Glassmorphism Style -->
-    @if (selectedStyle() === "glassmorphism") {
-      <div class="space-y-8">
-        <!-- Hero Section with Glassmorphism -->
-        <div class="relative overflow-hidden rounded-3xl p-1">
-          <!-- Gradient Border using app colors -->
-          <div
-            class="absolute inset-0 bg-gradient-to-r from-primary-500 via-secondary-400 to-primary-600 rounded-3xl"
-          ></div>
-          <!-- Glass Content -->
-          <div
-            class="relative bg-white/10 dark:bg-black/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20"
+<div class="min-h-screen bg-base-100">
+  <!-- ==================== SAMPLE NAVBAR ==================== -->
+  <nav
+    class="sticky top-0 z-40 bg-gradient-to-r from-primary-600 to-primary-500 shadow-lg shadow-primary-500/20"
+  >
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <!-- Left side: Mobile menu + Logo -->
+        <div class="flex items-center gap-3">
+          <!-- Mobile menu button -->
+          <button
+            type="button"
+            (click)="toggleMobileMenu()"
+            class="lg:hidden p-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors"
           >
-            <h2 class="text-3xl font-bold text-base-content mb-2">
-              Glassmorphism Design
-            </h2>
-            <p class="text-base-content/70 mb-6">
-              Frosted glass effects with vibrant gradients and smooth
-              transparency
-            </p>
-            <div
-              class="inline-block px-6 py-2 bg-gradient-to-r from-primary-600 to-secondary-500 text-white rounded-full font-semibold shadow-lg"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              Modern & Elegant
+              @if (!mobileMenuOpen()) {
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h8m-8 6h16"
+                />
+              }
+              @if (mobileMenuOpen()) {
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              }
+            </svg>
+          </button>
+
+          <!-- Logo / Home button -->
+          <button
+            type="button"
+            (click)="goHome()"
+            class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-white font-bold text-xl hover:bg-white/10 transition-colors"
+          >
+            <div
+              class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-5 h-5 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8 4h8a4 4 0 014 4v8a2 2 0 01-2 2h-1l-1 2H8l-1-2H6a2 2 0 01-2-2V8a4 4 0 014-4z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6 12h12M8 8h.01M16 8h.01M8 16h.01M16 16h.01"
+                />
+              </svg>
             </div>
-          </div>
+            <span class="hidden sm:inline">UTS DPM</span>
+          </button>
         </div>
 
-        <!-- Table Example with Glassmorphism -->
-        <div class="relative overflow-hidden rounded-2xl p-1">
-          <div
-            class="absolute inset-0 bg-gradient-to-br from-primary-500/50 via-secondary-400/50 to-primary-600/50 rounded-2xl"
-          ></div>
-          <div
-            class="relative bg-white/20 dark:bg-black/20 backdrop-blur-2xl rounded-2xl overflow-hidden border border-white/30"
+        <!-- Desktop nav links -->
+        <div class="hidden lg:flex items-center gap-1">
+          @for (link of navLinks; track link.path) {
+            <button
+              type="button"
+              (click)="setActiveLink(link.path)"
+              [class]="
+                activeNavLink() === link.path
+                  ? 'px-4 py-2 rounded-lg text-sm font-semibold bg-white text-primary-600 shadow-sm transition-all'
+                  : 'px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all'
+              "
+            >
+              {{ link.name }}
+            </button>
+          }
+          <button
+            type="button"
+            (click)="logout()"
+            class="ml-2 px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all"
           >
-            <div class="px-6 py-4 border-b border-white/20">
-              <h3 class="text-xl font-bold text-base-content">Recent DPMs</h3>
-            </div>
-            <div class="overflow-x-auto">
-              <table class="w-full">
-                <thead>
-                  <tr class="bg-white/10 dark:bg-black/10">
-                    <th
-                      class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-                    >
-                      Driver
-                    </th>
-                    <th
-                      class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-                    >
-                      Type
-                    </th>
-                    <th
-                      class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-                    >
-                      Points
-                    </th>
-                    <th
-                      class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-                    >
-                      Date
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (dpm of sampleDpms; track dpm.id) {
-                    <tr
-                      class="border-t border-white/20 hover:bg-white/10 dark:hover:bg-black/10 transition-colors cursor-pointer"
-                    >
-                      <td class="px-6 py-4 text-sm text-base-content">
-                        {{ dpm.driver }}
-                      </td>
-                      <td class="px-6 py-4 text-sm text-base-content">
-                        {{ dpm.type }}
-                      </td>
-                      <td class="px-6 py-4 text-sm">
-                        <span
-                          [class]="
-                            dpm.points.startsWith('-')
-                              ? 'px-3 py-1 rounded-full text-xs font-bold bg-error-500/30 text-error-100 border border-error-400/50'
-                              : 'px-3 py-1 rounded-full text-xs font-bold bg-success-500/30 text-success-100 border border-success-400/50'
-                          "
-                        >
-                          {{ dpm.points }}
-                        </span>
-                      </td>
-                      <td class="px-6 py-4 text-sm text-base-content">
-                        {{ dpm.date }}
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          </div>
+            Logout
+          </button>
         </div>
+      </div>
+    </div>
 
-        <!-- Form Example with Glassmorphism -->
-        <div class="relative overflow-hidden rounded-2xl p-1">
-          <div
-            class="absolute inset-0 bg-gradient-to-br from-primary-500/50 via-secondary-400/50 to-primary-600/50 rounded-2xl"
-          ></div>
-          <div
-            class="relative bg-white/20 dark:bg-black/20 backdrop-blur-2xl rounded-2xl p-8 border border-white/30"
-          >
-            <h3 class="text-xl font-bold text-base-content mb-6">
-              Create New DPM
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-base-content"
-                  >Driver Name</label
-                >
-                <input
-                  type="text"
-                  placeholder="Jane Doe"
-                  class="w-full px-4 py-2.5 rounded-lg bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-white/30 text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50"
-                />
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-base-content"
-                  >Block</label
-                >
-                <input
-                  type="text"
-                  placeholder="12"
-                  class="w-full px-4 py-2.5 rounded-lg bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-white/30 text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50"
-                />
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-base-content"
-                  >Date</label
-                >
-                <input
-                  type="text"
-                  placeholder="01/13/2026"
-                  class="w-full px-4 py-2.5 rounded-lg bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-success-400/50 text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-success-500/50 focus:border-success-500/50"
-                />
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-base-content"
-                  >DPM Type</label
-                >
-                <select
-                  class="w-full px-4 py-2.5 rounded-lg bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-white/30 text-base-content transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 cursor-pointer"
-                >
-                  <option>5-10 Minutes Late to OFF</option>
-                  <option>No Call No Show</option>
-                  <option>Picked Up Block</option>
-                </select>
-              </div>
-            </div>
-            <div class="mt-6 flex gap-3">
-              <button
-                type="button"
-                class="px-6 py-3 bg-gradient-to-r from-primary-600 to-secondary-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-primary-500/50 transform hover:scale-105 transition-all duration-300"
-              >
-                Submit
-              </button>
-              <button
-                type="button"
-                class="px-6 py-3 bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-white/30 text-base-content font-semibold rounded-xl hover:bg-white/20 dark:hover:bg-black/20 transition-all duration-300"
-              >
-                Cancel
-              </button>
-            </div>
+    <!-- Mobile dropdown menu -->
+    @if (mobileMenuOpen()) {
+      <div
+        class="lg:hidden border-t border-white/20 bg-primary-700/50 backdrop-blur"
+      >
+        <div class="px-4 py-3 space-y-1">
+          @for (link of navLinks; track link.path) {
+            <button
+              type="button"
+              (click)="setActiveLink(link.path)"
+              [class]="
+                activeNavLink() === link.path
+                  ? 'block w-full text-left px-4 py-3 rounded-lg text-sm font-semibold bg-white text-primary-600 shadow-sm transition-all'
+                  : 'block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all'
+              "
+            >
+              {{ link.name }}
+            </button>
+          }
+          <div class="border-t border-white/20 pt-2 mt-2">
+            <button
+              type="button"
+              (click)="logout()"
+              class="block w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </div>
     }
+  </nav>
 
-    <!-- Neubrutalism Style -->
-    @if (selectedStyle() === "neubrutalism") {
-      <div class="space-y-8">
-        <!-- Hero Section with Neubrutalism -->
-        <div
-          class="bg-secondary-400 rounded-none border-4 border-black dark:border-white p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] transform hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] transition-all duration-200"
-        >
-          <h2
-            class="text-4xl font-black text-black dark:text-white uppercase mb-2"
-          >
-            Neubrutalism Design
-          </h2>
-          <p class="text-black/80 dark:text-white/80 font-bold text-lg mb-6">
-            Bold, unapologetic, and impossibly modern
-          </p>
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <div class="px-4 py-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+      <!-- Header -->
+      <div class="text-center space-y-2 mb-8">
+        <h1 class="text-3xl font-bold text-base-content">Design Preview</h1>
+        <p class="text-base-content/60">Data Forward + Color</p>
+        <p class="text-sm text-base-content/40">
+          Click nav links above to see active states. Home button clears
+          selection.
+        </p>
+      </div>
+
+      <!-- Hero with color accents -->
+      <div
+        class="bg-gradient-to-br from-primary-600 to-primary-700 rounded-xl p-6 text-white"
+      >
+        <div class="flex items-center gap-4 mb-4">
           <div
-            class="inline-block px-6 py-2 bg-primary-600 text-white rounded-none font-black uppercase border-4 border-black dark:border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]"
+            class="w-12 h-12 rounded-lg bg-white/20 backdrop-blur flex items-center justify-center"
           >
-            Break The Rules
+            <span class="text-white text-xl font-bold">D</span>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold">Data Forward + Color</h2>
+            <p class="text-sm text-white/70">
+              Same structure with colorful accents and highlights.
+            </p>
           </div>
         </div>
-
-        <!-- Table Example with Neubrutalism -->
-        <div
-          class="bg-base-200 rounded-none border-4 border-black dark:border-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)] overflow-hidden"
-        >
+        <div class="grid grid-cols-3 gap-4">
           <div
-            class="px-6 py-4 bg-primary-600 border-b-4 border-black dark:border-white"
+            class="p-4 rounded-lg bg-white/10 backdrop-blur border border-white/20"
           >
-            <h3 class="text-xl font-black text-white uppercase">Recent DPMs</h3>
+            <p class="text-xs text-white/60 uppercase tracking-wide">
+              Total DPMs
+            </p>
+            <p class="text-2xl font-bold text-white mt-1">247</p>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr
-                  class="bg-secondary-400/30 border-b-4 border-black dark:border-white"
-                >
-                  <th
-                    class="px-6 py-4 text-left text-sm font-black text-base-content uppercase"
-                  >
-                    Driver
-                  </th>
-                  <th
-                    class="px-6 py-4 text-left text-sm font-black text-base-content uppercase"
-                  >
-                    Type
-                  </th>
-                  <th
-                    class="px-6 py-4 text-left text-sm font-black text-base-content uppercase"
-                  >
-                    Points
-                  </th>
-                  <th
-                    class="px-6 py-4 text-left text-sm font-black text-base-content uppercase"
-                  >
-                    Date
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (dpm of sampleDpms; track dpm.id) {
-                  <tr
-                    class="border-b-2 border-black dark:border-white hover:bg-secondary-400/20 transition-colors cursor-pointer"
-                  >
-                    <td class="px-6 py-4 text-sm font-bold text-base-content">
-                      {{ dpm.driver }}
-                    </td>
-                    <td class="px-6 py-4 text-sm font-bold text-base-content">
-                      {{ dpm.type }}
-                    </td>
-                    <td class="px-6 py-4 text-sm">
-                      <span
-                        [class]="
-                          dpm.points.startsWith('-')
-                            ? 'px-3 py-1 bg-error-500 text-white rounded-none font-black text-xs border-2 border-black dark:border-white'
-                            : 'px-3 py-1 bg-success-500 text-white rounded-none font-black text-xs border-2 border-black dark:border-white'
-                        "
-                      >
-                        {{ dpm.points }}
-                      </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm font-bold text-base-content">
-                      {{ dpm.date }}
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
+          <div
+            class="p-4 rounded-lg bg-success-500/20 backdrop-blur border border-success-400/30"
+          >
+            <p class="text-xs text-success-200 uppercase tracking-wide">
+              This Week
+            </p>
+            <p class="text-2xl font-bold text-success-300 mt-1">+12</p>
+          </div>
+          <div
+            class="p-4 rounded-lg bg-secondary-500/20 backdrop-blur border border-secondary-400/30"
+          >
+            <p class="text-xs text-secondary-200 uppercase tracking-wide">
+              Pending
+            </p>
+            <p class="text-2xl font-bold text-secondary-300 mt-1">8</p>
           </div>
         </div>
+      </div>
 
-        <!-- Form Example with Neubrutalism -->
+      <!-- Typography with color -->
+      <div
+        class="bg-base-200 rounded-xl border-l-4 border-l-primary-500 border border-neutral-200 dark:border-neutral-700 p-6 space-y-3"
+      >
         <div
-          class="bg-base-200 rounded-none border-4 border-black dark:border-white p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]"
+          class="flex items-center justify-between pb-3 border-b border-neutral-200 dark:border-neutral-700"
         >
-          <h3 class="text-xl font-black text-base-content uppercase mb-6">
-            Create New DPM
+          <h3
+            class="text-sm font-semibold text-primary-600 uppercase tracking-wide"
+          >
+            Typography
           </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-2">
-              <label
-                class="block text-sm font-black text-base-content uppercase"
-                >Driver Name</label
-              >
-              <input
-                type="text"
-                placeholder="Jane Doe"
-                class="w-full px-4 py-2.5 rounded-none bg-base-100 border-3 border-black dark:border-white text-base-content placeholder:text-base-content/40 font-bold transition-all duration-200 focus:outline-none focus:translate-x-1 focus:translate-y-1 focus:shadow-none shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]"
-              />
-            </div>
-            <div class="space-y-2">
-              <label
-                class="block text-sm font-black text-base-content uppercase"
-                >Block</label
-              >
-              <input
-                type="text"
-                placeholder="12"
-                class="w-full px-4 py-2.5 rounded-none bg-base-100 border-3 border-black dark:border-white text-base-content placeholder:text-base-content/40 font-bold transition-all duration-200 focus:outline-none focus:translate-x-1 focus:translate-y-1 focus:shadow-none shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)]"
-              />
-            </div>
-            <div class="space-y-2">
-              <label
-                class="block text-sm font-black text-base-content uppercase"
-                >Date</label
-              >
-              <input
-                type="text"
-                placeholder="01/13/2026"
-                class="w-full px-4 py-2.5 rounded-none bg-base-100 border-3 border-success-500 text-base-content placeholder:text-base-content/40 font-bold transition-all duration-200 focus:outline-none focus:translate-x-1 focus:translate-y-1 focus:shadow-none shadow-[3px_3px_0px_0px_rgba(34,197,94,1)]"
-              />
-            </div>
-            <div class="space-y-2">
-              <label
-                class="block text-sm font-black text-base-content uppercase"
-                >DPM Type</label
-              >
-              <select
-                class="w-full px-4 py-2.5 rounded-none bg-base-100 border-3 border-black dark:border-white text-base-content font-bold transition-all duration-200 focus:outline-none focus:translate-x-1 focus:translate-y-1 focus:shadow-none shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] cursor-pointer"
-              >
-                <option>5-10 Minutes Late to OFF</option>
-                <option>No Call No Show</option>
-                <option>Picked Up Block</option>
-              </select>
-            </div>
-          </div>
-          <div class="mt-6 flex gap-3">
+          <span
+            class="px-2 py-0.5 text-xs font-medium rounded-full bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400"
+            >Component</span
+          >
+        </div>
+        <h1 class="text-2xl font-bold text-base-content">Dashboard Heading</h1>
+        <h2
+          class="text-lg font-semibold text-primary-700 dark:text-primary-400"
+        >
+          Card Title
+        </h2>
+        <h3 class="text-base font-medium text-base-content">Section Label</h3>
+        <p class="text-sm text-base-content/70">
+          Data description text. Concise and scannable for quick comprehension.
+        </p>
+        <div class="flex gap-4 text-xs">
+          <span
+            class="px-2 py-1 rounded-full bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-400 font-semibold"
+            >+15.3%</span
+          >
+          <span
+            class="px-2 py-1 rounded-full bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-400 font-semibold"
+            >-8.2%</span
+          >
+          <span class="text-base-content/50">Last updated: 2 min ago</span>
+        </div>
+      </div>
+
+      <!-- Buttons with more color -->
+      <div
+        class="bg-base-200 rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 space-y-4"
+      >
+        <div
+          class="flex items-center justify-between pb-3 border-b border-neutral-200 dark:border-neutral-700"
+        >
+          <h3
+            class="text-sm font-semibold text-base-content uppercase tracking-wide"
+          >
+            Actions
+          </h3>
+          <span
+            class="w-2 h-2 rounded-full bg-primary-500 animate-pulse"
+          ></span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            class="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-500 text-white text-sm font-semibold rounded-lg hover:from-primary-700 hover:to-primary-600 shadow-sm shadow-primary-500/25 transition-all"
+          >
+            Primary
+          </button>
+          <button
+            type="button"
+            class="px-4 py-2 bg-base-100 text-primary-600 text-sm font-semibold rounded-lg border-2 border-primary-200 dark:border-primary-800 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+          >
+            Secondary
+          </button>
+          <button
+            type="button"
+            class="px-4 py-2 bg-gradient-to-r from-success-600 to-success-500 text-white text-sm font-semibold rounded-lg shadow-sm shadow-success-500/25 transition-all"
+          >
+            Approve
+          </button>
+          <button
+            type="button"
+            class="px-4 py-2 bg-gradient-to-r from-error-600 to-error-500 text-white text-sm font-semibold rounded-lg shadow-sm shadow-error-500/25 transition-all"
+          >
+            Reject
+          </button>
+          <button
+            type="button"
+            class="px-4 py-2 text-secondary-600 dark:text-secondary-400 text-sm font-semibold hover:bg-secondary-50 dark:hover:bg-secondary-900/20 rounded-lg transition-colors"
+          >
+            View Details
+          </button>
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button
+            type="button"
+            class="p-2 bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-200 dark:border-primary-800 text-primary-600 hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors"
+          >
+            <span class="text-sm">⟳</span>
+          </button>
+          <button
+            type="button"
+            class="p-2 bg-secondary-50 dark:bg-secondary-900/20 rounded-lg border border-secondary-200 dark:border-secondary-800 text-secondary-600 hover:bg-secondary-100 dark:hover:bg-secondary-900/30 transition-colors"
+          >
+            <span class="text-sm">⚙</span>
+          </button>
+          <button
+            type="button"
+            class="p-2 bg-base-100 rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/60 hover:text-base-content hover:border-primary-300 transition-colors"
+          >
+            <span class="text-sm">⋯</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Table with color -->
+      <div
+        class="bg-base-200 rounded-xl border border-neutral-200 dark:border-neutral-700 overflow-hidden"
+      >
+        <div
+          class="px-6 py-4 bg-gradient-to-r from-primary-600 to-primary-500 flex items-center justify-between"
+        >
+          <h3 class="text-sm font-semibold text-white uppercase tracking-wide">
+            DPM Records
+          </h3>
+          <div class="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Search..."
+              class="px-3 py-1.5 text-sm rounded-lg bg-white/20 border border-white/30 text-white placeholder:text-white/50 focus:outline-none focus:bg-white/30"
+            />
             <button
               type="button"
-              class="px-6 py-3 bg-primary-600 text-white font-black uppercase rounded-none border-4 border-black dark:border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] transition-all duration-200"
+              class="px-3 py-1.5 text-sm bg-white/20 border border-white/30 rounded-lg text-white/80 hover:bg-white/30 transition-colors"
             >
-              Submit
+              Filter
+            </button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr
+                class="bg-primary-50 dark:bg-primary-900/20 border-b border-primary-100 dark:border-primary-800"
+              >
+                <th
+                  class="px-6 py-3 text-left text-xs font-semibold text-primary-700 dark:text-primary-400 uppercase tracking-wide"
+                >
+                  Driver
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-semibold text-primary-700 dark:text-primary-400 uppercase tracking-wide"
+                >
+                  Type
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-semibold text-primary-700 dark:text-primary-400 uppercase tracking-wide"
+                >
+                  Points
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-semibold text-primary-700 dark:text-primary-400 uppercase tracking-wide"
+                >
+                  Status
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-semibold text-primary-700 dark:text-primary-400 uppercase tracking-wide"
+                >
+                  Date
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (dpm of sampleDpms; track dpm.id) {
+                <tr
+                  class="border-b border-neutral-100 dark:border-neutral-800 hover:bg-primary-50/50 dark:hover:bg-primary-900/10 transition-colors cursor-pointer"
+                >
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white text-xs font-semibold shadow-sm"
+                      >
+                        {{ dpm.driver.charAt(0) }}
+                      </div>
+                      <span class="font-medium text-base-content">{{
+                        dpm.driver
+                      }}</span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-base-content/70">{{ dpm.type }}</td>
+                  <td class="px-6 py-4">
+                    <span
+                      [class]="
+                        dpm.points.startsWith('-')
+                          ? 'px-2 py-1 rounded-full text-xs font-bold bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-400'
+                          : 'px-2 py-1 rounded-full text-xs font-bold bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-400'
+                      "
+                    >
+                      {{ dpm.points }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span
+                      [class]="
+                        dpm.status === 'Pending'
+                          ? 'px-2.5 py-1 text-xs font-semibold rounded-full bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-400 border border-secondary-200 dark:border-secondary-800'
+                          : dpm.status === 'Escalated'
+                            ? 'px-2.5 py-1 text-xs font-semibold rounded-full bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-400 border border-error-200 dark:border-error-800'
+                            : 'px-2.5 py-1 text-xs font-semibold rounded-full bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-400 border border-success-200 dark:border-success-800'
+                      "
+                      >{{ dpm.status }}</span
+                    >
+                  </td>
+                  <td class="px-6 py-4 text-base-content/50">{{ dpm.date }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div
+          class="px-6 py-3 bg-base-100 border-t border-neutral-200 dark:border-neutral-700 flex items-center justify-between text-sm"
+        >
+          <span class="text-base-content/50">Showing 1-3 of 247</span>
+          <div class="flex gap-1">
+            <button
+              type="button"
+              class="px-3 py-1 rounded bg-base-200 text-base-content/50"
+            >
+              Prev
             </button>
             <button
               type="button"
-              class="px-6 py-3 bg-base-100 text-base-content font-black uppercase rounded-none border-4 border-black dark:border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:hover:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] transition-all duration-200"
+              class="px-3 py-1 rounded bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-sm"
+            >
+              1
+            </button>
+            <button
+              type="button"
+              class="px-3 py-1 rounded bg-base-200 text-base-content hover:bg-primary-100 dark:hover:bg-primary-900/20 transition-colors"
+            >
+              2
+            </button>
+            <button
+              type="button"
+              class="px-3 py-1 rounded bg-base-200 text-base-content hover:bg-primary-100 dark:hover:bg-primary-900/20 transition-colors"
+            >
+              3
+            </button>
+            <button
+              type="button"
+              class="px-3 py-1 rounded bg-base-200 text-base-content hover:bg-primary-100 dark:hover:bg-primary-900/20 transition-colors"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- List with color -->
+      <div
+        class="bg-base-200 rounded-xl border border-neutral-200 dark:border-neutral-700 p-6"
+      >
+        <div
+          class="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-700 mb-4"
+        >
+          <div class="flex items-center gap-2">
+            <span
+              class="w-1.5 h-6 rounded-full bg-gradient-to-b from-primary-500 to-secondary-500"
+            ></span>
+            <h3
+              class="text-sm font-semibold text-base-content uppercase tracking-wide"
+            >
+              Activity Feed
+            </h3>
+          </div>
+          <button
+            type="button"
+            class="text-xs text-primary-600 font-semibold hover:text-primary-700 transition-colors"
+          >
+            View All →
+          </button>
+        </div>
+        <div class="space-y-3">
+          @for (item of recentActivity; track item.action; let i = $index) {
+            <div
+              class="flex items-start gap-3 p-3 rounded-lg bg-base-100 border border-neutral-100 dark:border-neutral-800 hover:border-primary-200 dark:hover:border-primary-800 transition-colors"
+            >
+              <div
+                class="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold"
+                [class]="
+                  i === 0
+                    ? 'bg-gradient-to-br from-primary-500 to-primary-600'
+                    : i === 1
+                      ? 'bg-gradient-to-br from-secondary-500 to-secondary-600'
+                      : i === 2
+                        ? 'bg-gradient-to-br from-success-500 to-success-600'
+                        : 'bg-gradient-to-br from-neutral-400 to-neutral-500'
+                "
+              >
+                {{ i + 1 }}
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-base-content">
+                  {{ item.action }}
+                </p>
+                <p class="text-xs text-base-content/50 mt-0.5">
+                  {{ item.user }}
+                </p>
+              </div>
+              <span class="text-xs text-base-content/40 whitespace-nowrap">{{
+                item.time
+              }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Form with color -->
+      <div
+        class="bg-base-200 rounded-xl border border-neutral-200 dark:border-neutral-700 p-6"
+      >
+        <div
+          class="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-700 mb-6"
+        >
+          <div class="flex items-center gap-2">
+            <div
+              class="w-2 h-2 rounded-full bg-primary-500 animate-pulse"
+            ></div>
+            <h3
+              class="text-sm font-semibold text-base-content uppercase tracking-wide"
+            >
+              Create Entry
+            </h3>
+          </div>
+          <span
+            class="px-2 py-0.5 text-xs font-medium rounded-full bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-400"
+            >Draft</span
+          >
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="space-y-1.5">
+            <label
+              class="block text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide"
+              >Driver Name *</label
+            >
+            <input
+              type="text"
+              placeholder="Search driver..."
+              class="w-full px-4 py-2.5 rounded-lg bg-base-100 border border-neutral-200 dark:border-neutral-700 text-base-content placeholder:text-base-content/40 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+            />
+          </div>
+          <div class="space-y-1.5">
+            <label
+              class="block text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide"
+              >Block *</label
+            >
+            <input
+              type="text"
+              placeholder="Enter block number"
+              class="w-full px-4 py-2.5 rounded-lg bg-base-100 border border-neutral-200 dark:border-neutral-700 text-base-content placeholder:text-base-content/40 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+            />
+          </div>
+          <div class="space-y-1.5">
+            <label
+              class="block text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide"
+              >Date *</label
+            >
+            <input
+              type="text"
+              placeholder="Select date"
+              class="w-full px-4 py-2.5 rounded-lg bg-base-100 border border-neutral-200 dark:border-neutral-700 text-base-content placeholder:text-base-content/40 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+            />
+          </div>
+          <div class="space-y-1.5">
+            <label
+              class="block text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide"
+              >Type *</label
+            >
+            <select
+              class="w-full px-4 py-2.5 rounded-lg bg-base-100 border border-neutral-200 dark:border-neutral-700 text-base-content focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all cursor-pointer"
+            >
+              <option>5-10 Minutes Late to OFF</option>
+              <option>No Call No Show</option>
+              <option>Picked Up Block</option>
+            </select>
+          </div>
+        </div>
+        <div class="mt-6 flex items-center justify-between">
+          <button
+            type="button"
+            class="text-sm text-base-content/50 hover:text-error-600 transition-colors"
+          >
+            Reset Form
+          </button>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              class="px-5 py-2.5 bg-base-100 text-base-content text-sm font-semibold rounded-lg border border-neutral-300 dark:border-neutral-600 hover:bg-base-300/50 transition-colors"
             >
               Cancel
             </button>
+            <button
+              type="button"
+              class="px-5 py-2.5 bg-gradient-to-r from-primary-600 to-primary-500 text-white text-sm font-semibold rounded-lg shadow-sm shadow-primary-500/25 hover:from-primary-700 hover:to-primary-600 transition-all"
+            >
+              Create DPM
+            </button>
           </div>
         </div>
       </div>
-    }
 
-    <!-- Gradient Cards Style -->
-    @if (selectedStyle() === "gradient-cards") {
-      <div class="space-y-8">
-        <!-- Hero Section with Gradient Cards -->
-        <div
-          class="relative overflow-hidden rounded-3xl p-8 bg-gradient-to-br from-primary-500 via-secondary-400 to-primary-600 shadow-2xl"
-        >
-          <div class="relative z-10">
-            <h2 class="text-4xl font-bold text-white mb-2">
-              Gradient Cards Design
-            </h2>
-            <p class="text-white/90 text-lg mb-6">
-              Vibrant gradients with smooth animations and modern layouts
-            </p>
-            <div
-              class="inline-block px-6 py-2 bg-white text-primary-600 rounded-full font-bold shadow-lg"
-            >
-              Colorful & Dynamic
-            </div>
-          </div>
-          <!-- Decorative circles -->
-          <div
-            class="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"
-          ></div>
-          <div
-            class="absolute -bottom-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl"
-          ></div>
-        </div>
-
-        <!-- Table Example with Gradient Cards -->
-        <div
-          class="relative overflow-hidden rounded-2xl cursor-default shadow-xl group"
-        >
-          <!-- Gradient Background -->
-          <div
-            class="absolute inset-0 bg-gradient-to-br from-primary-500 via-secondary-400 to-primary-600"
-          ></div>
-
-          <!-- Content -->
-          <div
-            class="relative z-10 bg-white/95 dark:bg-black/95 m-[2px] rounded-2xl overflow-hidden"
-          >
-            <div
-              class="px-6 py-4 bg-gradient-to-r from-primary-600 to-secondary-500"
-            >
-              <h3 class="text-xl font-bold text-white">Recent DPMs</h3>
-            </div>
-            <div class="overflow-x-auto">
-              <table class="w-full">
-                <thead>
-                  <tr class="bg-base-300/50">
-                    <th
-                      class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-                    >
-                      Driver
-                    </th>
-                    <th
-                      class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-                    >
-                      Type
-                    </th>
-                    <th
-                      class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-                    >
-                      Points
-                    </th>
-                    <th
-                      class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-                    >
-                      Date
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (dpm of sampleDpms; track dpm.id) {
-                    <tr
-                      class="border-t border-neutral-200 dark:border-neutral-700 hover:bg-base-300/30 transition-colors cursor-pointer"
-                    >
-                      <td class="px-6 py-4 text-sm text-base-content">
-                        {{ dpm.driver }}
-                      </td>
-                      <td class="px-6 py-4 text-sm text-base-content">
-                        {{ dpm.type }}
-                      </td>
-                      <td class="px-6 py-4 text-sm">
-                        <span
-                          [class]="
-                            dpm.points.startsWith('-')
-                              ? 'px-4 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-error-500 to-error-600 text-white shadow-md whitespace-nowrap'
-                              : 'px-4 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-success-400 to-success-600 text-white shadow-md whitespace-nowrap'
-                          "
-                        >
-                          {{ dpm.points }}
-                        </span>
-                      </td>
-                      <td class="px-6 py-4 text-sm text-base-content">
-                        {{ dpm.date }}
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Hover Glow Effect -->
-          <div
-            class="absolute inset-0 bg-gradient-to-br from-white/0 to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none"
-          ></div>
-        </div>
-
-        <!-- Form Example with Gradient Cards -->
-        <div
-          class="relative overflow-hidden rounded-2xl cursor-default shadow-xl"
-        >
-          <!-- Gradient Background -->
-          <div
-            class="absolute inset-0 bg-gradient-to-br from-primary-500 via-secondary-400 to-primary-600"
-          ></div>
-
-          <!-- Content -->
-          <div
-            class="relative z-10 p-8 bg-white/95 dark:bg-black/95 m-[2px] rounded-2xl"
-          >
-            <h3 class="text-xl font-bold text-base-content mb-6">
-              Create New DPM
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-base-content"
-                  >Driver Name</label
-                >
-                <div class="relative">
-                  <input
-                    type="text"
-                    placeholder="Jane Doe"
-                    class="w-full px-4 py-2.5 rounded-lg bg-base-100 border-2 border-neutral-200 dark:border-neutral-700 text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-primary-500"
-                  />
-                </div>
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-base-content"
-                  >Block</label
-                >
-                <div class="relative">
-                  <input
-                    type="text"
-                    placeholder="12"
-                    class="w-full px-4 py-2.5 rounded-lg bg-base-100 border-2 border-neutral-200 dark:border-neutral-700 text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-primary-500"
-                  />
-                </div>
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-base-content"
-                  >Date</label
-                >
-                <div class="relative">
-                  <input
-                    type="text"
-                    placeholder="01/13/2026"
-                    class="w-full px-4 py-2.5 rounded-lg bg-base-100 border-2 border-success-400 text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-success-500"
-                  />
-                </div>
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-base-content"
-                  >DPM Type</label
-                >
-                <select
-                  class="w-full px-4 py-2.5 rounded-lg bg-base-100 border-2 border-neutral-200 dark:border-neutral-700 text-base-content transition-all duration-200 focus:outline-none focus:border-transparent focus:ring-2 focus:ring-primary-500 cursor-pointer"
-                >
-                  <option>5-10 Minutes Late to OFF</option>
-                  <option>No Call No Show</option>
-                  <option>Picked Up Block</option>
-                </select>
-              </div>
-            </div>
-            <div class="mt-6 flex gap-3">
-              <button
-                type="button"
-                class="px-6 py-3 bg-gradient-to-r from-primary-600 to-secondary-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-primary-500/50 transform hover:scale-105 transition-all duration-300"
-              >
-                Submit
-              </button>
-              <button
-                type="button"
-                class="px-6 py-3 bg-base-200 border-2 border-neutral-200 dark:border-neutral-700 text-base-content font-semibold rounded-xl hover:bg-base-300/50 transition-all duration-300"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    }
-
-    <!-- Back Link -->
-    <div class="flex justify-center pt-8">
-      <a
-        routerLink="/home"
-        class="px-6 py-3 bg-base-200 text-base-content font-semibold rounded-xl border border-neutral-200 dark:border-neutral-700 hover:bg-base-300/50 transition-colors"
+      <!-- Form Field States with color -->
+      <div
+        class="bg-base-200 rounded-xl border border-neutral-200 dark:border-neutral-700 p-6"
       >
-        ← Back to App
-      </a>
+        <div
+          class="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-700 mb-6"
+        >
+          <h3
+            class="text-sm font-semibold text-base-content uppercase tracking-wide"
+          >
+            Input States
+          </h3>
+          <div class="flex gap-1">
+            <span class="w-2 h-2 rounded-full bg-neutral-400"></span>
+            <span class="w-2 h-2 rounded-full bg-error-500"></span>
+            <span class="w-2 h-2 rounded-full bg-success-500"></span>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="space-y-1.5">
+            <label
+              class="block text-xs font-medium text-base-content/70 uppercase tracking-wide"
+              >Default</label
+            >
+            <input
+              type="text"
+              placeholder="Enter value..."
+              class="w-full px-4 py-2.5 rounded-lg bg-base-100 border border-neutral-200 dark:border-neutral-700 text-base-content placeholder:text-base-content/40 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+            />
+            <p class="text-xs text-base-content/40">Standard input state</p>
+          </div>
+          <div
+            class="space-y-1.5 p-3 rounded-lg bg-error-50/50 dark:bg-error-900/10 border border-error-200 dark:border-error-800"
+          >
+            <label
+              class="block text-xs font-medium text-error-600 uppercase tracking-wide"
+              >Error</label
+            >
+            <input
+              type="text"
+              value="Invalid entry"
+              class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-base-100 border-2 border-error-400 text-base-content focus:outline-none focus:border-error-500 focus:ring-2 focus:ring-error-500/20"
+            />
+            <p class="text-xs text-error-600 font-medium">
+              This field has an error
+            </p>
+          </div>
+          <div
+            class="space-y-1.5 p-3 rounded-lg bg-success-50/50 dark:bg-success-900/10 border border-success-200 dark:border-success-800"
+          >
+            <label
+              class="block text-xs font-medium text-success-600 uppercase tracking-wide"
+              >Valid</label
+            >
+            <input
+              type="text"
+              value="Correct value"
+              class="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-base-100 border-2 border-success-400 text-base-content focus:outline-none focus:border-success-500 focus:ring-2 focus:ring-success-500/20"
+            />
+            <p class="text-xs text-success-600 font-medium">
+              Input validated successfully
+            </p>
+          </div>
+        </div>
+        <div
+          class="mt-6 pt-4 border-t border-neutral-200 dark:border-neutral-700"
+        >
+          <label
+            class="block text-xs font-medium text-base-content/70 uppercase tracking-wide mb-2"
+            >Focus State (click to see)</label
+          >
+          <input
+            type="text"
+            placeholder="Click to see focus styling..."
+            class="w-full md:w-1/2 px-4 py-2.5 rounded-lg bg-base-100 border border-neutral-200 dark:border-neutral-700 text-base-content placeholder:text-base-content/40 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 focus:bg-primary-50/50 dark:focus:bg-primary-900/10 transition-all"
+          />
+        </div>
+      </div>
+
+      <!-- Modal & Toast Triggers -->
+      <div
+        class="bg-gradient-to-r from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 rounded-xl border border-primary-200 dark:border-primary-800 p-6 space-y-4"
+      >
+        <div
+          class="flex items-center justify-between pb-3 border-b border-primary-200 dark:border-primary-800"
+        >
+          <h3
+            class="text-sm font-semibold text-primary-700 dark:text-primary-400 uppercase tracking-wide"
+          >
+            Dialogs
+          </h3>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            (click)="openModal()"
+            class="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-500 text-white text-sm font-semibold rounded-lg shadow-sm shadow-primary-500/25 hover:from-primary-700 hover:to-primary-600 transition-all"
+          >
+            Open Modal
+          </button>
+          <button
+            type="button"
+            (click)="triggerToast('success')"
+            class="px-4 py-2 bg-gradient-to-r from-success-600 to-success-500 text-white text-sm font-semibold rounded-lg shadow-sm shadow-success-500/25 transition-all"
+          >
+            Success
+          </button>
+          <button
+            type="button"
+            (click)="triggerToast('error')"
+            class="px-4 py-2 bg-gradient-to-r from-error-600 to-error-500 text-white text-sm font-semibold rounded-lg shadow-sm shadow-error-500/25 transition-all"
+          >
+            Error
+          </button>
+          <button
+            type="button"
+            (click)="triggerToast('info')"
+            class="px-4 py-2 bg-gradient-to-r from-neutral-600 to-neutral-500 text-white text-sm font-semibold rounded-lg shadow-sm shadow-neutral-500/25 transition-all"
+          >
+            Info
+          </button>
+        </div>
+      </div>
+
+      <!-- Back Link -->
+      <div class="flex justify-center pt-4">
+        <a
+          routerLink="/home"
+          class="px-6 py-3 bg-base-200 text-base-content font-semibold rounded-xl border border-neutral-200 dark:border-neutral-700 hover:bg-base-300/50 transition-colors"
+        >
+          ← Back to App
+        </a>
+      </div>
     </div>
   </div>
+
+  <!-- ==================== MODAL ==================== -->
+  @if (showModal()) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+      (click)="closeModal()"
+    >
+      <div
+        class="bg-base-200 rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-2xl max-w-md w-full overflow-hidden"
+        (click)="$event.stopPropagation()"
+      >
+        <div
+          class="px-6 py-4 bg-gradient-to-r from-primary-600 to-primary-500 flex items-center justify-between"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center"
+            >
+              <span class="text-white text-sm font-bold">!</span>
+            </div>
+            <h3 class="text-base font-semibold text-white">Confirm Action</h3>
+          </div>
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/30 transition-colors"
+          >
+            ×
+          </button>
+        </div>
+        <div class="p-6">
+          <p class="text-sm text-base-content/70 leading-relaxed">
+            Are you sure you want to proceed with this action? This change will
+            be reflected in the system immediately.
+          </p>
+        </div>
+        <div
+          class="px-6 py-4 bg-base-100 border-t border-neutral-200 dark:border-neutral-700 flex justify-end gap-2"
+        >
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-4 py-2 bg-base-200 text-base-content text-sm font-semibold rounded-lg border border-neutral-300 dark:border-neutral-600 hover:bg-base-300/50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-4 py-2 bg-gradient-to-r from-primary-600 to-primary-500 text-white text-sm font-semibold rounded-lg shadow-sm shadow-primary-500/25 hover:from-primary-700 hover:to-primary-600 transition-all"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ==================== TOAST ==================== -->
+  @if (showToast()) {
+    <div
+      class="fixed top-20 right-4 z-50 rounded-lg shadow-lg overflow-hidden animate-[slideIn_0.3s_ease-out]"
+      [class]="
+        toastType() === 'success'
+          ? 'bg-gradient-to-r from-success-600 to-success-500 shadow-success-500/25'
+          : toastType() === 'error'
+            ? 'bg-gradient-to-r from-error-600 to-error-500 shadow-error-500/25'
+            : 'bg-gradient-to-r from-primary-600 to-primary-500 shadow-primary-500/25'
+      "
+    >
+      <div class="px-4 py-3 flex items-center gap-3">
+        <div
+          class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center"
+        >
+          @if (toastType() === "success") {
+            <span class="text-white text-xs">✓</span>
+          }
+          @if (toastType() === "error") {
+            <span class="text-white text-xs">!</span>
+          }
+          @if (toastType() === "info") {
+            <span class="text-white text-xs">i</span>
+          }
+        </div>
+        <span class="text-sm font-medium text-white">
+          @if (toastType() === "success") {
+            Changes saved successfully
+          }
+          @if (toastType() === "error") {
+            Something went wrong
+          }
+          @if (toastType() === "info") {
+            Logged out
+          }
+        </span>
+        <button
+          type="button"
+          (click)="showToast.set(false)"
+          class="ml-2 text-white/70 hover:text-white transition-colors"
+        >
+          ×
+        </button>
+      </div>
+    </div>
+  }
 </div>

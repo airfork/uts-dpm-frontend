@@ -5,12 +5,14 @@ import { NotificationService } from '../../services/notification.service';
 import { first } from 'rxjs';
 import AutogenDpm from '../../models/autogen-dpm';
 import { LoadingComponent } from '../../shared/loading/loading.component';
-import { Ripple } from 'primeng/ripple';
+import { TooltipDirective } from '../../shared/directives/tooltip.directive';
+import { ButtonComponent } from '../../ui/button/button.component';
+import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
 
 @Component({
   selector: 'app-autogen',
   templateUrl: './autogen.component.html',
-  imports: [LoadingComponent, Ripple],
+  imports: [LoadingComponent, TooltipDirective, ButtonComponent, PageHeaderComponent],
 })
 export class AutogenComponent implements OnInit {
   private autogenService = inject(AutogenService);

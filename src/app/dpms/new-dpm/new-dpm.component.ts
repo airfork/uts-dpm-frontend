@@ -7,15 +7,17 @@ import PostDpmDto from '../../models/post-dpm-dto';
 import UsernameDto from '../../models/username-dto';
 import { first } from 'rxjs';
 import { DPMGroup } from '../../models/dpm-type';
-import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
-import { DatePicker } from 'primeng/datepicker';
+import { AutocompleteComponent } from '../../ui/autocomplete/autocomplete.component';
+import { AutocompleteCompleteEvent } from '../../ui/autocomplete/autocomplete.types';
+import { DatePickerComponent } from '../../ui/date-picker/date-picker.component';
+import { ButtonComponent } from '../../ui/button/button.component';
 
 type startEndTime = 'Start Time' | 'End Time';
 
 @Component({
   selector: 'app-new-dpm',
   templateUrl: './new-dpm.component.html',
-  imports: [AutoComplete, ReactiveFormsModule, DatePicker],
+  imports: [ReactiveFormsModule, AutocompleteComponent, DatePickerComponent, ButtonComponent],
 })
 export class NewDpmComponent implements AfterViewInit {
   private dpmService = inject(DpmService);
@@ -54,7 +56,7 @@ export class NewDpmComponent implements AfterViewInit {
     }
   }
 
-  search(event: AutoCompleteCompleteEvent) {
+  search(event: AutocompleteCompleteEvent) {
     this.autocompleteResults.set(
       this.driverNames()
         .filter((user) => user.name.toLowerCase().includes(event.query.toLowerCase()))
@@ -70,7 +72,8 @@ export class NewDpmComponent implements AfterViewInit {
     if (this.hasErrors(control)) {
       return 'border-error-500 focus:border-error-500 focus:ring-error-500/20';
     }
-    if (control.dirty || control.touched) {
+    // Show success state if control is valid and has a value (covers pre-filled defaults like date)
+    if ((control.dirty || control.touched || control.value) && control.valid) {
       return 'border-success-500 focus:border-success-500 focus:ring-success-500/20';
     }
     return 'border-neutral-200 dark:border-neutral-700 focus:border-primary-500 focus:ring-primary-500/20';
@@ -81,7 +84,9 @@ export class NewDpmComponent implements AfterViewInit {
     const prefix = isInput ? 'border-' : 'text-';
 
     if (this.hasErrors(control)) return prefix + 'error-600';
-    if (control.dirty || control.touched) return prefix + 'success-600';
+    // Show success state if control is valid and has a value (covers pre-filled defaults)
+    if ((control.dirty || control.touched || control.value) && control.valid)
+      return prefix + 'success-600';
     return prefix === 'text-' ? 'text-base-content' : 'border-neutral-200 dark:border-neutral-700';
   }
 

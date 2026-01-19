@@ -1,16 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  effect,
-  HostListener,
-  inject,
-  input,
-  model,
-  OnInit,
-  QueryList,
-  signal,
-  ViewChildren,
-} from '@angular/core';
+import { Component, effect, inject, input, model, OnInit, signal } from '@angular/core';
 import {
   CdkDrag,
   CdkDragDrop,
@@ -20,8 +8,10 @@ import {
 } from '@angular/cdk/drag-drop';
 import { DPMGroup, DPMType } from '../../models/dpm-type';
 import { v4 as uuidv4 } from 'uuid';
-import { Textarea } from 'primeng/textarea';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
+import { AutoResizeDirective } from '../../shared/directives/auto-resize.directive';
+import { CollapsibleComponent } from '../../ui/collapsible/collapsible.component';
+import { TooltipDirective } from '../../shared/directives/tooltip.directive';
 import {
   AbstractControl,
   FormArray,
@@ -37,10 +27,10 @@ import { DpmService } from '../../services/dpm.service';
 import { finalize } from 'rxjs';
 import { GetDpmColors } from '../../models/get-dpm-colors';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
-import { Panel } from 'primeng/panel';
 import { CardComponent } from '../../ui/card/card.component';
 import { ModalComponent } from '../../ui/modal/modal.component';
 import { ButtonComponent } from '../../ui/button/button.component';
+import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
 
 interface DpmListDropData {
   groupControl: AbstractControl; // This is the FormGroup for the DPM group
@@ -76,18 +66,19 @@ const DPM_GROUP_NAME_VALIDATORS = [Validators.required, Validators.maxLength(500
     CdkDropList,
     CdkDrag,
     CdkDropListGroup,
-    Textarea,
     NgClass,
     ReactiveFormsModule,
-    NgIf,
     ConfirmBoxComponent,
-    Panel,
     CardComponent,
     ModalComponent,
     ButtonComponent,
+    AutoResizeDirective,
+    CollapsibleComponent,
+    TooltipDirective,
+    PageHeaderComponent,
   ],
 })
-export class EditDpmsComponent implements OnInit, AfterViewInit {
+export class EditDpmsComponent implements OnInit {
   private notificationService = inject(NotificationService);
   private dpmService = inject(DpmService);
 
@@ -107,8 +98,6 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
 
   private fb = inject(FormBuilder);
 
-  @ViewChildren('autoResizeTextarea') textareaDirectives?: QueryList<Textarea>;
-
   constructor() {
     effect(() => {
       this.initializeForm(this.dpmGroupsInput());
@@ -126,21 +115,6 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
     this.dpmEditForm = this.fb.group({
       groups: this.fb.array([]),
     });
-  }
-
-  ngAfterViewInit() {
-    // Trigger resize for all textareas after the view is initialized.
-    // A small timeout can help ensure styles are applied and dimensions are correct.
-    setTimeout(() => this.triggerAllTextareasResize(), 0); // Initial resize
-    this.textareaDirectives?.changes.subscribe(() => {
-      // Handle new textareas, perhaps resize them too
-      setTimeout(() => this.triggerAllTextareasResize(), 0);
-    });
-  }
-
-  @HostListener('window:resize')
-  onWindowResize() {
-    this.triggerAllTextareasResize();
   }
 
   confirmReset() {
@@ -541,19 +515,6 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
   private controlHasErrors(control: AbstractControl | null): boolean {
     if (!control) return false;
     return control.invalid;
-  }
-
-  private triggerAllTextareasResize() {
-    if (this.textareaDirectives) {
-      this.textareaDirectives.forEach((directive) => {
-        // Check if the directive's element is visible before resizing
-        if (directive && directive.el && directive.el.nativeElement) {
-          if (directive.el.nativeElement.offsetParent !== null) {
-            directive.resize();
-          }
-        }
-      });
-    }
   }
 
   private groupNameIsDuplicated(groupControl: AbstractControl): boolean {

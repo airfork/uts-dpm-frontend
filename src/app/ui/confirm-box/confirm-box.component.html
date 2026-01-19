@@ -4,7 +4,9 @@
     <p class="text-base">{{ message() }}</p>
   </div>
   <div modal-footer class="flex justify-end gap-2">
-    <app-button variant="outline" (click)="confirm()"> Yes </app-button>
-    <app-button variant="ghost" (click)="requestClose()"> No </app-button>
+    <app-button variant="ghost" (click)="requestClose()"> Cancel </app-button>
+    <app-button variant="primary" (click)="confirm()">
+      {{ confirmText() || "Confirm" }}
+    </app-button>
   </div>
 </app-modal>

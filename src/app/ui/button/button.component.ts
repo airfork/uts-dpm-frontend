@@ -15,46 +15,58 @@ export class ButtonComponent {
   id = input<string>();
   tabindex = input<number>();
 
-  // Compute classes based on inputs
   classes = computed(() => {
     const baseClasses = [
       'inline-flex items-center justify-center',
-      'font-medium rounded-md',
+      'font-semibold rounded-lg',
       'cursor-pointer',
-      'transition-all duration-[var(--transition-base)]',
-      'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+      'transition-all duration-200',
+      'focus:outline-none focus:ring-2 focus:ring-offset-2',
       'disabled:opacity-50 disabled:cursor-not-allowed',
     ];
 
-    // Variant classes
-    const variantClasses = {
+    const variantClasses: Record<ButtonVariant, string[]> = {
       primary: [
-        'bg-primary-600 text-white',
-        'hover:bg-primary-700 active:bg-primary-800',
-        'shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)]',
+        'bg-gradient-to-r from-primary-600 to-primary-500 text-white',
+        'hover:from-primary-700 hover:to-primary-600',
+        'shadow-md shadow-primary-500/25 hover:shadow-lg hover:shadow-primary-500/30',
+        'focus:ring-primary-500',
       ],
       secondary: [
-        'bg-secondary-600 text-neutral-900',
-        'hover:bg-secondary-700 active:bg-secondary-800',
-        'shadow-[var(--shadow-sm)] hover:shadow-[var(--shadow-md)]',
+        'bg-base-100 text-primary-600 border-2 border-primary-200',
+        'hover:bg-primary-50 dark:hover:bg-primary-900/20',
+        'dark:border-primary-800 dark:text-primary-400',
+        'focus:ring-primary-500',
       ],
       ghost: [
-        'bg-transparent text-neutral-700 dark:text-neutral-100',
-        'hover:bg-neutral-100 hover:dark:bg-neutral-700',
-        'active:bg-neutral-200 active:dark:bg-neutral-600',
+        'bg-transparent text-base-content',
+        'hover:bg-base-200 dark:hover:bg-neutral-800',
+        'focus:ring-neutral-500',
       ],
       outline: [
         'bg-transparent border-2 border-neutral-300 text-neutral-700',
         'hover:border-neutral-400 hover:bg-neutral-50',
-        'active:bg-neutral-100',
+        'dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-800',
+        'focus:ring-neutral-500',
+      ],
+      success: [
+        'bg-gradient-to-r from-success-600 to-success-500 text-white',
+        'hover:from-success-700 hover:to-success-600',
+        'shadow-md shadow-success-500/25 hover:shadow-lg hover:shadow-success-500/30',
+        'focus:ring-success-500',
+      ],
+      error: [
+        'bg-gradient-to-r from-error-600 to-error-500 text-white',
+        'hover:from-error-700 hover:to-error-600',
+        'shadow-md shadow-error-500/25 hover:shadow-lg hover:shadow-error-500/30',
+        'focus:ring-error-500',
       ],
     };
 
-    // Size classes
-    const sizeClasses = {
+    const sizeClasses: Record<ButtonSize, string> = {
       sm: 'px-3 py-1.5 text-sm',
-      md: 'px-4 py-2 text-base',
-      lg: 'px-6 py-3 text-lg',
+      md: 'px-4 py-2 text-sm',
+      lg: 'px-6 py-3 text-base',
     };
 
     const classes = [

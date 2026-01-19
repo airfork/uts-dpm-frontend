@@ -23,7 +23,7 @@
             variant="ghost"
             size="sm"
             (click)="confirmReset()"
-            [hidden]="dpmEditForm.pristine"
+            [disabled]="dpmEditForm.pristine"
             appTooltip="Reset Changes"
             tooltipPosition="top"
           >
@@ -71,12 +71,11 @@
                 <textarea
                   appAutoResize
                   id="dpmGroupName-{{ groupControl.value.id }}"
-                  class="form-textarea form-textarea-ghost grow text-xl min-h-0 resize-none font-semibold"
+                  class="form-textarea grow text-xl min-h-0 resize-none font-semibold"
                   placeholder="Group Name"
                   formControlName="name"
                   [ngClass]="{
                     'form-textarea-error': groupNameHasErrors(groupControl),
-                    'form-textarea-ghost': !groupNameHasErrors(groupControl),
                   }"
                 ></textarea>
 
@@ -160,9 +159,6 @@
                             'form-textarea-error':
                               dpmHasErrors(dpmControl, 'name') ||
                               dpmNameIsDuplicated(groupControl, dpmControl),
-                            'form-textarea-ghost':
-                              !dpmHasErrors(dpmControl, 'name') &&
-                              !dpmNameIsDuplicated(groupControl, dpmControl),
                           }"
                         ></textarea>
                       </div>
@@ -176,10 +172,6 @@
                           placeholder="Pts"
                           [ngClass]="{
                             'form-input-error': dpmHasErrors(
-                              dpmControl,
-                              'points'
-                            ),
-                            'form-input-ghost': !dpmHasErrors(
                               dpmControl,
                               'points'
                             ),

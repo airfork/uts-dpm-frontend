@@ -11,12 +11,11 @@ import { NotificationService } from '../../services/notification.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgClass } from '@angular/common';
-import { Ripple } from 'primeng/ripple';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  imports: [NgClass, ReactiveFormsModule, Ripple],
+  imports: [NgClass, ReactiveFormsModule],
 })
 export class LoginComponent {
   private authService = inject(AuthService);

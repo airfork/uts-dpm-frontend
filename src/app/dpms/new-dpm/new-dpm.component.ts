@@ -9,14 +9,13 @@ import { first } from 'rxjs';
 import { DPMGroup } from '../../models/dpm-type';
 import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { DatePicker } from 'primeng/datepicker';
-import { NgClass } from '@angular/common';
 
 type startEndTime = 'Start Time' | 'End Time';
 
 @Component({
   selector: 'app-new-dpm',
   templateUrl: './new-dpm.component.html',
-  imports: [AutoComplete, ReactiveFormsModule, DatePicker, NgClass],
+  imports: [AutoComplete, ReactiveFormsModule, DatePicker],
 })
 export class NewDpmComponent implements AfterViewInit {
   private dpmService = inject(DpmService);

@@ -10,7 +10,6 @@ import { DPMGroup, DPMType } from '../../models/dpm-type';
 import { v4 as uuidv4 } from 'uuid';
 import { NgClass } from '@angular/common';
 import { AutoResizeDirective } from '../../shared/directives/auto-resize.directive';
-import { CollapsibleComponent } from '../../ui/collapsible/collapsible.component';
 import { TooltipDirective } from '../../shared/directives/tooltip.directive';
 import {
   AbstractControl,
@@ -28,7 +27,6 @@ import { finalize } from 'rxjs';
 import { GetDpmColors } from '../../models/get-dpm-colors';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
 import { CardComponent } from '../../ui/card/card.component';
-import { ModalComponent } from '../../ui/modal/modal.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
 import { PointsDisplayPipe } from '../../shared/pipes/points-display.pipe';
@@ -73,10 +71,8 @@ const DPM_GROUP_NAME_VALIDATORS = [Validators.required, Validators.maxLength(500
     ReactiveFormsModule,
     ConfirmBoxComponent,
     CardComponent,
-    ModalComponent,
     ButtonComponent,
     AutoResizeDirective,
-    CollapsibleComponent,
     TooltipDirective,
     PageHeaderComponent,
     PointsDisplayPipe,
@@ -92,15 +88,12 @@ export class EditDpmsComponent implements OnInit {
   dpmGroupsInput = input.required<DPMGroup[]>();
   isSaving = signal(false);
   dpmColors = signal<GetDpmColors[]>([]);
-  currentModalDpm = signal<DpmTypeFormValue | null>(null);
 
   confirmModalOpen = signal(false);
   confirmModalMessage = signal('');
   confirmModalCallback = signal<() => void>(() => {});
-  isColorModalOpen = signal(false);
 
   dpmEditForm!: FormGroup; // Main form group
-  colorSelectionForm!: FormGroup;
 
   private fb = inject(FormBuilder);
 
@@ -114,8 +107,6 @@ export class EditDpmsComponent implements OnInit {
     this.dpmService.getDpmColors().subscribe((colors) => {
       this.dpmColors.set(colors);
     });
-
-    this.initializeColorSelectionModal();
 
     // Initialize form structure, possibly with empty array if input not ready
     this.dpmEditForm = this.fb.group({
@@ -418,88 +409,6 @@ export class EditDpmsComponent implements OnInit {
     (dpmControl as FormGroup).get('color')?.setValue(colorValue);
     dpmControl.markAsDirty();
     this.dpmEditForm.markAsDirty();
-  }
-
-  // -- Modal functions --
-
-  get selectedColor(): string {
-    const currentDpm = this.currentModalDpm();
-    if (!this.colorSelectionForm || !currentDpm) return '';
-
-    const selectedValue = this.colorSelectionForm.value.selectedColor as GetDpmColors;
-    return selectedValue ? selectedValue.colorName : '';
-  }
-
-  showColorModal(dpmControl: AbstractControl) {
-    const controlData = dpmControl.value as DpmTypeFormValue;
-    this.currentModalDpm.set(controlData);
-
-    const currentColor = this.dpmColors().find(
-      (color) => color.colorId === controlData.color?.colorId
-    );
-
-    this.initializeColorSelectionModal(currentColor);
-    this.isColorModalOpen.set(true);
-  }
-
-  closeColorModal() {
-    this.isColorModalOpen.set(false);
-  }
-
-  initializeColorSelectionModal(selectedColor: GetDpmColors | null | undefined = null) {
-    this.colorSelectionForm = this.fb.group({
-      selectedColor: selectedColor,
-    });
-  }
-
-  selectedColorIsInUse(): boolean {
-    const currentDpm = this.currentModalDpm();
-    if (!this.colorSelectionForm || !currentDpm) return false;
-
-    const selectedValue = this.colorSelectionForm.value.selectedColor as GetDpmColors;
-    if (selectedValue == null) return false;
-
-    const groups = this.groupsFormArray.controls;
-    for (const groupControl of groups) {
-      const dpmsArray = this.getDpmsFormArray(groupControl);
-      const dpmsContainColor = dpmsArray.controls.some((dc) => {
-        const dpmFormGroup = dc as FormGroup;
-        const dpmValue = dpmFormGroup.value as DpmTypeFormValue;
-        return dpmValue.color?.colorId === selectedValue?.colorId && dpmValue.id !== currentDpm.id;
-      });
-
-      if (dpmsContainColor) return true;
-    }
-
-    return false;
-  }
-
-  applyColorSelection() {
-    const currentDpm = this.currentModalDpm();
-    if (!this.colorSelectionForm || !this.colorSelectionForm.valid || !currentDpm) return;
-
-    const selectedValue = this.colorSelectionForm.value.selectedColor as GetDpmColors;
-    const groups = this.groupsFormArray.controls;
-    for (const groupControl of groups) {
-      const dpmsArray = this.getDpmsFormArray(groupControl);
-      const targetDpmControl = dpmsArray.controls.find((dc) => dc.value.id === currentDpm.id);
-
-      if (targetDpmControl) {
-        (targetDpmControl as FormGroup).get('color')?.setValue(
-          selectedValue
-            ? {
-                colorId: selectedValue.colorId,
-                hexCode: selectedValue.hexCode,
-              }
-            : null
-        );
-        targetDpmControl.markAsDirty(); // Mark the main form control as dirty
-        this.dpmEditForm.markAsDirty();
-        break;
-      }
-    }
-
-    this.closeColorModal();
   }
 
   // Save updates

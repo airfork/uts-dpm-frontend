@@ -62,72 +62,132 @@
 @if (currentDpms(); as dpms) {
   <div class="px-4 py-6 md:px-6 md:py-8">
     <div class="max-w-7xl mx-auto space-y-6">
-      <h2 class="text-2xl font-semibold text-base-content">Current DPMs</h2>
-
-      <div
-        class="bg-base-200 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-sm overflow-hidden"
+      <!-- Hero Section -->
+      <section
+        class="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-6 md:p-8"
       >
-        <p-table
-          #dt
-          [value]="dpms"
-          dataKey="id"
-          styleClass="w-full"
-          [rowHover]="true"
-          [rows]="10"
-          [showCurrentPageReport]="true"
-          [rowsPerPageOptions]="[10, 25, 50]"
-          [loading]="false"
-          responsiveLayout="scroll"
-          [paginator]="true"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        >
-          <ng-template pTemplate="header">
-            <tr class="bg-base-300/30">
-              <th
-                class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-              >
-                Type
-              </th>
-              <th
-                class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-              >
-                Points
-              </th>
-              <th
-                class="px-6 py-4 text-left text-sm font-semibold text-base-content"
-              >
-                Date
-              </th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-dpm>
-            <tr
-              class="border-t border-neutral-200 dark:border-neutral-700 hover:bg-base-300/30 transition-colors duration-150 cursor-pointer"
-              (click)="clickRow(dpm)"
+        <div class="flex items-center gap-4 mb-6">
+          <div
+            class="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-6 h-6 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
             >
-              <td class="px-6 py-4 text-sm text-base-content">
-                {{ dpm.type }}
-              </td>
-              <td class="px-6 py-4 text-sm text-base-content">
-                {{ dpm.points | points }}
-              </td>
-              <td class="px-6 py-4 text-sm text-base-content">
-                {{ dpm.date }}
-              </td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td
-                colspan="3"
-                class="px-6 py-8 text-center text-base-content/60"
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-white">Performance Overview</h1>
+            <p class="text-sm text-white/70">Your current DPM summary</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <app-stat-card
+            title="Total DPMs"
+            [value]="totalCount()"
+            variant="default"
+          />
+          <app-stat-card
+            title="Positive Points"
+            [value]="'+' + positivePoints()"
+            variant="success"
+          />
+          <app-stat-card
+            title="Negative Points"
+            [value]="negativePoints()"
+            variant="error"
+          />
+        </div>
+      </section>
+
+      <!-- Table Section -->
+      <section>
+        <h2 class="text-xl font-semibold text-base-content mb-4">
+          Current DPMs
+        </h2>
+
+        <div
+          class="bg-base-200 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-sm overflow-hidden"
+        >
+          <p-table
+            #dt
+            [value]="dpms"
+            dataKey="id"
+            styleClass="w-full"
+            [rowHover]="true"
+            [rows]="10"
+            [showCurrentPageReport]="true"
+            [rowsPerPageOptions]="[10, 25, 50]"
+            [loading]="false"
+            responsiveLayout="scroll"
+            [paginator]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          >
+            <ng-template pTemplate="header">
+              <tr class="bg-gradient-to-r from-primary-600 to-primary-500">
+                <th
+                  class="px-6 py-4 text-left text-sm font-semibold text-white"
+                >
+                  Type
+                </th>
+                <th
+                  class="px-6 py-4 text-left text-sm font-semibold text-white"
+                >
+                  Points
+                </th>
+                <th
+                  class="px-6 py-4 text-left text-sm font-semibold text-white"
+                >
+                  Date
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-dpm>
+              <tr
+                class="border-t border-neutral-200 dark:border-neutral-700 hover:bg-primary-50/50 dark:hover:bg-primary-900/10 transition-colors duration-150 cursor-pointer"
+                (click)="clickRow(dpm)"
               >
-                No DPMs found.
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div>
+                <td class="px-6 py-4 text-sm text-base-content">
+                  {{ dpm.type }}
+                </td>
+                <td class="px-6 py-4 text-sm">
+                  <span
+                    [class]="
+                      dpm.points >= 0
+                        ? 'px-2 py-1 rounded-full text-xs font-bold bg-success-50 text-success-700 dark:bg-success-900/30 dark:text-success-400'
+                        : 'px-2 py-1 rounded-full text-xs font-bold bg-error-50 text-error-700 dark:bg-error-900/30 dark:text-error-400'
+                    "
+                  >
+                    {{ dpm.points | points }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-base-content/70">
+                  {{ dpm.date }}
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td
+                  colspan="3"
+                  class="px-6 py-8 text-center text-base-content/60"
+                >
+                  No DPMs found.
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </section>
     </div>
   </div>
 } @else {

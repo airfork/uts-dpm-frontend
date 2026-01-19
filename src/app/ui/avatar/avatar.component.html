@@ -1,0 +1,7 @@
+<div [class]="containerClasses()">
+  @if (imageUrl()) {
+    <img [src]="imageUrl()" [alt]="name()" class="w-full h-full object-cover" />
+  } @else {
+    <span>{{ initials() }}</span>
+  }
+</div>

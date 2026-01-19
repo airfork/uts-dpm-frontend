@@ -73,12 +73,12 @@
       <!-- Approval Modal -->
       <app-modal [open]="isModalOpen()" [size]="'lg'" (close)="closeModal()">
         @if (currentDpm(); as dpm) {
-          <ng-container modal-header>
+          <ng-container ngProjectAs="[modal-header]">
             <h3 class="text-xl font-semibold text-base-content">
               {{ dpm.driver }}
             </h3>
           </ng-container>
-          <ng-container modal-body>
+          <ng-container ngProjectAs="[modal-body]">
             <div class="space-y-3">
               @if (dpm.createdBy) {
                 <div
@@ -159,7 +159,7 @@
             </div>
           </ng-container>
           @if (!editOpen()) {
-            <ng-container modal-footer>
+            <ng-container ngProjectAs="[modal-footer]">
               <div class="flex justify-end gap-2">
                 <app-button variant="success" (click)="approveDpm()">
                   Approve

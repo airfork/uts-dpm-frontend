@@ -1,12 +1,12 @@
 <!-- DPM Detail Modal -->
 <app-modal [open]="isModalOpen()" [size]="'md'" (close)="closeModal()">
   @if (currentDpm(); as currentDpm) {
-    <ng-container modal-header>
+    <ng-container ngProjectAs="[modal-header]">
       <h3 class="text-xl font-semibold text-base-content">
         {{ currentDpm.type }}
       </h3>
     </ng-container>
-    <ng-container modal-body>
+    <ng-container ngProjectAs="[modal-body]">
       <div class="space-y-3">
         <div
           class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"

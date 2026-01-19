@@ -32,6 +32,8 @@ import { ModalComponent } from '../../ui/modal/modal.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
 import { PointsDisplayPipe } from '../../shared/pipes/points-display.pipe';
+import { ColorByIdPipe } from '../../shared/pipes/color-by-id.pipe';
+import { ColorDropdownComponent } from './color-dropdown/color-dropdown.component';
 
 interface DpmListDropData {
   groupControl: AbstractControl; // This is the FormGroup for the DPM group
@@ -78,6 +80,8 @@ const DPM_GROUP_NAME_VALIDATORS = [Validators.required, Validators.maxLength(500
     TooltipDirective,
     PageHeaderComponent,
     PointsDisplayPipe,
+    ColorByIdPipe,
+    ColorDropdownComponent,
   ],
 })
 export class EditDpmsComponent implements OnInit {
@@ -390,6 +394,30 @@ export class EditDpmsComponent implements OnInit {
     }
 
     return false;
+  }
+
+  // -- Color dropdown helpers --
+  getUsedColorIds(excludeDpmId: string): number[] {
+    const usedIds: number[] = [];
+
+    this.groupsFormArray.controls.forEach((groupControl) => {
+      const dpmsArray = this.getDpmsFormArray(groupControl);
+      dpmsArray.controls.forEach((dpmControl) => {
+        const dpmValue = dpmControl.value;
+        if (dpmValue.id !== excludeDpmId && dpmValue.color?.colorId) {
+          usedIds.push(dpmValue.color.colorId);
+        }
+      });
+    });
+
+    return usedIds;
+  }
+
+  onColorSelected(dpmControl: AbstractControl, color: GetDpmColors | null) {
+    const colorValue = color ? { colorId: color.colorId, hexCode: color.hexCode } : null;
+    (dpmControl as FormGroup).get('color')?.setValue(colorValue);
+    dpmControl.markAsDirty();
+    this.dpmEditForm.markAsDirty();
   }
 
   // -- Modal functions --

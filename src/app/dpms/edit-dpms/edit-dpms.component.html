@@ -221,20 +221,18 @@
                         />
                       </div>
 
-                      <app-button
-                        variant="outline"
-                        size="sm"
-                        type="button"
-                        [style.border-color]="dpmControl.value.color?.hexCode"
-                        (click)="showColorModal(dpmControl)"
-                        appTooltip="Set Color"
-                        tooltipPosition="top"
-                      >
-                        <i class="pi pi-palette text-xs"></i>
-                      </app-button>
+                      <app-color-dropdown
+                        [colors]="dpmColors()"
+                        [selectedColor]="
+                          dpmColors()
+                            | colorById: dpmControl.value.color?.colorId
+                        "
+                        [usedColorIds]="getUsedColorIds(dpmControl.value.id)"
+                        (colorSelected)="onColorSelected(dpmControl, $event)"
+                      />
 
                       <app-button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
                         type="button"
                         (click)="

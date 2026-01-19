@@ -172,13 +172,32 @@ export class EditDpmsComponent implements OnInit {
 
   addDpmToGroup(groupControl: AbstractControl) {
     const dpmsArray = this.getDpmsFormArray(groupControl);
+    const newId = uuidv4();
     const newDpm = this.fb.group({
-      id: [uuidv4()],
+      id: [newId],
       name: [null, DPM_NAME_VALIDATORS],
       points: [1, DPM_POINTS_VALIDATORS],
       color: [null],
     });
     dpmsArray.push(newDpm);
+
+    // Scroll to new item and highlight
+    setTimeout(() => {
+      const element = document.getElementById(`dpmName-${newId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Add highlight class to parent row
+        const row = element.closest('.dpm-type-box');
+        if (row) {
+          row.classList.add('dpm-highlight-pulse');
+          setTimeout(() => row.classList.remove('dpm-highlight-pulse'), 300);
+        }
+
+        // Focus the name input
+        element.focus();
+      }
+    }, 50);
   }
 
   confirmRemoveGroup(groupIndex: number) {
@@ -413,14 +432,18 @@ export class EditDpmsComponent implements OnInit {
 
   // Save updates
   save() {
-    this.isSaving.set(true);
-
-    if (!this.dpmEditForm.valid) {
-      console.error('Trying to save but form is invalid!');
-      this.notificationService.showError('Something went wrong, please try again.', 'Error');
-      this.isSaving.set(false);
+    // Check for validation errors first
+    if (!this.dpmEditForm.valid || this.formHasNonFormGroupErrors()) {
+      const errorCount = this.getTotalErrorCount();
+      this.notificationService.showError(
+        `${errorCount} ${errorCount === 1 ? 'error' : 'errors'} found. Please fix before saving.`,
+        'Validation Error'
+      );
+      this.scrollToFirstError();
       return;
     }
+
+    this.isSaving.set(true);
 
     const requestData: PutDpmGroup[] = [];
     const groupsFormArray = this.groupsFormArray;
@@ -469,6 +492,34 @@ export class EditDpmsComponent implements OnInit {
           console.error('Error updating DPMs:', err);
         },
       });
+  }
+
+  private getTotalErrorCount(): number {
+    let count = 0;
+    this.groupsFormArray.controls.forEach((groupControl) => {
+      count += this.getGroupErrorCount(groupControl);
+    });
+    return count;
+  }
+
+  private scrollToFirstError() {
+    for (const groupControl of this.groupsFormArray.controls) {
+      if (this.groupHasErrors(groupControl) || this.dpmsInGroupHaveErrors(groupControl)) {
+        const groupId = groupControl.value.id;
+        const element = document.getElementById(`dpmGroupName-${groupId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          // Highlight the group card
+          const card = element.closest('app-card');
+          if (card) {
+            card.classList.add('dpm-highlight-pulse');
+            setTimeout(() => card.classList.remove('dpm-highlight-pulse'), 300);
+          }
+        }
+        break;
+      }
+    }
   }
 
   private controlHasErrors(control: AbstractControl | null): boolean {

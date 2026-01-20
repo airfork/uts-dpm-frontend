@@ -1,10 +1,6 @@
-<ng-template #loading>
-  <app-loading></app-loading>
-</ng-template>
-
 @if (users()) {
   <div class="px-4 py-6 md:px-6 md:py-8">
-    <div class="max-w-5xl mx-auto">
+    <div class="max-w-5xl mx-auto space-y-6">
       <app-page-header
         icon="pi-users"
         title="User Management"
@@ -12,38 +8,143 @@
         variant="success"
       />
 
-      <!-- Tabs -->
-      <div
-        class="mb-6 flex justify-center lg:justify-start border-b border-neutral-200 dark:border-neutral-700"
-      >
-        <app-tabs
-          [tabs]="tabs"
-          [(activeTab)]="activeTabName"
-          [size]="'lg'"
-          [variant]="'bordered'"
-          (tabChange)="activateTab($event)"
-        />
+      <!-- Pill Tabs -->
+      <div role="tablist" class="flex gap-2">
+        <button
+          role="tab"
+          type="button"
+          class="px-5 py-2.5 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer"
+          [ngClass]="{
+            'bg-primary-600 text-white shadow-sm': activeTabName() === 'search',
+            'bg-transparent text-base-content/60 hover:text-base-content hover:bg-base-300/50':
+              activeTabName() !== 'search',
+          }"
+          (click)="activateTab('search')"
+        >
+          Search
+        </button>
+        <button
+          role="tab"
+          type="button"
+          class="px-5 py-2.5 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer"
+          [ngClass]="{
+            'bg-primary-600 text-white shadow-sm': activeTabName() === 'create',
+            'bg-transparent text-base-content/60 hover:text-base-content hover:bg-base-300/50':
+              activeTabName() !== 'create',
+          }"
+          (click)="activateTab('create')"
+        >
+          Create
+        </button>
+        <button
+          role="tab"
+          type="button"
+          class="px-5 py-2.5 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer"
+          [ngClass]="{
+            'bg-primary-600 text-white shadow-sm':
+              activeTabName() === 'actions',
+            'bg-transparent text-base-content/60 hover:text-base-content hover:bg-base-300/50':
+              activeTabName() !== 'actions',
+          }"
+          (click)="activateTab('actions')"
+        >
+          Actions
+        </button>
       </div>
 
       <!-- Search Tab -->
-      <div [hidden]="activeTabName() !== 'search'">
-        <div class="relative mb-4">
-          <i
-            class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40"
-          ></i>
-          <input
-            autofocus
-            id="userSearch"
-            type="text"
-            placeholder="Search by name..."
-            class="w-full pl-11 pr-4 py-3 rounded-xl bg-base-100 border border-neutral-200 dark:border-neutral-700 text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
-            (input)="filterUsers($event)"
-          />
-        </div>
+      <div
+        class="tab-content"
+        [class.tab-content-active]="activeTabName() === 'search'"
+        [class.tab-content-hidden]="activeTabName() !== 'search'"
+      >
         @if (filteredUsers().length > 0) {
+          <!-- Mobile Card Layout -->
+          <div class="md:hidden space-y-3">
+            <!-- Mobile Search -->
+            <div class="relative">
+              <i
+                class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40"
+              ></i>
+              <input
+                id="userSearchMobile"
+                type="text"
+                placeholder="Search by name..."
+                autocomplete="off"
+                class="w-full pl-11 pr-10 py-3 rounded-xl bg-base-100 border border-neutral-200 dark:border-neutral-700 text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+                [value]="searchTerm()"
+                (input)="filterUsers($event)"
+              />
+              @if (searchTerm()) {
+                <button
+                  type="button"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full text-base-content/40 hover:text-base-content hover:bg-base-200 transition-colors cursor-pointer"
+                  (click)="clearSearch()"
+                  aria-label="Clear search"
+                >
+                  <i class="pi pi-times text-sm"></i>
+                </button>
+              }
+            </div>
+            @for (user of filteredUsers(); track user.id; let i = $index) {
+              <div
+                class="user-mobile-card"
+                [class.user-card-new]="isInitialLoad()"
+                [style.animation-delay]="
+                  isInitialLoad() ? i * 30 + 'ms' : '0ms'
+                "
+                (click)="handlerUserClick(user.id)"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="user-avatar">
+                    {{ getInitials(user.name) }}
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="font-medium text-base-content truncate">
+                      {{ user.name | name: "first" }}
+                      {{ user.name | name: "last" }}
+                    </div>
+                  </div>
+                  <i class="pi pi-chevron-right text-base-content/40"></i>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Desktop Table with integrated search -->
           <div
-            class="bg-base-200 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-sm overflow-hidden"
+            class="hidden md:block bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-md overflow-hidden"
           >
+            <!-- Search bar inside card -->
+            <div
+              class="p-4 border-b border-neutral-200 dark:border-neutral-700"
+            >
+              <div class="relative max-w-md">
+                <i
+                  class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40"
+                ></i>
+                <input
+                  autofocus
+                  id="userSearch"
+                  type="text"
+                  placeholder="Search by name..."
+                  autocomplete="off"
+                  class="w-full pl-10 pr-10 py-2 rounded-lg bg-base-200 border-0 text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                  [value]="searchTerm()"
+                  (input)="filterUsers($event)"
+                />
+                @if (searchTerm()) {
+                  <button
+                    type="button"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-full text-base-content/40 hover:text-base-content hover:bg-base-300 transition-colors cursor-pointer"
+                    (click)="clearSearch()"
+                    aria-label="Clear search"
+                  >
+                    <i class="pi pi-times text-xs"></i>
+                  </button>
+                }
+              </div>
+            </div>
             <app-data-table
               [data]="filteredUsers()"
               [columns]="columns"
@@ -52,16 +153,28 @@
               [paginator]="true"
               [showCurrentPageReport]="true"
               [emptyMessage]="'No users found.'"
+              (pageChange)="onPageChange($event)"
             >
-              <ng-template #bodyTemplate let-user>
+              <ng-template #bodyTemplate let-user let-i="index">
                 <tr
-                  class="border-t border-neutral-200 dark:border-neutral-700 hover:bg-primary-50/50 dark:hover:bg-primary-900/10 transition-colors duration-150 cursor-pointer"
+                  class="user-row"
+                  [class.user-row-new]="isInitialLoad()"
+                  [style.animation-delay]="
+                    isInitialLoad() ? i * 30 + 'ms' : '0ms'
+                  "
                   (click)="handlerUserClick(user.id)"
                 >
-                  <td class="px-6 py-4 text-sm text-base-content">
-                    {{ user.name | name: "last" }}
+                  <td class="px-4 py-3">
+                    <div class="flex items-center gap-3">
+                      <div class="user-avatar user-avatar-sm">
+                        {{ getInitials(user.name) }}
+                      </div>
+                      <span class="text-sm font-medium text-base-content">
+                        {{ user.name | name: "last" }}
+                      </span>
+                    </div>
                   </td>
-                  <td class="px-6 py-4 text-sm text-base-content">
+                  <td class="px-4 py-3 text-sm text-base-content/70">
                     {{ user.name | name: "first" }}
                   </td>
                 </tr>
@@ -77,15 +190,30 @@
       </div>
 
       <!-- Create Tab -->
-      <div [hidden]="activeTabName() !== 'create'">
-        <app-user-form layout="create" [managers]="managers()"></app-user-form>
+      <div
+        class="tab-content"
+        [class.tab-content-active]="activeTabName() === 'create'"
+        [class.tab-content-hidden]="activeTabName() !== 'create'"
+      >
+        <div
+          class="bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-md overflow-hidden"
+        >
+          <app-user-form
+            layout="create"
+            [managers]="managers()"
+          ></app-user-form>
+        </div>
       </div>
 
       <!-- Actions Tab -->
-      <div [hidden]="activeTabName() !== 'actions'">
+      <div
+        class="tab-content"
+        [class.tab-content-active]="activeTabName() === 'actions'"
+        [class.tab-content-hidden]="activeTabName() !== 'actions'"
+      >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div
-            class="bg-base-200 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-6 hover:border-primary-500/50 hover:shadow-lg transition-all cursor-pointer"
+            class="user-action-card border-l-primary-500"
             (click)="sendEmailClick()"
           >
             <div class="flex items-center gap-3 mb-3">
@@ -104,7 +232,7 @@
           </div>
 
           <div
-            class="bg-base-200 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-6 hover:border-error-500/50 hover:shadow-lg transition-all cursor-pointer"
+            class="user-action-card border-l-error-500"
             (click)="resetPointsClick()"
           >
             <div class="flex items-center gap-3 mb-3">

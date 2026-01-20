@@ -1,15 +1,13 @@
 <div
-  class="bg-base-200 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-8 shadow-sm"
+  class="bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-6 md:p-8 shadow-lg"
 >
-  <h2 class="text-2xl font-semibold text-base-content mb-8">New DPM</h2>
-
   <form class="space-y-6" [formGroup]="homeFormGroup()" (ngSubmit)="onSubmit()">
     <!-- Row 1: Driver Name, Block Name, Location -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="space-y-2">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="flex flex-col gap-1.5">
         <label
           for="dpmNameInput"
-          class="block text-sm font-medium text-base-content"
+          class="block text-sm font-semibold dpm-form-label"
         >
           Driver Name
         </label>
@@ -18,28 +16,30 @@
           [placeholder]="'Jane Doe'"
           formControlName="name"
           [inputClass]="
-            'w-full px-4 py-2.5 rounded-lg bg-base-200 border text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 ' +
+            'w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 ' +
             getInputBorderClass(name)
           "
           [panelClass]="
-            'bg-base-200 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg mt-1'
+            'dpm-form-input border border-neutral-200 rounded-lg shadow-lg mt-1'
           "
           [suggestions]="autocompleteResults()"
           (completeMethod)="search($event)"
           [showEmptyMessage]="true"
           [forceSelection]="true"
         ></app-autocomplete>
-        @if (getNameValidationMessages()) {
-          <p class="text-sm text-error-600 font-medium mt-1.5">
-            {{ getNameValidationMessages() }}
-          </p>
-        }
+        <div class="min-h-5">
+          @if (getNameValidationMessages()) {
+            <p class="text-sm text-error-600 font-medium">
+              {{ getNameValidationMessages() }}
+            </p>
+          }
+        </div>
       </div>
 
-      <div class="space-y-2">
+      <div class="flex flex-col gap-1.5">
         <label
           for="dpmBlockInput"
-          class="block text-sm font-medium text-base-content"
+          class="block text-sm font-semibold dpm-form-label"
         >
           Block Name
         </label>
@@ -47,7 +47,7 @@
           id="dpmBlockInput"
           type="text"
           placeholder="11"
-          class="w-full px-4 py-2.5 rounded-lg bg-base-200 border text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
+          class="w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
             getInputBorderClass(block)
           }}"
           maxlength="5"
@@ -55,17 +55,19 @@
           autocomplete="off"
           required
         />
-        @if (getBlockValidationMessages()) {
-          <p class="text-sm text-error-600 font-medium mt-1.5">
-            {{ getBlockValidationMessages() }}
-          </p>
-        }
+        <div class="min-h-5">
+          @if (getBlockValidationMessages()) {
+            <p class="text-sm text-error-600 font-medium">
+              {{ getBlockValidationMessages() }}
+            </p>
+          }
+        </div>
       </div>
 
-      <div class="space-y-2">
+      <div class="flex flex-col gap-1.5">
         <label
           for="dpmLocationInput"
-          class="block text-sm font-medium text-base-content"
+          class="block text-sm font-semibold dpm-form-label"
         >
           Location
         </label>
@@ -73,7 +75,7 @@
           id="dpmLocationInput"
           type="text"
           placeholder="OFF"
-          class="w-full px-4 py-2.5 rounded-lg bg-base-200 border text-base-content placeholder:text-base-content/40 uppercase transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
+          class="w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 uppercase shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
             getInputBorderClass(location)
           }}"
           maxlength="5"
@@ -81,20 +83,22 @@
           autocomplete="off"
           required
         />
-        @if (getLocationValidationMessages()) {
-          <p class="text-sm text-error-600 font-medium mt-1.5">
-            {{ getLocationValidationMessages() }}
-          </p>
-        }
+        <div class="min-h-5">
+          @if (getLocationValidationMessages()) {
+            <p class="text-sm text-error-600 font-medium">
+              {{ getLocationValidationMessages() }}
+            </p>
+          }
+        </div>
       </div>
     </div>
 
     <!-- Row 2: Date, Start Time, End Time -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="space-y-2">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="flex flex-col gap-1.5">
         <label
           for="dpmDateInput"
-          class="block text-sm font-medium text-base-content"
+          class="block text-sm font-semibold dpm-form-label"
         >
           Date
         </label>
@@ -103,21 +107,23 @@
           formControlName="dpmDate"
           [placeholder]="format.dpmDate()"
           [inputClass]="
-            'w-full px-4 py-2.5 rounded-lg bg-base-200 border text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 ' +
+            'w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 ' +
             getInputBorderClass(dpmDate)
           "
         ></app-date-picker>
-        @if (getDpmDateValidationMessages()) {
-          <p class="text-sm text-error-600 font-medium mt-1.5">
-            {{ getDpmDateValidationMessages() }}
-          </p>
-        }
+        <div class="min-h-5">
+          @if (getDpmDateValidationMessages()) {
+            <p class="text-sm text-error-600 font-medium">
+              {{ getDpmDateValidationMessages() }}
+            </p>
+          }
+        </div>
       </div>
 
-      <div class="space-y-2">
+      <div class="flex flex-col gap-1.5">
         <label
           for="dpmStartTimeInput"
-          class="block text-sm font-medium text-base-content"
+          class="block text-sm font-semibold dpm-form-label"
         >
           Start Time
         </label>
@@ -125,7 +131,7 @@
           id="dpmStartTimeInput"
           type="text"
           placeholder="0600"
-          class="w-full px-4 py-2.5 rounded-lg bg-base-200 border text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
+          class="w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
             getInputBorderClass(startTime)
           }}"
           maxlength="4"
@@ -134,17 +140,19 @@
           inputmode="numeric"
           required
         />
-        @if (getStartTimeValidationMessages()) {
-          <p class="text-sm text-error-600 font-medium mt-1.5">
-            {{ getStartTimeValidationMessages() }}
-          </p>
-        }
+        <div class="min-h-5">
+          @if (getStartTimeValidationMessages()) {
+            <p class="text-sm text-error-600 font-medium">
+              {{ getStartTimeValidationMessages() }}
+            </p>
+          }
+        </div>
       </div>
 
-      <div class="space-y-2">
+      <div class="flex flex-col gap-1.5">
         <label
           for="dpmEndTimeInput"
-          class="block text-sm font-medium text-base-content"
+          class="block text-sm font-semibold dpm-form-label"
         >
           End Time
         </label>
@@ -152,7 +160,7 @@
           id="dpmEndTimeInput"
           type="text"
           placeholder="1000"
-          class="w-full px-4 py-2.5 rounded-lg bg-base-200 border text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
+          class="w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 {{
             getInputBorderClass(endTime)
           }}"
           maxlength="4"
@@ -161,26 +169,28 @@
           inputmode="numeric"
           required
         />
-        @if (getEndTimeValidationMessages()) {
-          <p class="text-sm text-error-600 font-medium mt-1.5">
-            {{ getEndTimeValidationMessages() }}
-          </p>
-        }
+        <div class="min-h-5">
+          @if (getEndTimeValidationMessages()) {
+            <p class="text-sm text-error-600 font-medium">
+              {{ getEndTimeValidationMessages() }}
+            </p>
+          }
+        </div>
       </div>
     </div>
 
     <!-- Row 3: DPM Type, Additional Notes -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="space-y-2">
+      <div class="flex flex-col gap-1.5">
         <label
           for="dpmTypeInput"
-          class="block text-sm font-medium text-base-content"
+          class="block text-sm font-semibold dpm-form-label"
         >
           DPM Type
         </label>
         <select
           id="dpmTypeInput"
-          class="w-full px-4 py-2.5 rounded-lg bg-base-200 border border-neutral-200 dark:border-neutral-700 text-base-content transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 cursor-pointer"
+          class="w-full px-4 py-2.5 pr-10 rounded-lg dpm-form-input border border-neutral-200 text-base-content shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 cursor-pointer appearance-none bg-no-repeat bg-[length:1.25rem] bg-[right_0.75rem_center] bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3d%22http%3a%2f%2fwww.w3.org%2f2000%2fsvg%22%20viewBox%3d%220%200%2020%2020%22%20fill%3d%22%236b7280%22%3e%3cpath%20fill-rule%3d%22evenodd%22%20d%3d%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3d%22evenodd%22%2f%3e%3c%2fsvg%3e')]"
           formControlName="type"
         >
           @for (group of dpmGroups(); track group.groupName) {
@@ -195,10 +205,10 @@
         </select>
       </div>
 
-      <div class="space-y-2">
+      <div class="flex flex-col gap-1.5">
         <label
           for="dpmNotesInput"
-          class="block text-sm font-medium text-base-content"
+          class="block text-sm font-semibold dpm-form-label"
         >
           Additional Notes
         </label>
@@ -206,23 +216,33 @@
           id="dpmNotesInput"
           type="text"
           placeholder="Abducted by Aliens"
-          class="w-full px-4 py-2.5 rounded-lg bg-base-200 border border-neutral-200 dark:border-neutral-700 text-base-content placeholder:text-base-content/40 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
+          class="w-full px-4 py-2.5 rounded-lg dpm-form-input border border-neutral-200 text-base-content placeholder:text-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
           autocomplete="off"
           formControlName="notes"
         />
       </div>
     </div>
 
-    <!-- Submit Button -->
-    <div class="pt-4">
+    <!-- Form Actions -->
+    <div class="pt-4 flex gap-4">
       <app-button
         [id]="'submitButton'"
         [type]="'submit'"
         [variant]="'primary'"
-        [size]="'lg'"
+        [size]="'md'"
         [disabled]="!homeFormGroup().valid"
       >
         Submit
+      </app-button>
+      <app-button
+        [id]="'resetButton'"
+        [type]="'button'"
+        [variant]="'outline'"
+        [size]="'md'"
+        [disabled]="homeFormGroup().pristine"
+        (click)="resetForm()"
+      >
+        Reset
       </app-button>
     </div>
   </form>

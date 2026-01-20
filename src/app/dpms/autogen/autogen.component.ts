@@ -45,4 +45,37 @@ export class AutogenComponent implements OnInit {
         this.submittedTime.set(formatDate(new Date(), 'HHmm', this.locale));
       });
   }
+
+  getPositiveCount(): number {
+    return this.autogenDpms().filter((dpm) => dpm.positive).length;
+  }
+
+  getNegativeCount(): number {
+    return this.autogenDpms().filter((dpm) => !dpm.positive).length;
+  }
+
+  getStatusText(dpm: AutogenDpm, maxLength = 12): string {
+    const type = dpm.type.toLowerCase();
+    // Known types with friendly display names
+    if (type.includes('dns') || type.includes('did not show')) {
+      return 'No Show';
+    }
+    if (type.includes('picked up') || type.includes('pickup')) {
+      return 'Picked Up';
+    }
+    // Fallback: use the actual type name, truncated if needed
+    if (dpm.type.length <= maxLength) {
+      return dpm.type;
+    }
+    return dpm.type.substring(0, maxLength - 1).trim() + '…';
+  }
+
+  getInitials(name: string): string {
+    return name
+      .split(' ')
+      .map((part) => part.charAt(0))
+      .join('')
+      .substring(0, 2)
+      .toUpperCase();
+  }
 }

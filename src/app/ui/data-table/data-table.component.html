@@ -19,8 +19,11 @@
     </thead>
 
     <!-- Body -->
-    <tbody>
-      @if (loading()) {
+    <tbody
+      [class.opacity-50]="loading() && paginatedData().length > 0"
+      class="transition-opacity duration-200"
+    >
+      @if (loading() && paginatedData().length === 0) {
         <tr>
           <td
             [attr.colspan]="columns().length"
@@ -51,7 +54,7 @@
             </div>
           </td>
         </tr>
-      } @else if (paginatedData().length === 0) {
+      } @else if (!loading() && paginatedData().length === 0) {
         @if (emptyTemplate) {
           <ng-container *ngTemplateOutlet="emptyTemplate"></ng-container>
         } @else {
@@ -101,10 +104,12 @@
   </table>
 </div>
 
-<!-- Pagination -->
-@if (paginator() && !loading() && paginatedData().length > 0) {
+<!-- Pagination - stay visible during loading if we have records -->
+@if (paginator() && (paginatedData().length > 0 || (totalRecords() ?? 0) > 0)) {
   <div
-    class="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-t border-neutral-200 dark:border-neutral-700"
+    class="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-t border-neutral-200 dark:border-neutral-700 transition-opacity duration-200"
+    [class.opacity-50]="loading()"
+    [class.pointer-events-none]="loading()"
   >
     <!-- Page report -->
     @if (showCurrentPageReport()) {
@@ -140,7 +145,7 @@
         @for (page of pageNumbers(); track page) {
           <button
             type="button"
-            class="w-9 h-9 text-sm rounded-lg border transition-colors"
+            class="w-9 h-9 text-sm rounded-lg border transition-colors cursor-pointer"
             [class]="
               page === currentPage()
                 ? 'bg-primary-500 border-primary-500 text-white font-semibold'
@@ -176,13 +181,14 @@
       <!-- Rows per page selector -->
       <div class="flex items-center gap-2 ml-4">
         <select
-          class="px-3 py-1.5 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-base-100 text-base-content focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 cursor-pointer"
-          [value]="currentRows()"
+          class="pagination-select"
           (change)="onRowsChange($event)"
           aria-label="Rows per page"
         >
           @for (option of rowsPerPageOptions(); track option) {
-            <option [value]="option">{{ option }}</option>
+            <option [value]="option" [selected]="currentRows() === option">
+              {{ option }}
+            </option>
           }
         </select>
       </div>

@@ -31,6 +31,7 @@ export class DataTableComponent<T = unknown> {
   // Lazy loading inputs (server-side pagination)
   lazy = input<boolean>(false);
   totalRecords = input<number | null>(null);
+  first = input<number>(0);
 
   // UI inputs
   loading = input<boolean>(false);
@@ -49,13 +50,23 @@ export class DataTableComponent<T = unknown> {
 
   // Internal state
   currentPage = signal(0);
-  currentRows = signal(10);
+  currentRows = computed(() => this._currentRows() ?? this.rows());
+  private _currentRows = signal<number | null>(null);
 
   constructor() {
-    // Sync currentRows with rows input
+    // Sync currentPage when first input changes (for external control)
     effect(() => {
-      this.currentRows.set(this.rows());
+      const first = this.first();
+      const rows = this.currentRows();
+      const page = Math.floor(first / rows);
+      if (this.currentPage() !== page) {
+        this.currentPage.set(page);
+      }
     });
+  }
+
+  setCurrentRows(rows: number): void {
+    this._currentRows.set(rows);
   }
 
   // Computed values
@@ -132,11 +143,9 @@ export class DataTableComponent<T = unknown> {
     const select = event.target as HTMLSelectElement;
     const newRows = parseInt(select.value, 10);
 
-    queueMicrotask(() => {
-      this.currentRows.set(newRows);
-      this.currentPage.set(0);
-      this.emitPageChange();
-    });
+    this.setCurrentRows(newRows);
+    this.currentPage.set(0);
+    this.emitPageChange();
   }
 
   getCellValue(item: T, field: string | keyof T): unknown {

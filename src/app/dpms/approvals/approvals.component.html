@@ -1,6 +1,6 @@
 @if (dpms()) {
   <div class="px-4 py-6 md:px-6 md:py-8">
-    <div class="max-w-7xl mx-auto space-y-6">
+    <div class="max-w-5xl mx-auto space-y-6">
       <app-page-header
         icon="pi-check-circle"
         title="DPM Approvals"
@@ -14,8 +14,197 @@
           description="All DPMs have been reviewed. Check back later for new submissions."
         />
       } @else {
+        <!-- Mobile Card Layout -->
+        <div class="md:hidden space-y-3">
+          @for (dpm of dpms(); track dpm.id; let i = $index) {
+            <div
+              class="approvals-mobile-card"
+              [class.approvals-mobile-card-positive]="isPositiveDpm(dpm)"
+              [class.approvals-mobile-card-negative]="isNegativeDpm(dpm)"
+              [class.approvals-mobile-card-expanded]="isExpanded(dpm)"
+              [class.approvals-removing]="isRemoving(dpm)"
+              [class.approvals-mobile-card-new]="isNewItem(dpm)"
+              [style.animation-delay]="isNewItem(dpm) ? i * 30 + 'ms' : '0ms'"
+              (click)="toggleExpand(dpm)"
+            >
+              <!-- Card Header -->
+              <div class="flex items-start gap-3">
+                <div
+                  class="approvals-avatar"
+                  [class.approvals-avatar-positive]="isPositiveDpm(dpm)"
+                  [class.approvals-avatar-negative]="isNegativeDpm(dpm)"
+                >
+                  {{ getInitials(dpm.driver) }}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-medium text-base-content truncate">
+                    {{ dpm.driver }}
+                  </div>
+                  @if (dpm.createdBy) {
+                    <div class="text-xs text-base-content/50">
+                      by {{ dpm.createdBy }}
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Card Body -->
+              <div
+                class="mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-700"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono text-sm text-base-content">{{
+                      dpm.block | block
+                    }}</span>
+                    <span class="text-xs text-base-content/50">{{
+                      dpm.time
+                    }}</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 mt-2">
+                  <span
+                    class="approvals-badge flex-1"
+                    [class.approvals-badge-positive]="isPositiveDpm(dpm)"
+                    [class.approvals-badge-negative]="isNegativeDpm(dpm)"
+                  >
+                    {{ dpm.type | uppercase }}
+                  </span>
+                  <span
+                    class="approvals-points"
+                    [class.text-success-600]="isPositiveDpm(dpm)"
+                    [class.text-error-600]="isNegativeDpm(dpm)"
+                  >
+                    {{ dpm.points > 0 ? "+" : "" }}{{ dpm.points }}
+                  </span>
+                  <i
+                    class="pi pi-chevron-down text-base-content/40 transition-transform duration-200"
+                    [class.rotate-180]="isExpanded(dpm)"
+                  ></i>
+                </div>
+              </div>
+
+              <!-- Expanded Details -->
+              @if (isExpanded(dpm)) {
+                <div
+                  class="approvals-mobile-expanded"
+                  (click)="$event.stopPropagation()"
+                >
+                  <!-- Details Grid -->
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                    <div class="approvals-detail-item">
+                      <span class="approvals-detail-label">Type</span>
+                      <span class="approvals-detail-value">{{ dpm.type }}</span>
+                    </div>
+                    <div class="approvals-detail-item">
+                      <span class="approvals-detail-label">Location</span>
+                      <span class="approvals-detail-value">{{
+                        dpm.location | uppercase
+                      }}</span>
+                    </div>
+                    <div class="approvals-detail-item">
+                      <span class="approvals-detail-label">Date</span>
+                      <span class="approvals-detail-value">{{ dpm.date }}</span>
+                    </div>
+                    <div class="approvals-detail-item">
+                      <span class="approvals-detail-label">Created</span>
+                      <span class="approvals-detail-value">{{
+                        dpm.createdAt
+                      }}</span>
+                    </div>
+                    @if (dpm.notes) {
+                      <div class="approvals-detail-item col-span-2">
+                        <span class="approvals-detail-label">Notes</span>
+                        <span class="approvals-detail-value">{{
+                          dpm.notes
+                        }}</span>
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Points Editor -->
+                  <div class="flex items-center gap-2 mt-4">
+                    <label class="text-sm text-base-content/70">Points:</label>
+                    <input
+                      type="number"
+                      class="approvals-points-input flex-1"
+                      [value]="getEditingPoints(dpm)"
+                      (input)="
+                        onPointsChange(dpm, $any($event.target).valueAsNumber)
+                      "
+                      (click)="$event.stopPropagation()"
+                    />
+                    @if (getEditingPoints(dpm) !== dpm.points) {
+                      <button
+                        class="approvals-save-btn"
+                        (click)="savePoints(dpm, $event)"
+                        title="Save points"
+                      >
+                        <i class="pi pi-check"></i>
+                      </button>
+                    }
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="flex gap-2 mt-3">
+                    <button
+                      class="approvals-action-btn approvals-action-approve flex-1"
+                      (click)="approveDpm(dpm, $event)"
+                    >
+                      <i class="pi pi-check"></i>
+                      Approve
+                    </button>
+                    <button
+                      class="approvals-action-btn approvals-action-deny flex-1"
+                      (click)="denyDpm(dpm, $event)"
+                    >
+                      <i class="pi pi-times"></i>
+                      Deny
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Mobile Loading State -->
+          @if (loadingDpms()) {
+            <div class="flex items-center justify-center py-8">
+              <i class="pi pi-spin pi-spinner text-2xl text-primary-500"></i>
+            </div>
+          }
+
+          <!-- Mobile Pagination -->
+          @if (totalPages() > 1) {
+            <div
+              class="flex items-center justify-between px-1 py-3 border-t border-neutral-200 dark:border-neutral-700 mt-3"
+            >
+              <button
+                class="approvals-mobile-page-btn"
+                [disabled]="currentPage() === 0 || loadingDpms()"
+                (click)="goToPrevPage()"
+              >
+                <i class="pi pi-chevron-left"></i>
+                Previous
+              </button>
+              <span class="text-sm text-base-content/70">
+                Page {{ currentPage() + 1 }} of {{ totalPages() }}
+              </span>
+              <button
+                class="approvals-mobile-page-btn"
+                [disabled]="currentPage() >= totalPages() - 1 || loadingDpms()"
+                (click)="goToNextPage()"
+              >
+                Next
+                <i class="pi pi-chevron-right"></i>
+              </button>
+            </div>
+          }
+        </div>
+
+        <!-- Desktop Table Layout -->
         <div
-          class="bg-base-200 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-sm overflow-hidden"
+          class="hidden md:block bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-lg overflow-hidden"
         >
           <app-data-table
             [data]="dpms()"
@@ -26,149 +215,186 @@
             [paginator]="true"
             [lazy]="true"
             [totalRecords]="totalRecords()"
+            [first]="first()"
             [showCurrentPageReport]="true"
             [emptyMessage]="'No DPMs found.'"
             (lazyLoad)="lazyLoadEvent($event)"
           >
-            <ng-template #bodyTemplate let-dpm>
+            <ng-template #bodyTemplate let-dpm let-i="index">
+              <!-- Main Row -->
               <tr
-                class="border-t border-neutral-200 dark:border-neutral-700 hover:bg-primary-50/50 dark:hover:bg-primary-900/10 transition-colors duration-150 cursor-pointer"
-                (click)="showApprovalModal(dpm)"
+                class="approvals-row cursor-pointer"
+                [class.approvals-row-positive]="isPositiveDpm(dpm)"
+                [class.approvals-row-negative]="isNegativeDpm(dpm)"
+                [class.approvals-row-expanded]="isExpanded(dpm)"
+                [class.approvals-removing]="isRemoving(dpm)"
+                [class.approvals-row-new]="isNewItem(dpm)"
+                [style.animation-delay]="isNewItem(dpm) ? i * 30 + 'ms' : '0ms'"
+                (click)="toggleExpand(dpm)"
               >
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-3">
-                    <app-avatar
-                      [name]="dpm.driver"
-                      size="sm"
-                      variant="primary"
-                    />
-                    <span class="text-sm font-medium text-base-content">{{
-                      dpm.driver
+                    <div
+                      class="approvals-avatar"
+                      [class.approvals-avatar-positive]="isPositiveDpm(dpm)"
+                      [class.approvals-avatar-negative]="isNegativeDpm(dpm)"
+                    >
+                      {{ getInitials(dpm.driver) }}
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="font-medium text-base-content">{{
+                        dpm.driver
+                      }}</span>
+                      @if (dpm.createdBy) {
+                        <span class="text-xs text-base-content/50"
+                          >by {{ dpm.createdBy }}</span
+                        >
+                      }
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-col">
+                    <span class="font-mono text-sm text-base-content">{{
+                      dpm.block | block
+                    }}</span>
+                    <span class="text-xs text-base-content/50">{{
+                      dpm.time
                     }}</span>
                   </div>
                 </td>
-                <td class="px-6 py-4 text-sm text-base-content/70">
-                  {{ dpm.block | block }} {{ dpm.time }}
-                </td>
-                <td class="px-6 py-4 text-sm text-base-content">
-                  {{ dpm.type }}
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="approvals-badge"
+                      [class.approvals-badge-positive]="isPositiveDpm(dpm)"
+                      [class.approvals-badge-negative]="isNegativeDpm(dpm)"
+                    >
+                      {{ getShortType(dpm.type) }}
+                    </span>
+                    <span
+                      class="approvals-points"
+                      [class.text-success-600]="isPositiveDpm(dpm)"
+                      [class.text-error-600]="isNegativeDpm(dpm)"
+                    >
+                      {{ dpm.points > 0 ? "+" : "" }}{{ dpm.points }}
+                    </span>
+                    <i
+                      class="pi pi-chevron-down text-base-content/40 ml-auto transition-transform duration-200"
+                      [class.rotate-180]="isExpanded(dpm)"
+                    ></i>
+                  </div>
                 </td>
               </tr>
+
+              <!-- Expanded Details Row -->
+              @if (isExpanded(dpm)) {
+                <tr class="approvals-expanded-row">
+                  <td colspan="3" class="p-0">
+                    <div
+                      class="approvals-expanded-content"
+                      [class.approvals-expanded-positive]="isPositiveDpm(dpm)"
+                      [class.approvals-expanded-negative]="isNegativeDpm(dpm)"
+                    >
+                      <div class="flex flex-col md:flex-row gap-6">
+                        <!-- Details Section -->
+                        <div
+                          class="flex-1 grid grid-cols-2 gap-x-6 gap-y-2 text-sm"
+                        >
+                          <div class="approvals-detail-item">
+                            <span class="approvals-detail-label">Type</span>
+                            <span class="approvals-detail-value">{{
+                              dpm.type
+                            }}</span>
+                          </div>
+                          <div class="approvals-detail-item">
+                            <span class="approvals-detail-label">Location</span>
+                            <span class="approvals-detail-value">{{
+                              dpm.location | uppercase
+                            }}</span>
+                          </div>
+                          <div class="approvals-detail-item">
+                            <span class="approvals-detail-label">Date</span>
+                            <span class="approvals-detail-value">{{
+                              dpm.date
+                            }}</span>
+                          </div>
+                          <div class="approvals-detail-item">
+                            <span class="approvals-detail-label">Created</span>
+                            <span class="approvals-detail-value">{{
+                              dpm.createdAt
+                            }}</span>
+                          </div>
+                          @if (dpm.notes) {
+                            <div class="approvals-detail-item col-span-2">
+                              <span class="approvals-detail-label">Notes</span>
+                              <span class="approvals-detail-value">{{
+                                dpm.notes
+                              }}</span>
+                            </div>
+                          }
+                        </div>
+
+                        <!-- Actions Section -->
+                        <div
+                          class="flex flex-col gap-3 md:border-l md:border-neutral-200 md:dark:border-neutral-700 md:pl-6"
+                        >
+                          <!-- Points Editor -->
+                          <div class="flex items-center gap-2">
+                            <label
+                              class="text-sm text-base-content/70 whitespace-nowrap"
+                              >Points:</label
+                            >
+                            <input
+                              type="number"
+                              class="approvals-points-input"
+                              [value]="getEditingPoints(dpm)"
+                              (input)="
+                                onPointsChange(
+                                  dpm,
+                                  $any($event.target).valueAsNumber
+                                )
+                              "
+                              (click)="$event.stopPropagation()"
+                            />
+                            @if (getEditingPoints(dpm) !== dpm.points) {
+                              <button
+                                class="approvals-save-btn"
+                                (click)="savePoints(dpm, $event)"
+                                title="Save points"
+                              >
+                                <i class="pi pi-check"></i>
+                              </button>
+                            }
+                          </div>
+
+                          <!-- Action Buttons -->
+                          <div class="flex gap-2">
+                            <button
+                              class="approvals-action-btn approvals-action-approve"
+                              (click)="approveDpm(dpm, $event)"
+                            >
+                              <i class="pi pi-check"></i>
+                              Approve
+                            </button>
+                            <button
+                              class="approvals-action-btn approvals-action-deny"
+                              (click)="denyDpm(dpm, $event)"
+                            >
+                              <i class="pi pi-times"></i>
+                              Deny
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              }
             </ng-template>
           </app-data-table>
         </div>
       }
-
-      <!-- Approval Modal -->
-      <app-modal
-        [open]="isModalOpen()"
-        [size]="'lg'"
-        [headerStyle]="'gradient'"
-        (close)="closeModal()"
-      >
-        @if (currentDpm(); as dpm) {
-          <ng-container ngProjectAs="[modal-header]">
-            <h3 class="text-xl font-semibold">
-              {{ dpm.driver }}
-            </h3>
-          </ng-container>
-          <ng-container ngProjectAs="[modal-body]">
-            <div class="space-y-3">
-              @if (dpm.createdBy) {
-                <div
-                  class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
-                >
-                  <span class="font-medium text-base-content">Created By:</span>
-                  <span class="text-base-content">{{ dpm.createdBy }}</span>
-                </div>
-              }
-              <div
-                class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
-              >
-                <span class="font-medium text-base-content">Type:</span>
-                <span class="text-base-content">{{ dpm.type }}</span>
-              </div>
-              <div
-                class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
-              >
-                <span class="font-medium text-base-content">Points:</span>
-                <span class="text-base-content">{{ dpm.points | points }}</span>
-              </div>
-              <div
-                class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
-              >
-                <span class="font-medium text-base-content">Block:</span>
-                <span class="text-base-content">{{ dpm.block | block }}</span>
-              </div>
-              <div
-                class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
-              >
-                <span class="font-medium text-base-content">Location:</span>
-                <span class="text-base-content">{{
-                  dpm.location | uppercase
-                }}</span>
-              </div>
-              <div
-                class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
-              >
-                <span class="font-medium text-base-content">Date:</span>
-                <span class="text-base-content">{{ dpm.date }}</span>
-              </div>
-              <div
-                class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
-              >
-                <span class="font-medium text-base-content">Time:</span>
-                <span class="text-base-content">{{ dpm.time }}</span>
-              </div>
-              <div
-                class="flex justify-between py-2 border-b border-neutral-200 dark:border-neutral-700"
-              >
-                <span class="font-medium text-base-content">Created At:</span>
-                <span class="text-base-content">{{ dpm.createdAt }}</span>
-              </div>
-              @if (dpm.notes) {
-                <div class="flex justify-between py-2">
-                  <span class="font-medium text-base-content">Notes:</span>
-                  <span class="text-base-content text-right">{{
-                    dpm.notes
-                  }}</span>
-                </div>
-              }
-
-              @if (editOpen()) {
-                <div class="mt-6 space-y-2">
-                  <label class="block text-sm font-medium text-base-content"
-                    >Update Points</label
-                  >
-                  <input
-                    #pointsInput
-                    class="w-full px-4 py-2.5 rounded-lg bg-base-100 border border-neutral-200 dark:border-neutral-700 text-base-content transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
-                    type="number"
-                    placeholder="Points"
-                    [(ngModel)]="currentPoints"
-                    (focusout)="hideEdit()"
-                  />
-                </div>
-              }
-            </div>
-          </ng-container>
-          @if (!editOpen()) {
-            <ng-container ngProjectAs="[modal-footer]">
-              <div class="flex justify-end gap-2">
-                <app-button variant="success" (click)="approveDpm()">
-                  Approve
-                </app-button>
-                <app-button variant="error" (click)="denyDpm()">
-                  Deny
-                </app-button>
-                <app-button variant="ghost" (click)="showEdit($event)">
-                  Edit
-                </app-button>
-              </div>
-            </ng-container>
-          }
-        }
-      </app-modal>
     </div>
   </div>
 } @else {

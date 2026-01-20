@@ -10,6 +10,7 @@ import { Title } from '@angular/platform-browser';
 import { GenerateTitle } from '../../shared/title-helper';
 import { NewDpmComponent } from '../new-dpm/new-dpm.component';
 import { EditDpmsComponent } from '../edit-dpms/edit-dpms.component';
+import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
 import UsernameDto from '../../models/username-dto';
 import { UserService } from '../../services/user.service';
 import { RemoveIfUnauthorizedDirective } from '../../auth/directives/remove-if-unauthorized.directive';
@@ -21,7 +22,13 @@ const editRoles: Roles[] = ['ADMIN'];
 
 @Component({
   selector: 'app-dpm-page',
-  imports: [NgClass, NewDpmComponent, EditDpmsComponent, RemoveIfUnauthorizedDirective],
+  imports: [
+    NgClass,
+    NewDpmComponent,
+    EditDpmsComponent,
+    RemoveIfUnauthorizedDirective,
+    PageHeaderComponent,
+  ],
   templateUrl: './dpm-page.component.html',
   styleUrl: './dpm-page.component.css',
 })

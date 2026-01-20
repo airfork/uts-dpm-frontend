@@ -1,5 +1,5 @@
 <div class="px-4 py-6 md:px-6 md:py-8">
-  <div class="max-w-4xl mx-auto">
+  <div class="max-w-5xl mx-auto">
     <app-page-header
       icon="pi-bolt"
       title="Auto Generate"
@@ -12,96 +12,275 @@
     />
 
     @if (!loading()) {
-      <!-- Table Section -->
+      @if (autogenDpms().length > 0) {
+        <!-- Summary Statistics - Mobile Compact -->
+        <div
+          class="sm:hidden flex items-center justify-center gap-6 py-3 px-4 mb-4 bg-base-100 rounded-xl border border-neutral-200 dark:border-neutral-700"
+        >
+          <div class="flex items-center gap-2">
+            <i class="pi pi-list text-primary-500"></i>
+            <span class="font-semibold text-base-content">{{
+              autogenDpms().length
+            }}</span>
+            <span class="text-xs text-base-content/60">Total</span>
+          </div>
+          <div class="w-px h-6 bg-neutral-200 dark:bg-neutral-700"></div>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-plus-circle text-success-500"></i>
+            <span class="font-semibold text-success-600">{{
+              getPositiveCount()
+            }}</span>
+            <span class="text-xs text-base-content/60">Positive</span>
+          </div>
+          <div class="w-px h-6 bg-neutral-200 dark:bg-neutral-700"></div>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-minus-circle text-error-500"></i>
+            <span class="font-semibold text-error-600">{{
+              getNegativeCount()
+            }}</span>
+            <span class="text-xs text-base-content/60">Negative</span>
+          </div>
+        </div>
+
+        <!-- Summary Statistics - Desktop Cards -->
+        <div class="hidden sm:grid grid-cols-3 gap-4 mb-6 autogen-stats-grid">
+          <div class="autogen-stat-card autogen-stat-total">
+            <div class="autogen-stat-icon">
+              <i class="pi pi-list"></i>
+            </div>
+            <div class="autogen-stat-content">
+              <span class="autogen-stat-value">{{ autogenDpms().length }}</span>
+              <span class="autogen-stat-label">Total DPMs</span>
+            </div>
+          </div>
+          <div class="autogen-stat-card autogen-stat-success">
+            <div class="autogen-stat-icon">
+              <i class="pi pi-plus-circle"></i>
+            </div>
+            <div class="autogen-stat-content">
+              <span class="autogen-stat-value">{{ getPositiveCount() }}</span>
+              <span class="autogen-stat-label">Positive</span>
+            </div>
+          </div>
+          <div class="autogen-stat-card autogen-stat-dns">
+            <div class="autogen-stat-icon">
+              <i class="pi pi-minus-circle"></i>
+            </div>
+            <div class="autogen-stat-content">
+              <span class="autogen-stat-value">{{ getNegativeCount() }}</span>
+              <span class="autogen-stat-label">Negative</span>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Mobile Card Layout -->
+      <div class="md:hidden space-y-3">
+        @if (autogenDpms().length > 0) {
+          @for (dpm of autogenDpms(); track dpm; let i = $index) {
+            <div
+              class="autogen-mobile-card"
+              [class.autogen-mobile-card-dns]="!dpm.positive"
+              [class.autogen-mobile-card-success]="dpm.positive"
+              [style.animation-delay]="i * 30 + 'ms'"
+            >
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="autogen-avatar"
+                    [class.autogen-avatar-dns]="!dpm.positive"
+                    [class.autogen-avatar-success]="dpm.positive"
+                  >
+                    {{ getInitials(dpm.name) }}
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="font-medium text-base-content">{{
+                      dpm.name
+                    }}</span>
+                    <span class="text-xs text-base-content/50"
+                      >{{ dpm.block }} · {{ dpm.startTime }} -
+                      {{ dpm.endTime }}</span
+                    >
+                  </div>
+                </div>
+                <span
+                  class="autogen-badge"
+                  [class.autogen-badge-dns]="!dpm.positive"
+                  [class.autogen-badge-success]="dpm.positive"
+                >
+                  <i
+                    class="pi text-xs"
+                    [class.pi-times-circle]="!dpm.positive"
+                    [class.pi-check-circle]="dpm.positive"
+                  ></i>
+                  {{ getStatusText(dpm) }}
+                </span>
+              </div>
+            </div>
+          }
+
+          <!-- Mobile Submit Button -->
+          <div class="flex justify-center py-4 mt-3">
+            @if (submittedTime()) {
+              <app-button variant="secondary" size="lg" [disabled]="true">
+                <i class="pi pi-check mr-2"></i>
+                Already Submitted
+              </app-button>
+            } @else {
+              <app-button
+                variant="primary"
+                size="lg"
+                [disabled]="empty()"
+                (click)="onSubmit()"
+              >
+                <i class="pi pi-send mr-2"></i>
+                Submit {{ autogenDpms().length }} DPMs
+              </app-button>
+            }
+          </div>
+        } @else {
+          <!-- Mobile Empty State -->
+          <div
+            class="flex flex-col items-center justify-center py-16 px-6 bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700"
+          >
+            <div
+              class="w-16 h-16 rounded-full bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-700 flex items-center justify-center mb-4 shadow-inner"
+            >
+              <i class="pi pi-inbox text-2xl text-neutral-400"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-base-content mb-2">
+              No DPMs Detected
+            </h3>
+            <p class="text-sm text-base-content/60 text-center">
+              No autogenerated DPMs were found from WhenToWork today.
+            </p>
+          </div>
+        }
+      </div>
+
+      <!-- Desktop Table Section -->
       <div
-        class="bg-base-200 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-sm overflow-hidden"
+        class="hidden md:block bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-lg overflow-hidden"
       >
         @if (autogenDpms().length > 0) {
           <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full autogen-table">
               <thead>
                 <tr
                   class="bg-gradient-to-r from-primary-600 to-primary-500 text-white"
                 >
                   <th
-                    class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wide"
+                    class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider"
                   >
-                    Name
+                    Driver
                   </th>
                   <th
-                    class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wide"
+                    class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider"
                   >
-                    Block/Time
+                    Block / Shift
                   </th>
                   <th
-                    class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wide"
+                    class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider"
                   >
-                    Type
+                    Status
                   </th>
                 </tr>
               </thead>
-              <tbody
-                class="divide-y divide-neutral-200 dark:divide-neutral-700"
-              >
-                @for (dpm of autogenDpms(); track dpm) {
+              <tbody>
+                @for (dpm of autogenDpms(); track dpm; let i = $index) {
                   <tr
-                    class="hover:bg-primary-50/50 dark:hover:bg-primary-900/10 transition-colors"
+                    class="autogen-row"
+                    [class.autogen-row-dns]="!dpm.positive"
+                    [class.autogen-row-success]="dpm.positive"
+                    [style.animation-delay]="i * 30 + 'ms'"
                   >
-                    <td class="px-6 py-4 text-sm text-base-content">
-                      {{ dpm.name }}
+                    <td class="px-6 py-4">
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="autogen-avatar"
+                          [class.autogen-avatar-dns]="!dpm.positive"
+                          [class.autogen-avatar-success]="dpm.positive"
+                        >
+                          {{ getInitials(dpm.name) }}
+                        </div>
+                        <span class="font-medium text-base-content">{{
+                          dpm.name
+                        }}</span>
+                      </div>
                     </td>
-                    <td class="px-6 py-4 text-sm text-base-content/70">
-                      {{ dpm.block }} {{ dpm.startTime }}-{{ dpm.endTime }}
+                    <td class="px-6 py-4">
+                      <div class="flex flex-col">
+                        <span class="font-mono text-sm text-base-content">{{
+                          dpm.block
+                        }}</span>
+                        <span class="text-xs text-base-content/50"
+                          >{{ dpm.startTime }} - {{ dpm.endTime }}</span
+                        >
+                      </div>
                     </td>
-                    <td class="px-6 py-4 text-sm text-base-content">
-                      {{ dpm.type }}
+                    <td class="px-6 py-4">
+                      <span
+                        class="autogen-badge"
+                        [class.autogen-badge-dns]="!dpm.positive"
+                        [class.autogen-badge-success]="dpm.positive"
+                      >
+                        <i
+                          class="pi text-xs"
+                          [class.pi-times-circle]="!dpm.positive"
+                          [class.pi-check-circle]="dpm.positive"
+                        ></i>
+                        {{ getStatusText(dpm) }}
+                      </span>
                     </td>
                   </tr>
                 }
               </tbody>
             </table>
           </div>
+
+          <!-- Submit Button -->
+          <div
+            class="flex justify-center py-6 border-t border-neutral-200 dark:border-neutral-700 bg-base-50 dark:bg-base-200/50"
+          >
+            @if (submittedTime()) {
+              <app-button
+                variant="secondary"
+                size="lg"
+                [disabled]="true"
+                appTooltip="Autogen has already been called today"
+                tooltipPosition="top"
+              >
+                <i class="pi pi-check mr-2"></i>
+                Already Submitted
+              </app-button>
+            } @else {
+              <app-button
+                variant="primary"
+                size="lg"
+                [disabled]="empty()"
+                (click)="onSubmit()"
+              >
+                <i class="pi pi-send mr-2"></i>
+                Submit {{ autogenDpms().length }} DPMs
+              </app-button>
+            }
+          </div>
         } @else {
           <!-- Empty State -->
-          <div class="flex flex-col items-center justify-center py-16 px-6">
+          <div class="flex flex-col items-center justify-center py-20 px-6">
             <div
-              class="w-16 h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4"
+              class="w-20 h-20 rounded-full bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-700 flex items-center justify-center mb-5 shadow-inner"
             >
-              <i class="pi pi-inbox text-2xl text-neutral-400"></i>
+              <i class="pi pi-inbox text-3xl text-neutral-400"></i>
             </div>
-            <h3 class="text-lg font-medium text-base-content mb-1">
-              No DPMs Found
+            <h3 class="text-xl font-semibold text-base-content mb-2">
+              No DPMs Detected
             </h3>
             <p class="text-sm text-base-content/60 text-center max-w-sm">
-              No autogenerated DPMs were detected from WhenToWork today.
+              No autogenerated DPMs were found from WhenToWork today. Check back
+              later or verify the WhenToWork integration.
             </p>
           </div>
-        }
-      </div>
-
-      <!-- Submit Button -->
-      <div class="flex justify-center mt-6">
-        @if (submittedTime()) {
-          <app-button
-            variant="secondary"
-            size="lg"
-            [disabled]="true"
-            appTooltip="Autogen has already been called today"
-            tooltipPosition="top"
-          >
-            <i class="pi pi-check mr-2"></i>
-            Already Submitted
-          </app-button>
-        } @else {
-          <app-button
-            variant="primary"
-            size="lg"
-            [disabled]="empty()"
-            (click)="onSubmit()"
-          >
-            <i class="pi pi-send mr-2"></i>
-            Submit DPMs
-          </app-button>
         }
       </div>
     } @else {

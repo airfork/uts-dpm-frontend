@@ -1,3 +1,14 @@
+/* Hide any potential CDK drag indicator lines */
+::ng-deep .cdk-drop-list::before,
+::ng-deep .cdk-drop-list::after {
+  display: none !important;
+}
+
+/* Add bottom padding to form so sticky footer has room at page end */
+:host ::ng-deep form {
+  padding-bottom: 4rem;
+}
+
 .dpm-container {
   width: 400px;
   max-width: 100%;
@@ -55,7 +66,8 @@
 }
 
 .cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform 150ms ease-out;
+  will-change: transform;
 }
 
 .dpm-type-box:last-child {
@@ -63,22 +75,34 @@
 }
 
 .dpm-list.cdk-drop-list-dragging .dpm-type-box:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform 150ms ease-out;
+  will-change: transform;
 }
 
 .sticky-save-bar {
-  position: sticky;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   display: flex;
   justify-content: center;
-  padding: 1rem 0;
-  margin-top: 1.5rem;
-  margin-bottom: 2.5rem;
-  background: var(--color-base-50);
+  align-items: center;
+  /* Fixed height for consistent sizing */
+  height: 4rem;
+  padding: 0 1.5rem;
+  background: var(--color-base-100);
   border-top: 1px solid var(--color-base-300);
   z-index: 10;
+  /* For absolute positioning of error indicator */
+  isolation: isolate;
+}
+
+/* Compact textarea - looks like a text input until content wraps */
+.compact-textarea {
+  padding: 0.375rem 0.5rem;
+  line-height: 1.4;
+  min-height: unset;
+  overflow: hidden;
 }
 
 /* Column header row */
@@ -115,13 +139,22 @@
 .group-error-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.125rem 0.5rem;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
   font-size: 0.75rem;
   font-weight: 500;
+  line-height: 1;
   color: var(--color-error-700);
   background: var(--color-error-100);
   border-radius: 9999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.group-error-badge i {
+  font-size: 0.75rem;
+  line-height: 1;
 }
 
 /* Highlight animation for newly added items */
@@ -140,9 +173,68 @@
 
 /* Group card drag animation (match DPM items) */
 .group-card.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform 150ms ease-out;
+  will-change: transform;
 }
 
 .cdk-drop-list-dragging .group-card:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform 150ms ease-out;
+  will-change: transform;
+}
+
+/* Group card drag preview - match static appearance exactly */
+.group-card.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow:
+    0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* Hide inner dpm-list in drag preview to prevent extended bottom */
+.group-card.cdk-drag-preview .dpm-list {
+  border: none;
+}
+
+/* Error indicator in footer - positioned absolutely to not shift button */
+.error-indicator {
+  position: absolute;
+  left: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-error-700);
+  background: var(--color-error-100);
+  border-radius: 0.375rem;
+}
+
+.error-indicator i {
+  font-size: 0.875rem;
+}
+
+/* Delete button hover effect */
+.delete-btn-wrapper {
+  --delete-btn-opacity: 0.5;
+}
+
+.delete-btn-wrapper .delete-btn {
+  opacity: var(--delete-btn-opacity);
+  transition: all 150ms ease;
+}
+
+.delete-btn-wrapper:hover {
+  --delete-btn-opacity: 1;
+}
+
+.delete-btn-wrapper:hover .delete-btn {
+  color: var(--color-error-600);
+}
+
+::ng-deep .delete-btn-wrapper:hover .delete-btn button {
+  background-color: var(--color-error-50) !important;
 }

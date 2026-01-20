@@ -28,8 +28,6 @@ import { GetDpmColors } from '../../models/get-dpm-colors';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
 import { CardComponent } from '../../ui/card/card.component';
 import { ButtonComponent } from '../../ui/button/button.component';
-import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
-import { PointsDisplayPipe } from '../../shared/pipes/points-display.pipe';
 import { ColorByIdPipe } from '../../shared/pipes/color-by-id.pipe';
 import { ColorDropdownComponent } from './color-dropdown/color-dropdown.component';
 
@@ -74,8 +72,6 @@ const DPM_GROUP_NAME_VALIDATORS = [Validators.required, Validators.maxLength(500
     ButtonComponent,
     AutoResizeDirective,
     TooltipDirective,
-    PageHeaderComponent,
-    PointsDisplayPipe,
     ColorByIdPipe,
     ColorDropdownComponent,
   ],
@@ -494,7 +490,11 @@ export class EditDpmsComponent implements OnInit {
       });
   }
 
-  private getTotalErrorCount(): number {
+  formHasErrors(): boolean {
+    return !this.dpmEditForm.valid || this.formHasNonFormGroupErrors();
+  }
+
+  getTotalErrorCount(): number {
     let count = 0;
     this.groupsFormArray.controls.forEach((groupControl) => {
       count += this.getGroupErrorCount(groupControl);

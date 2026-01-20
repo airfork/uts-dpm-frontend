@@ -66,7 +66,7 @@ export class NewDpmComponent implements AfterViewInit {
 
   getInputBorderClass(control: AbstractControl | null): string {
     if (control == null) {
-      return 'border-neutral-200 dark:border-neutral-700 focus:border-primary-500 focus:ring-primary-500/20';
+      return 'border-neutral-200 dark:border-neutral-600 focus:border-primary-500 focus:ring-primary-500/20';
     }
 
     if (this.hasErrors(control)) {
@@ -76,7 +76,7 @@ export class NewDpmComponent implements AfterViewInit {
     if ((control.dirty || control.touched || control.value) && control.valid) {
       return 'border-success-500 focus:border-success-500 focus:ring-success-500/20';
     }
-    return 'border-neutral-200 dark:border-neutral-700 focus:border-primary-500 focus:ring-primary-500/20';
+    return 'border-neutral-200 dark:border-neutral-600 focus:border-primary-500 focus:ring-primary-500/20';
   }
 
   setStatusClass(control: AbstractControl | null, isInput = true): string {
@@ -96,12 +96,20 @@ export class NewDpmComponent implements AfterViewInit {
       .pipe(first())
       .subscribe(() => {
         this.notificationService.showSuccess('DPM Created', 'Success');
-        const groups = this.dpmGroups();
-        this.homeFormGroup().reset({
-          dpmDate: new Date(),
-          type: groups[0].dpms[0].id,
-        });
+        this.resetForm();
       });
+  }
+
+  resetForm() {
+    const groups = this.dpmGroups();
+    this.homeFormGroup().reset({
+      dpmDate: new Date(),
+      type: groups[0].dpms[0].id,
+    });
+    // Remove focus from button to clear focus ring
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
   }
 
   getStartTimeValidationMessages(): string {

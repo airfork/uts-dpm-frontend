@@ -1512,11 +1512,11 @@ nav a.bg-white {
 }
 
 .autogen-row-dns {
-  border-left: 3px solid var(--color-error-400);
+  box-shadow: inset 3px 0 0 var(--color-error-400);
 }
 
 .autogen-row-success {
-  border-left: 3px solid var(--color-success-400);
+  box-shadow: inset 3px 0 0 var(--color-success-400);
 }
 
 /* Avatar */
@@ -1883,11 +1883,11 @@ nav a.bg-white {
 }
 
 .approvals-row-positive {
-  border-left: 3px solid var(--color-success-400);
+  box-shadow: inset 3px 0 0 var(--color-success-400);
 }
 
 .approvals-row-negative {
-  border-left: 3px solid var(--color-error-400);
+  box-shadow: inset 3px 0 0 var(--color-error-400);
 }
 
 /* Exit animation for approve/deny */

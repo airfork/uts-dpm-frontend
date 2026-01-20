@@ -2,7 +2,6 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UpperCasePipe } from '@angular/common';
 import { DpmService } from '../../services/dpm.service';
-import { ModalComponent } from '../../ui/modal/modal.component';
 import { LoadingComponent } from '../../shared/loading/loading.component';
 import { StatCardComponent } from '../../ui/stat-card/stat-card.component';
 import { PointsPipe } from '../../shared/pipes/PointsPipe';
@@ -17,7 +16,6 @@ import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component'
   templateUrl: './home.component.html',
   standalone: true,
   imports: [
-    ModalComponent,
     LoadingComponent,
     StatCardComponent,
     PointsPipe,
@@ -33,13 +31,13 @@ export class HomeComponent {
   currentDpms = toSignal(this.dpmService.getCurrentDpms(), {
     initialValue: [],
   });
-  currentDpm = signal<HomeDpmDto | null>(null);
-  isModalOpen = signal(false);
+  expandedDpm = signal<HomeDpmDto | null>(null);
+  private _isInitialLoad = signal(true);
 
   columns: TableColumn<HomeDpmDto>[] = [
-    { field: 'type', header: 'Type' },
-    { field: 'points', header: 'Points' },
-    { field: 'date', header: 'Date' },
+    { field: 'type', header: 'Type', headerClass: 'w-[60%]' },
+    { field: 'points', header: 'Points', headerClass: 'w-[15%]' },
+    { field: 'date', header: 'Date', headerClass: 'w-[25%]' },
   ];
 
   totalCount = computed(() => this.currentDpms()?.length ?? 0);
@@ -56,12 +54,21 @@ export class HomeComponent {
     return dpms.filter((d) => d.points < 0).reduce((sum, d) => sum + d.points, 0);
   });
 
-  clickRow(dpm: HomeDpmDto) {
-    this.currentDpm.set(dpm);
-    this.isModalOpen.set(true);
+  isExpanded(dpm: HomeDpmDto): boolean {
+    return this.expandedDpm() === dpm;
   }
 
-  closeModal() {
-    this.isModalOpen.set(false);
+  toggleExpand(dpm: HomeDpmDto): void {
+    if (this.expandedDpm() === dpm) {
+      this.expandedDpm.set(null);
+    } else {
+      this.expandedDpm.set(dpm);
+    }
+    // After first interaction, disable initial load animations
+    this._isInitialLoad.set(false);
+  }
+
+  isInitialLoad(): boolean {
+    return this._isInitialLoad();
   }
 }

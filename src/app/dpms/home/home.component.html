@@ -1,65 +1,10 @@
-<!-- DPM Detail Modal -->
-<app-modal [open]="isModalOpen()" [size]="'md'" (close)="closeModal()">
-  @if (currentDpm(); as currentDpm) {
-    <ng-container ngProjectAs="[modal-header]">
-      <h3 class="text-xl font-semibold text-base-content">
-        {{ currentDpm.type }}
-      </h3>
-    </ng-container>
-    <ng-container ngProjectAs="[modal-body]">
-      <div class="space-y-4">
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <div class="text-sm text-base-content/60 mb-1">Points</div>
-            <div class="text-lg font-semibold text-base-content">
-              {{ currentDpm.points | points }}
-            </div>
-          </div>
-          <div>
-            <div class="text-sm text-base-content/60 mb-1">Block</div>
-            <div class="text-lg font-semibold text-base-content">
-              {{ currentDpm.block | block }}
-            </div>
-          </div>
-          <div>
-            <div class="text-sm text-base-content/60 mb-1">Location</div>
-            <div class="text-lg font-semibold text-base-content">
-              {{ currentDpm.location | uppercase }}
-            </div>
-          </div>
-          <div>
-            <div class="text-sm text-base-content/60 mb-1">Date</div>
-            <div class="text-lg font-semibold text-base-content">
-              {{ currentDpm.date }}
-            </div>
-          </div>
-          <div>
-            <div class="text-sm text-base-content/60 mb-1">Time</div>
-            <div class="text-lg font-semibold text-base-content">
-              {{ currentDpm.time }}
-            </div>
-          </div>
-        </div>
-        @if (currentDpm.notes) {
-          <div class="pt-4 border-t border-neutral-200 dark:border-neutral-700">
-            <div class="text-sm text-base-content/60 mb-2">Notes</div>
-            <div class="text-base text-base-content">
-              {{ currentDpm.notes }}
-            </div>
-          </div>
-        }
-      </div>
-    </ng-container>
-  }
-</app-modal>
-
 <ng-template #loading>
   <app-loading></app-loading>
 </ng-template>
 
 @if (currentDpms(); as dpms) {
   <div class="px-4 py-6 md:px-6 md:py-8">
-    <div class="max-w-7xl mx-auto space-y-6">
+    <div class="max-w-5xl mx-auto space-y-6">
       @if (dpms.length === 0) {
         <app-empty-state
           icon="pi-file-edit"
@@ -116,52 +61,186 @@
           </div>
         </section>
 
-        <!-- Table Section -->
-        <section>
-          <h2 class="text-xl font-semibold text-base-content mb-4">
-            Current DPMs
-          </h2>
-
-          <div
-            class="bg-base-200 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-sm overflow-hidden"
-          >
-            <app-data-table
-              [data]="dpms"
-              [columns]="columns"
-              [rows]="10"
-              [rowsPerPageOptions]="[10, 25, 50]"
-              [paginator]="true"
-              [showCurrentPageReport]="true"
-              [emptyMessage]="'No DPMs found.'"
-              (rowClick)="clickRow($event)"
+        <!-- Mobile Card Layout -->
+        <div class="md:hidden space-y-3">
+          @for (dpm of dpms; track dpm; let i = $index) {
+            <div
+              class="home-mobile-card"
+              [class.home-mobile-card-positive]="dpm.points >= 0"
+              [class.home-mobile-card-negative]="dpm.points < 0"
+              [class.home-mobile-card-expanded]="isExpanded(dpm)"
+              [class.home-mobile-card-new]="isInitialLoad()"
+              [style.animation-delay]="isInitialLoad() ? i * 30 + 'ms' : '0ms'"
+              (click)="toggleExpand(dpm)"
             >
-              <ng-template #bodyTemplate let-dpm>
-                <tr
-                  class="border-t border-neutral-200 dark:border-neutral-700 hover:bg-primary-50/50 dark:hover:bg-primary-900/10 transition-colors duration-150 cursor-pointer"
-                  (click)="clickRow(dpm)"
-                >
-                  <td class="px-6 py-4 text-sm text-base-content">
+              <!-- Card Header -->
+              <div class="flex items-center justify-between">
+                <div class="flex-1 min-w-0">
+                  <div class="font-medium text-base-content truncate">
                     {{ dpm.type }}
-                  </td>
-                  <td class="px-6 py-4 text-sm">
-                    <span
-                      [class]="
-                        dpm.points >= 0
-                          ? 'px-2 py-1 rounded-full text-xs font-bold bg-success-50 text-success-700 dark:bg-success-900/30 dark:text-success-400'
-                          : 'px-2 py-1 rounded-full text-xs font-bold bg-error-50 text-error-700 dark:bg-error-900/30 dark:text-error-400'
-                      "
-                    >
-                      {{ dpm.points | points }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 text-sm text-base-content/70">
+                  </div>
+                  <div class="text-xs text-base-content/50">
                     {{ dpm.date }}
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span
+                    class="home-badge"
+                    [class.home-badge-positive]="dpm.points >= 0"
+                    [class.home-badge-negative]="dpm.points < 0"
+                  >
+                    {{ dpm.points | points }}
+                  </span>
+                  <i
+                    class="pi pi-chevron-down text-base-content/40 transition-transform duration-200"
+                    [class.rotate-180]="isExpanded(dpm)"
+                  ></i>
+                </div>
+              </div>
+
+              <!-- Expanded Details -->
+              @if (isExpanded(dpm)) {
+                <div
+                  class="home-mobile-expanded"
+                  (click)="$event.stopPropagation()"
+                >
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                    <div class="home-detail-item">
+                      <span class="home-detail-label">Block</span>
+                      <span class="home-detail-value">{{
+                        dpm.block | block
+                      }}</span>
+                    </div>
+                    <div class="home-detail-item">
+                      <span class="home-detail-label">Location</span>
+                      <span class="home-detail-value">{{
+                        dpm.location | uppercase
+                      }}</span>
+                    </div>
+                    <div class="home-detail-item">
+                      <span class="home-detail-label">Time</span>
+                      <span class="home-detail-value">{{ dpm.time }}</span>
+                    </div>
+                    <div class="home-detail-item">
+                      <span class="home-detail-label">Date</span>
+                      <span class="home-detail-value">{{ dpm.date }}</span>
+                    </div>
+                    @if (dpm.notes) {
+                      <div class="home-detail-item col-span-2">
+                        <span class="home-detail-label">Notes</span>
+                        <span class="home-detail-value">{{ dpm.notes }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Desktop Table Section -->
+        <div
+          class="hidden md:block bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-lg overflow-hidden"
+        >
+          <app-data-table
+            [data]="dpms"
+            [columns]="columns"
+            [rows]="10"
+            [rowsPerPageOptions]="[10, 25, 50]"
+            [paginator]="true"
+            [showCurrentPageReport]="true"
+            [emptyMessage]="'No DPMs found.'"
+          >
+            <ng-template #bodyTemplate let-dpm let-i="index">
+              <!-- Main Row -->
+              <tr
+                class="home-row cursor-pointer"
+                [class.home-row-positive]="dpm.points >= 0"
+                [class.home-row-negative]="dpm.points < 0"
+                [class.home-row-expanded]="isExpanded(dpm)"
+                [class.home-row-new]="isInitialLoad()"
+                [style.animation-delay]="
+                  isInitialLoad() ? i * 30 + 'ms' : '0ms'
+                "
+                (click)="toggleExpand(dpm)"
+              >
+                <td class="px-6 py-4">
+                  <span class="font-medium text-base-content">{{
+                    dpm.type
+                  }}</span>
+                </td>
+                <td class="px-6 py-4">
+                  <span
+                    class="home-badge"
+                    [class.home-badge-positive]="dpm.points >= 0"
+                    [class.home-badge-negative]="dpm.points < 0"
+                  >
+                    {{ dpm.points | points }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-base-content/70">{{
+                      dpm.date
+                    }}</span>
+                    <i
+                      class="pi pi-chevron-down text-base-content/40 transition-transform duration-200"
+                      [class.rotate-180]="isExpanded(dpm)"
+                    ></i>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Expanded Details Row -->
+              @if (isExpanded(dpm)) {
+                <tr class="home-expanded-row">
+                  <td colspan="3" class="p-0">
+                    <div
+                      class="home-expanded-content"
+                      [class.home-expanded-positive]="dpm.points >= 0"
+                      [class.home-expanded-negative]="dpm.points < 0"
+                    >
+                      <div
+                        class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 text-sm"
+                      >
+                        <div class="home-detail-item">
+                          <span class="home-detail-label">Block</span>
+                          <span class="home-detail-value">{{
+                            dpm.block | block
+                          }}</span>
+                        </div>
+                        <div class="home-detail-item">
+                          <span class="home-detail-label">Location</span>
+                          <span class="home-detail-value">{{
+                            dpm.location | uppercase
+                          }}</span>
+                        </div>
+                        <div class="home-detail-item">
+                          <span class="home-detail-label">Time</span>
+                          <span class="home-detail-value">{{ dpm.time }}</span>
+                        </div>
+                        <div class="home-detail-item">
+                          <span class="home-detail-label">Date</span>
+                          <span class="home-detail-value">{{ dpm.date }}</span>
+                        </div>
+                        @if (dpm.notes) {
+                          <div
+                            class="home-detail-item col-span-2 md:col-span-4"
+                          >
+                            <span class="home-detail-label">Notes</span>
+                            <span class="home-detail-value">{{
+                              dpm.notes
+                            }}</span>
+                          </div>
+                        }
+                      </div>
+                    </div>
                   </td>
                 </tr>
-              </ng-template>
-            </app-data-table>
-          </div>
-        </section>
+              }
+            </ng-template>
+          </app-data-table>
+        </div>
       }
     </div>
   </div>

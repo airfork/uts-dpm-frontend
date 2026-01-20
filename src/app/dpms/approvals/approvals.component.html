@@ -1,4 +1,4 @@
-@if (dpms()) {
+@if (dpms(); as dpmsList) {
   <div class="px-4 py-6 md:px-6 md:py-8">
     <div class="max-w-5xl mx-auto space-y-6">
       <app-page-header
@@ -8,7 +8,7 @@
         variant="primary"
       />
 
-      @if (dpms().length === 0 && !loadingDpms()) {
+      @if (dpmsList.length === 0 && !loadingDpms()) {
         <app-empty-state
           heading="No Pending Approvals"
           description="All DPMs have been reviewed. Check back later for new submissions."
@@ -16,7 +16,7 @@
       } @else {
         <!-- Mobile Card Layout -->
         <div class="md:hidden space-y-3">
-          @for (dpm of dpms(); track dpm.id; let i = $index) {
+          @for (dpm of dpmsList; track dpm.id; let i = $index) {
             <div
               class="approvals-mobile-card"
               [class.approvals-mobile-card-positive]="isPositiveDpm(dpm)"
@@ -207,7 +207,7 @@
           class="hidden md:block bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-lg overflow-hidden"
         >
           <app-data-table
-            [data]="dpms()"
+            [data]="dpmsList"
             [columns]="columns"
             [rows]="10"
             [rowsPerPageOptions]="[10, 25, 50]"

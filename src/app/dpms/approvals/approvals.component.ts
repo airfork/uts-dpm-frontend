@@ -32,7 +32,7 @@ export class ApprovalsComponent {
 
   private lastLazyLoadEvent?: LazyLoadEvent;
 
-  dpms = signal<ApprovalDpmDto[]>([]);
+  dpms = signal<ApprovalDpmDto[] | null>(null);
   loadingDpms = signal(true);
   totalRecords = signal(0);
 

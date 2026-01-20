@@ -3,6 +3,23 @@
 @import "./fonts.css";
 @import "./styles/toast.css";
 
+/* Configure Tailwind's dark mode to respect data-theme attribute
+   Dark mode applies when:
+   - data-theme="dark" is explicitly set, OR
+   - System prefers dark AND data-theme is NOT "light" */
+@custom-variant dark {
+  [data-theme="dark"] &,
+  [data-theme="dark"] * & {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) &,
+    :root:not([data-theme="light"]) * & {
+      @slot;
+    }
+  }
+}
+
 @layer app {
   html,
   body {

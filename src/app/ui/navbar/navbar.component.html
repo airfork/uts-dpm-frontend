@@ -50,10 +50,7 @@
                   @if (link.path) {
                     <a
                       routerLink="{{ link.path }}"
-                      routerLinkActive="bg-white text-primary-700 font-semibold shadow-sm"
-                      [queryParamsHandling]="
-                        link.name === 'Users' ? 'preserve' : null
-                      "
+                      routerLinkActive="!bg-white/20 !text-white !font-semibold"
                       (click)="menuItemClick()"
                       class="block px-4 py-3 text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors"
                     >
@@ -117,9 +114,8 @@
           @if (link.path) {
             <a
               routerLink="{{ link.path }}"
-              routerLinkActive="bg-white text-primary-700 font-semibold shadow-sm"
+              routerLinkActive="!bg-white/20 !text-white !font-semibold"
               [routerLinkActiveOptions]="{ exact: link.path === '/' }"
-              [queryParamsHandling]="link.name === 'Users' ? 'preserve' : null"
               class="px-4 py-2 rounded-lg text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 transition-all"
             >
               {{ link.name }}

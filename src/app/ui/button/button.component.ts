@@ -32,23 +32,9 @@ export class ButtonComponent {
         'shadow-md shadow-primary-500/25 hover:shadow-lg hover:shadow-primary-500/30',
         'focus:ring-primary-500',
       ],
-      secondary: [
-        'bg-base-100 text-primary-600 border-2 border-primary-200',
-        'hover:bg-primary-50 dark:hover:bg-primary-900/20',
-        'dark:border-primary-800 dark:text-primary-400',
-        'focus:ring-primary-500',
-      ],
-      ghost: [
-        'bg-transparent text-base-content',
-        'hover:bg-base-200 dark:hover:bg-neutral-800',
-        'focus:ring-neutral-500',
-      ],
-      outline: [
-        'bg-transparent border-2 border-neutral-300 text-neutral-700',
-        'hover:border-neutral-400 hover:bg-neutral-50',
-        'dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-800',
-        'focus:ring-neutral-500',
-      ],
+      secondary: ['btn-secondary', 'focus:ring-primary-500'],
+      ghost: ['btn-ghost', 'focus:ring-neutral-500'],
+      outline: ['btn-outline', 'focus:ring-primary-500'],
       success: [
         'bg-gradient-to-r from-success-600 to-success-500 text-white',
         'hover:from-success-700 hover:to-success-600',

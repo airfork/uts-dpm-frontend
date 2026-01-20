@@ -22,11 +22,17 @@ export class NavbarComponent {
   private notificationService = inject(NotificationService);
 
   isDropdownOpen = signal(false);
-  currentTheme = signal<'light' | 'dark'>(
-    typeof window !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'dark'
-      ? 'dark'
-      : 'light'
-  );
+  currentTheme = signal<'light' | 'dark'>(this.getInitialTheme());
+
+  private getInitialTheme(): 'light' | 'dark' {
+    if (typeof window === 'undefined') return 'light';
+    // Check localStorage first, then fall back to data-theme attribute
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      return savedTheme;
+    }
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
 
   constructor() {
     effect(() => {

@@ -124,7 +124,7 @@
       <div class="flex items-center gap-1">
         <button
           type="button"
-          class="w-9 h-9 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          class="w-9 h-9 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
           [disabled]="currentPage() === 0"
           (click)="goToFirstPage()"
           aria-label="First page"
@@ -134,7 +134,7 @@
 
         <button
           type="button"
-          class="w-9 h-9 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          class="w-9 h-9 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
           [disabled]="currentPage() === 0"
           (click)="goToPreviousPage()"
           aria-label="Previous page"
@@ -159,7 +159,7 @@
 
         <button
           type="button"
-          class="w-9 h-9 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          class="w-9 h-9 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
           [disabled]="currentPage() >= totalPages() - 1"
           (click)="goToNextPage()"
           aria-label="Next page"
@@ -169,7 +169,7 @@
 
         <button
           type="button"
-          class="w-9 h-9 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          class="w-9 h-9 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 text-base-content/70 hover:bg-primary-50 dark:hover:bg-primary-900/20 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
           [disabled]="currentPage() >= totalPages() - 1"
           (click)="goToLastPage()"
           aria-label="Last page"

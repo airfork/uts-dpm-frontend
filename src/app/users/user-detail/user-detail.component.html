@@ -1,182 +1,480 @@
-<ng-template #loading>
-  <app-loading></app-loading>
-</ng-template>
-
 @if (user(); as user) {
-  <div class="breadcrumbs text-md">
-    <ul>
-      <li><a routerLink="/users">Users</a></li>
-      <li>{{ user.firstname }} {{ user.lastname }}</li>
-    </ul>
-  </div>
-
-  <div>
-    <h2 class="text-3xl mb-5 font-bold">
-      {{ user.firstname }} {{ user.lastname }}
-    </h2>
-    <div
-      class="mb-5 flex justify-center lg:justify-start border-b border-neutral-200 dark:border-neutral-700"
-    >
-      <app-tabs
-        [tabs]="tabs"
-        [(activeTab)]="activeTabName"
-        [size]="'lg'"
-        [variant]="'bordered'"
-        (tabChange)="activateTab($event)"
-      />
-    </div>
-    @if (activeTabName() === "info") {
-      <div>
-        <app-user-form
-          layout="edit"
-          [userInfo]="{ user, id: userId() }"
-        ></app-user-form>
-      </div>
-    }
-    @if (activeTabName() === "dpms") {
-      <div
-        class="bg-base-200 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-sm overflow-hidden"
-      >
-        <app-data-table
-          [data]="dpms()"
-          [columns]="columns"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 25, 50]"
-          [loading]="loadingDpms()"
-          [paginator]="true"
-          [lazy]="true"
-          [totalRecords]="totalRecords()"
-          [showCurrentPageReport]="true"
-          [emptyMessage]="'No DPMs found.'"
-          (lazyLoad)="lazyLoadEvent($event)"
+  <div class="px-4 py-6 md:px-6 md:py-8">
+    <div class="max-w-5xl mx-auto space-y-6">
+      <!-- Page Header with Back Link -->
+      <div class="space-y-4">
+        <button
+          type="button"
+          (click)="goBack()"
+          class="inline-flex items-center gap-1.5 text-sm text-base-content/60 hover:text-primary-500 transition-colors cursor-pointer"
         >
-          <ng-template #bodyTemplate let-dpm>
-            <tr
-              class="border-t border-neutral-200 dark:border-neutral-700 hover:bg-primary-50/50 dark:hover:bg-primary-900/10 transition-colors duration-150 cursor-pointer"
-              (click)="clickRow(dpm)"
-            >
-              <td class="px-6 py-4 text-sm text-base-content">
-                {{ dpm.type }}
-              </td>
-              <td class="px-6 py-4 text-sm text-base-content/70">
-                {{ dpm.date }}
-              </td>
-              <td class="px-6 py-4 text-sm text-base-content">
-                {{ dpm.status }}
-              </td>
-            </tr>
-          </ng-template>
-        </app-data-table>
+          <i class="pi pi-arrow-left text-xs"></i>
+          Back to Users
+        </button>
+        <app-page-header
+          icon="pi-user"
+          [title]="user.firstname + ' ' + user.lastname"
+          [subtitle]="user.role"
+          variant="success"
+        />
       </div>
-    }
-    @if (activeTabName() === "detail-actions") {
-      <div class="flex flex-wrap justify-center gap-3">
-        <app-button variant="ghost" (click)="resetClick()">
-          Reset Password
-        </app-button>
-        <app-button variant="ghost" (click)="sendEmailClick()">
-          Send Points Email
-        </app-button>
-        @if (!viewingSelf()) {
-          <app-button
-            variant="ghost"
-            class="text-error-600 hover:text-error-700 hover:bg-error-50 dark:hover:bg-error-900/20"
-            (click)="deleteUserClick()"
+
+      <!-- Pill Tabs -->
+      <div role="tablist" class="flex gap-2">
+        <button
+          role="tab"
+          type="button"
+          class="px-5 py-2.5 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer"
+          [ngClass]="{
+            'bg-primary-600 text-white shadow-sm': activeTabName() === 'info',
+            'bg-transparent text-base-content/60 hover:text-base-content hover:bg-base-300/50':
+              activeTabName() !== 'info',
+          }"
+          (click)="activateTab('info')"
+        >
+          Info
+        </button>
+        <button
+          role="tab"
+          type="button"
+          class="px-5 py-2.5 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer"
+          [ngClass]="{
+            'bg-primary-600 text-white shadow-sm': activeTabName() === 'dpms',
+            'bg-transparent text-base-content/60 hover:text-base-content hover:bg-base-300/50':
+              activeTabName() !== 'dpms',
+          }"
+          (click)="activateTab('dpms')"
+        >
+          DPMs
+        </button>
+        <button
+          role="tab"
+          type="button"
+          class="px-5 py-2.5 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer"
+          [ngClass]="{
+            'bg-primary-600 text-white shadow-sm':
+              activeTabName() === 'detail-actions',
+            'bg-transparent text-base-content/60 hover:text-base-content hover:bg-base-300/50':
+              activeTabName() !== 'detail-actions',
+          }"
+          (click)="activateTab('detail-actions')"
+        >
+          Actions
+        </button>
+      </div>
+
+      <!-- Info Tab -->
+      <div
+        class="tab-content"
+        [class.tab-content-active]="activeTabName() === 'info'"
+        [class.tab-content-hidden]="activeTabName() !== 'info'"
+      >
+        <div
+          class="bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-md overflow-hidden"
+        >
+          <app-user-form
+            layout="edit"
+            [userInfo]="{ user, id: userId() }"
+          ></app-user-form>
+        </div>
+      </div>
+
+      <!-- DPMs Tab -->
+      <div
+        class="tab-content"
+        [class.tab-content-active]="activeTabName() === 'dpms'"
+        [class.tab-content-hidden]="activeTabName() !== 'dpms'"
+      >
+        @if (dpms().length === 0 && !loadingDpms()) {
+          <app-empty-state
+            heading="No DPMs Found"
+            description="This user has no DPM records."
+          />
+        } @else {
+          <!-- Mobile Card Layout -->
+          <div class="md:hidden space-y-3">
+            @for (dpm of dpms(); track dpm.id; let i = $index) {
+              <div
+                class="user-dpm-mobile-card"
+                [class.user-dpm-mobile-card-expanded]="isExpanded(dpm)"
+                [class.user-dpm-card-new]="isInitialLoad()"
+                [style.animation-delay]="
+                  isInitialLoad() ? i * 30 + 'ms' : '0ms'
+                "
+                (click)="toggleExpand(dpm)"
+              >
+                <!-- Card Header -->
+                <div class="flex items-center justify-between">
+                  <span class="font-medium text-base-content">{{
+                    dpm.type
+                  }}</span>
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="px-2 py-0.5 text-xs font-medium rounded-full"
+                      [ngClass]="{
+                        'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-400':
+                          dpm.status === 'Approved',
+                        'bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-400':
+                          dpm.status === 'Pending',
+                        'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-400':
+                          dpm.status === 'Denied',
+                        'bg-info-100 text-info-700 dark:bg-info-900/30 dark:text-info-400':
+                          dpm.status === 'Not looked at',
+                      }"
+                    >
+                      {{ dpm.status }}
+                    </span>
+                    <i
+                      class="pi pi-chevron-down text-base-content/40 transition-transform duration-200"
+                      [class.rotate-180]="isExpanded(dpm)"
+                    ></i>
+                  </div>
+                </div>
+
+                <!-- Card Date -->
+                <div
+                  class="mt-2 flex items-center gap-2 text-sm text-base-content/60"
+                >
+                  <i class="pi pi-calendar text-xs"></i>
+                  {{ dpm.date }}
+                </div>
+
+                <!-- Expanded Details -->
+                @if (isExpanded(dpm)) {
+                  <div
+                    class="user-dpm-mobile-expanded"
+                    (click)="$event.stopPropagation()"
+                  >
+                    <!-- Details Grid -->
+                    <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                      @if (dpm.createdBy) {
+                        <div class="approvals-detail-item">
+                          <span class="approvals-detail-label">Created By</span>
+                          <span class="approvals-detail-value">{{
+                            dpm.createdBy
+                          }}</span>
+                        </div>
+                      }
+                      <div class="approvals-detail-item">
+                        <span class="approvals-detail-label">Points</span>
+                        <span class="approvals-detail-value">{{
+                          dpm.points | points
+                        }}</span>
+                      </div>
+                      <div class="approvals-detail-item">
+                        <span class="approvals-detail-label">Block</span>
+                        <span class="approvals-detail-value">{{
+                          dpm.block | block
+                        }}</span>
+                      </div>
+                      <div class="approvals-detail-item">
+                        <span class="approvals-detail-label">Location</span>
+                        <span class="approvals-detail-value">{{
+                          dpm.location | uppercase
+                        }}</span>
+                      </div>
+                      <div class="approvals-detail-item">
+                        <span class="approvals-detail-label">Time</span>
+                        <span class="approvals-detail-value">{{
+                          dpm.time
+                        }}</span>
+                      </div>
+                      <div class="approvals-detail-item">
+                        <span class="approvals-detail-label">Created At</span>
+                        <span class="approvals-detail-value">{{
+                          dpm.createdAt
+                        }}</span>
+                      </div>
+                      @if (dpm.notes) {
+                        <div class="approvals-detail-item col-span-2">
+                          <span class="approvals-detail-label">Notes</span>
+                          <span class="approvals-detail-value">{{
+                            dpm.notes
+                          }}</span>
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-2 mt-3">
+                      <button
+                        class="approvals-action-btn approvals-action-deny flex-1"
+                        [disabled]="dpm.ignored"
+                        (click)="denyDpm(dpm, $event)"
+                      >
+                        <i class="pi pi-times"></i>
+                        Deny
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Mobile Pagination -->
+            @if (totalPages() > 1) {
+              <div
+                class="flex items-center justify-between px-1 py-3 border-t border-neutral-200 dark:border-neutral-700 mt-3"
+              >
+                <button
+                  class="user-mobile-page-btn"
+                  [disabled]="currentPage() === 0 || loadingDpms()"
+                  (click)="goToPrevPage()"
+                >
+                  <i class="pi pi-chevron-left"></i>
+                  Previous
+                </button>
+                <span class="text-sm text-base-content/70">
+                  Page {{ currentPage() + 1 }} of {{ totalPages() }}
+                </span>
+                <button
+                  class="user-mobile-page-btn"
+                  [disabled]="
+                    currentPage() >= totalPages() - 1 || loadingDpms()
+                  "
+                  (click)="goToNextPage()"
+                >
+                  Next
+                  <i class="pi pi-chevron-right"></i>
+                </button>
+              </div>
+            }
+
+            @if (loadingDpms()) {
+              <div class="flex items-center justify-center py-8">
+                <i class="pi pi-spin pi-spinner text-2xl text-primary-500"></i>
+              </div>
+            }
+          </div>
+
+          <!-- Desktop Table Layout -->
+          <div
+            class="hidden md:block bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-md overflow-hidden"
           >
-            Delete User
-          </app-button>
+            <app-data-table
+              [data]="dpms()"
+              [columns]="columns"
+              [rows]="10"
+              [rowsPerPageOptions]="[10, 25, 50]"
+              [loading]="loadingDpms()"
+              [paginator]="true"
+              [lazy]="true"
+              [totalRecords]="totalRecords()"
+              [showCurrentPageReport]="true"
+              [emptyMessage]="'No DPMs found.'"
+              (lazyLoad)="lazyLoadEvent($event)"
+            >
+              <ng-template #bodyTemplate let-dpm let-i="index">
+                <!-- Main Row -->
+                <tr
+                  class="user-dpm-row cursor-pointer"
+                  [class.user-dpm-row-expanded]="isExpanded(dpm)"
+                  [class.user-dpm-row-new]="isInitialLoad()"
+                  [style.animation-delay]="
+                    isInitialLoad() ? i * 30 + 'ms' : '0ms'
+                  "
+                  (click)="toggleExpand(dpm)"
+                >
+                  <td class="px-4 py-3">
+                    <div class="flex items-center gap-2">
+                      <span class="text-sm font-medium text-base-content">{{
+                        dpm.type
+                      }}</span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 text-sm text-base-content/70">
+                    {{ dpm.date }}
+                  </td>
+                  <td class="px-4 py-3">
+                    <div class="flex items-center gap-2">
+                      <span
+                        class="px-2.5 py-1 text-xs font-medium rounded-full"
+                        [ngClass]="{
+                          'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-400':
+                            dpm.status === 'Approved',
+                          'bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-400':
+                            dpm.status === 'Pending',
+                          'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-400':
+                            dpm.status === 'Denied',
+                          'bg-info-100 text-info-700 dark:bg-info-900/30 dark:text-info-400':
+                            dpm.status === 'Not looked at',
+                        }"
+                      >
+                        {{ dpm.status }}
+                      </span>
+                      <i
+                        class="pi pi-chevron-down text-base-content/40 ml-auto transition-transform duration-200"
+                        [class.rotate-180]="isExpanded(dpm)"
+                      ></i>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Expanded Details Row -->
+                @if (isExpanded(dpm)) {
+                  <tr class="user-dpm-expanded-row">
+                    <td colspan="3" class="p-0">
+                      <div class="user-dpm-expanded-content">
+                        <div class="flex flex-col md:flex-row gap-6">
+                          <!-- Details Section -->
+                          <div
+                            class="flex-1 grid grid-cols-2 gap-x-6 gap-y-2 text-sm"
+                          >
+                            @if (dpm.createdBy) {
+                              <div class="approvals-detail-item">
+                                <span class="approvals-detail-label"
+                                  >Created By</span
+                                >
+                                <span class="approvals-detail-value">{{
+                                  dpm.createdBy
+                                }}</span>
+                              </div>
+                            }
+                            <div class="approvals-detail-item">
+                              <span class="approvals-detail-label">Points</span>
+                              <span class="approvals-detail-value">{{
+                                dpm.points | points
+                              }}</span>
+                            </div>
+                            <div class="approvals-detail-item">
+                              <span class="approvals-detail-label">Block</span>
+                              <span class="approvals-detail-value">{{
+                                dpm.block | block
+                              }}</span>
+                            </div>
+                            <div class="approvals-detail-item">
+                              <span class="approvals-detail-label"
+                                >Location</span
+                              >
+                              <span class="approvals-detail-value">{{
+                                dpm.location | uppercase
+                              }}</span>
+                            </div>
+                            <div class="approvals-detail-item">
+                              <span class="approvals-detail-label">Time</span>
+                              <span class="approvals-detail-value">{{
+                                dpm.time
+                              }}</span>
+                            </div>
+                            <div class="approvals-detail-item">
+                              <span class="approvals-detail-label"
+                                >Created At</span
+                              >
+                              <span class="approvals-detail-value">{{
+                                dpm.createdAt
+                              }}</span>
+                            </div>
+                            @if (dpm.notes) {
+                              <div class="approvals-detail-item col-span-2">
+                                <span class="approvals-detail-label"
+                                  >Notes</span
+                                >
+                                <span class="approvals-detail-value">{{
+                                  dpm.notes
+                                }}</span>
+                              </div>
+                            }
+                          </div>
+
+                          <!-- Actions Section -->
+                          <div
+                            class="flex flex-col gap-3 md:border-l md:border-neutral-200 md:dark:border-neutral-700 md:pl-6"
+                          >
+                            <!-- Action Buttons -->
+                            <div class="flex gap-2">
+                              <button
+                                class="approvals-action-btn approvals-action-deny"
+                                [disabled]="dpm.ignored"
+                                (click)="denyDpm(dpm, $event)"
+                              >
+                                <i class="pi pi-times"></i>
+                                Deny
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </ng-template>
+            </app-data-table>
+          </div>
         }
       </div>
-    }
+
+      <!-- Actions Tab -->
+      <div
+        class="tab-content"
+        [class.tab-content-active]="activeTabName() === 'detail-actions'"
+        [class.tab-content-hidden]="activeTabName() !== 'detail-actions'"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            class="user-action-card border-l-primary-500"
+            (click)="resetClick()"
+          >
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center"
+              >
+                <i class="pi pi-lock text-primary-500"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-base-content">
+                Reset Password
+              </h3>
+            </div>
+            <p class="text-sm text-base-content/60">
+              Send a password reset link to the user's email.
+            </p>
+          </div>
+
+          <div
+            class="user-action-card border-l-success-500"
+            (click)="sendEmailClick()"
+          >
+            <div class="flex items-center gap-3 mb-3">
+              <div
+                class="w-10 h-10 rounded-lg bg-success-500/10 flex items-center justify-center"
+              >
+                <i class="pi pi-envelope text-success-500"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-base-content">
+                Send Points Email
+              </h3>
+            </div>
+            <p class="text-sm text-base-content/60">
+              Email the user their current point balance.
+            </p>
+          </div>
+
+          @if (!viewingSelf()) {
+            <div
+              class="user-action-card border-l-error-500"
+              (click)="deleteUserClick()"
+            >
+              <div class="flex items-center gap-3 mb-3">
+                <div
+                  class="w-10 h-10 rounded-lg bg-error-500/10 flex items-center justify-center"
+                >
+                  <i class="pi pi-trash text-error-500"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-base-content">
+                  Delete User
+                </h3>
+              </div>
+              <p class="text-sm text-base-content/60">
+                Permanently remove this user from the system.
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
   </div>
 } @else {
   <app-loading></app-loading>
 }
-
-<app-modal [open]="isModalOpen()" [size]="'md'" (close)="closeModal()">
-  @if (currentDpm(); as currentDpm) {
-    <ng-container ngProjectAs="[modal-header]">
-      <h3 class="text-xl font-semibold text-base-content">
-        {{ currentDpm.type }}
-      </h3>
-    </ng-container>
-    <ng-container ngProjectAs="[modal-body]">
-      <div class="space-y-4">
-        <div class="grid grid-cols-2 gap-4">
-          @if (currentDpm.createdBy) {
-            <div>
-              <div class="text-sm text-base-content/60 mb-1">Created By</div>
-              <div class="text-lg font-semibold text-base-content">
-                {{ currentDpm.createdBy }}
-              </div>
-            </div>
-          }
-          <div>
-            <div class="text-sm text-base-content/60 mb-1">Points</div>
-            <div class="text-lg font-semibold text-base-content">
-              {{ currentDpm.points | points }}
-            </div>
-          </div>
-          <div>
-            <div class="text-sm text-base-content/60 mb-1">Block</div>
-            <div class="text-lg font-semibold text-base-content">
-              {{ currentDpm.block | block }}
-            </div>
-          </div>
-          <div>
-            <div class="text-sm text-base-content/60 mb-1">Location</div>
-            <div class="text-lg font-semibold text-base-content">
-              {{ currentDpm.location | uppercase }}
-            </div>
-          </div>
-          <div>
-            <div class="text-sm text-base-content/60 mb-1">Date</div>
-            <div class="text-lg font-semibold text-base-content">
-              {{ currentDpm.date }}
-            </div>
-          </div>
-          <div>
-            <div class="text-sm text-base-content/60 mb-1">Time</div>
-            <div class="text-lg font-semibold text-base-content">
-              {{ currentDpm.time }}
-            </div>
-          </div>
-          <div>
-            <div class="text-sm text-base-content/60 mb-1">Created At</div>
-            <div class="text-lg font-semibold text-base-content">
-              {{ currentDpm.createdAt }}
-            </div>
-          </div>
-          <div>
-            <div class="text-sm text-base-content/60 mb-1">Status</div>
-            <div class="text-lg font-semibold text-base-content">
-              {{ currentDpm.status }}
-            </div>
-          </div>
-        </div>
-        @if (currentDpm.notes) {
-          <div class="pt-4 border-t border-neutral-200 dark:border-neutral-700">
-            <div class="text-sm text-base-content/60 mb-2">Notes</div>
-            <div class="text-base text-base-content">
-              {{ currentDpm.notes }}
-            </div>
-          </div>
-        }
-      </div>
-    </ng-container>
-    <ng-container ngProjectAs="[modal-footer]">
-      <div class="flex justify-end gap-2">
-        <app-button
-          variant="ghost"
-          (click)="denyDpm()"
-          [disabled]="currentDpm.ignored"
-        >
-          Deny
-        </app-button>
-      </div>
-    </ng-container>
-  }
-</app-modal>
 
 <app-confirm-box
   [message]="modalMessage()"

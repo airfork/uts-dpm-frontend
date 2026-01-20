@@ -4,6 +4,7 @@ import {
   forwardRef,
   HostListener,
   input,
+  output,
   signal,
   computed,
   ViewChild,
@@ -55,6 +56,10 @@ export class DatePickerComponent implements ControlValueAccessor {
   inputId = input<string>('');
   minDate = input<Date | null>(null);
   maxDate = input<Date | null>(null);
+
+  // Outputs
+  opened = output<void>();
+  closed = output<void>();
 
   // Internal state
   isOpen = signal(false);
@@ -154,9 +159,23 @@ export class DatePickerComponent implements ControlValueAccessor {
   // Event handlers
   toggleCalendar(): void {
     if (this.disabled) return;
+    const wasOpen = this.isOpen();
     this.isOpen.update((open) => !open);
-    if (this.isOpen() && !this.selectedDate()) {
-      this.viewDate.set(new Date());
+    if (this.isOpen()) {
+      if (!this.selectedDate()) {
+        this.viewDate.set(new Date());
+      }
+      this.opened.emit();
+    } else if (wasOpen) {
+      this.closed.emit();
+    }
+  }
+
+  close(): void {
+    if (this.isOpen()) {
+      this.isOpen.set(false);
+      this.showYearPicker.set(false);
+      this.closed.emit();
     }
   }
 

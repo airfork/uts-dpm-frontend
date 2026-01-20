@@ -4,7 +4,7 @@
     <app-page-header
       icon="pi-file-edit"
       title="DPM Management"
-      subtitle="Create and manage driver performance metrics"
+      [subtitle]="isAdmin() ? 'Create and edit DPMs' : 'Create new DPMs'"
       variant="primary"
     />
 

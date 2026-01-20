@@ -1,21 +1,59 @@
-import { Directive, ElementRef, HostListener, input, OnInit } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  input,
+  OnInit,
+  OnDestroy,
+  NgZone,
+} from '@angular/core';
 
 @Directive({
   selector: 'textarea[appAutoResize]',
   standalone: true,
 })
-export class AutoResizeDirective implements OnInit {
+export class AutoResizeDirective implements OnInit, OnDestroy {
   minRows = input<number>(1);
 
-  constructor(private elementRef: ElementRef<HTMLTextAreaElement>) {}
+  private intersectionObserver: IntersectionObserver | null = null;
+  private hasResizedWhenVisible = false;
+
+  constructor(
+    private elementRef: ElementRef<HTMLTextAreaElement>,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
     this.resize();
+    this.setupVisibilityObserver();
+  }
+
+  ngOnDestroy(): void {
+    this.intersectionObserver?.disconnect();
   }
 
   @HostListener('input')
   onInput(): void {
     this.resize();
+  }
+
+  private setupVisibilityObserver(): void {
+    // Use IntersectionObserver to detect when textarea becomes visible
+    // This handles cases where textarea is in a hidden tab during initial render
+    this.ngZone.runOutsideAngular(() => {
+      this.intersectionObserver = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (entry.isIntersecting && !this.hasResizedWhenVisible) {
+            this.hasResizedWhenVisible = true;
+            // Resize when element becomes visible
+            this.ngZone.run(() => this.resize());
+          }
+        },
+        { threshold: 0.1 }
+      );
+      this.intersectionObserver.observe(this.elementRef.nativeElement);
+    });
   }
 
   private resize(): void {

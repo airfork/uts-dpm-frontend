@@ -13,21 +13,22 @@ This account has full admin access to the app and should be used when needing to
 
 ### Visual Validation
 
-**Always use Chrome DevTools MCP** to validate UI changes before marking work complete:
+**Always use Chrome DevTools MCP** to validate UI changes before marking work complete.
 
-- Take snapshots to verify layout and styling
+**Avoiding API image size limits:**
+- Use `take_snapshot` for layout/structure verification (no image limits)
+- When screenshots are needed for visual styling:
+  - First resize viewport: `resize_page` with max 1400x900
+  - Never use `fullPage: true`
+  - Target specific elements with `uid` parameter when possible
+  - Save to file with `filePath` parameter for large captures
+
+**Validation checklist:**
+- Take snapshots to verify layout and structure
+- Take viewport screenshots (resized) to verify visual styling
 - Check console for errors after changes
 - Verify responsive behavior at different viewports
 - Test interactive elements (modals, dropdowns, tabs)
-
-### Documentation Lookup
-
-**Only use Context7 MCP** when you need current library documentation:
-
-- Looking up Angular 21 APIs or patterns
-- Checking PrimeNG component usage
-- Verifying Tailwind CSS utilities
-- Do NOT use for general questions you already know
 
 ### Issue Investigation
 

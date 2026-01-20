@@ -1,5 +1,6 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
+import { Location, NgClass, UpperCasePipe } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 import GetUserDetailDto from '../../models/get-user-detail-dto';
 import { first, catchError, of } from 'rxjs';
 import { Title } from '@angular/platform-browser';
@@ -16,7 +17,6 @@ import {
   DetailOutputKey,
 } from '../shared/confirm-box-info';
 import { AuthService } from '../../services/auth.service';
-import { UpperCasePipe } from '@angular/common';
 import { DataTableComponent } from '../../ui/data-table/data-table.component';
 import { TableColumn, LazyLoadEvent } from '../../ui/data-table/data-table.types';
 import { FormsModule } from '@angular/forms';
@@ -25,10 +25,8 @@ import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component'
 import { BlockPipe } from '../../shared/pipes/BlockPipe';
 import { PointsPipe } from '../../shared/pipes/PointsPipe';
 import { LoadingComponent } from '../../shared/loading/loading.component';
-import { ModalComponent } from '../../ui/modal/modal.component';
-import { ButtonComponent } from '../../ui/button/button.component';
-import { TabsComponent } from '../../ui/tabs/tabs.component';
-import { Tab } from '../../ui/tabs/tabs.types';
+import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
+import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-user-detail',
@@ -36,22 +34,22 @@ import { Tab } from '../../ui/tabs/tabs.types';
   styleUrls: ['./user-detail.component.css'],
   imports: [
     FormsModule,
+    NgClass,
     UpperCasePipe,
     UserFormComponent,
     ConfirmBoxComponent,
     BlockPipe,
     PointsPipe,
     LoadingComponent,
-    RouterLink,
-    ModalComponent,
-    ButtonComponent,
     DataTableComponent,
-    TabsComponent,
+    PageHeaderComponent,
+    EmptyStateComponent,
   ],
 })
 export class UserDetailComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private location = inject(Location);
   private userService = inject(UserService);
   private titleService = inject(Title);
   private notificationService = inject(NotificationService);
@@ -60,30 +58,36 @@ export class UserDetailComponent implements OnInit {
   private authService = inject(AuthService);
 
   private lastLazyLoadEvent?: LazyLoadEvent;
+  private readonly PAGE_SIZE = 10;
 
   userId = signal('');
+  isInitialLoad = signal(true);
 
   columns: TableColumn<DpmDetailDto>[] = [
     { field: 'type', header: 'Type' },
     { field: 'date', header: 'Date' },
     { field: 'status', header: 'Status' },
   ];
-  loadingDpms = signal(true);
+  loadingDpms = signal(false);
   totalRecords = signal(0);
   activeTabName = signal<string>('info');
   activeTabIndex = signal(0);
-  tabs: Tab[] = [
-    { name: 'info', label: 'Info' },
-    { name: 'dpms', label: 'DPMs' },
-    { name: 'detail-actions', label: 'Actions' },
-  ];
+
+  // Pagination computed signals
+  currentPage = computed(() => {
+    if (!this.lastLazyLoadEvent) return 0;
+    return Math.floor(this.lastLazyLoadEvent.first / this.lastLazyLoadEvent.rows);
+  });
+  totalPages = computed(() => Math.ceil(this.totalRecords() / this.PAGE_SIZE));
+
   user = signal<GetUserDetailDto | null>(null);
-  currentDpm = signal<DpmDetailDto | null>(null);
   dpms = signal<DpmDetailDto[]>([]);
   confirmModalOpen = signal(false);
   modalMessage = signal('');
   outputKey = signal<DetailOutputKey>('email');
-  isModalOpen = signal(false);
+
+  // Expandable row state
+  expandedDpmId = signal<number | null>(null);
 
   ngOnInit() {
     this.route.params.pipe(first()).subscribe((value) => {
@@ -105,22 +109,24 @@ export class UserDetailComponent implements OnInit {
     });
   }
 
-  clickRow(dpm: DpmDetailDto) {
-    this.currentDpm.set(dpm);
-    this.isModalOpen.set(true);
+  toggleExpand(dpm: DpmDetailDto) {
+    if (this.expandedDpmId() === dpm.id) {
+      this.expandedDpmId.set(null);
+    } else {
+      this.expandedDpmId.set(dpm.id);
+    }
   }
 
-  closeModal() {
-    this.isModalOpen.set(false);
+  isExpanded(dpm: DpmDetailDto): boolean {
+    return this.expandedDpmId() === dpm.id;
   }
 
-  denyDpm() {
-    this.closeModal();
-    const currentDpm = this.currentDpm();
-    if (!currentDpm) return;
+  denyDpm(dpm: DpmDetailDto, event: Event) {
+    event.stopPropagation();
+    this.expandedDpmId.set(null);
 
     this.approvalsService
-      .denyDpm(currentDpm.id)
+      .denyDpm(dpm.id)
       .pipe(first())
       .subscribe(() => {
         this.notificationService.showSuccess('DPM has been denied', 'Success');
@@ -132,7 +138,8 @@ export class UserDetailComponent implements OnInit {
     this.activeTabName.set(tab);
     this.saveTabInUrl(tab as DetailTab);
 
-    const tabIndex = this.tabs.findIndex((t) => t.name === tab);
+    const tabs = ['info', 'dpms', 'detail-actions'];
+    const tabIndex = tabs.indexOf(tab);
     if (tabIndex !== -1) {
       this.onTabChange(tabIndex);
     }
@@ -166,7 +173,30 @@ export class UserDetailComponent implements OnInit {
         this.dpms.set(pageData.content);
         this.totalRecords.set(pageData.totalElements);
         this.loadingDpms.set(false);
+        // Disable initial load animation after first data load
+        setTimeout(() => this.isInitialLoad.set(false), 500);
       });
+  }
+
+  // Mobile pagination methods
+  goToNextPage() {
+    if (this.currentPage() < this.totalPages() - 1) {
+      this.isInitialLoad.set(true);
+      this.lazyLoadEvent({
+        first: (this.currentPage() + 1) * this.PAGE_SIZE,
+        rows: this.PAGE_SIZE,
+      });
+    }
+  }
+
+  goToPrevPage() {
+    if (this.currentPage() > 0) {
+      this.isInitialLoad.set(true);
+      this.lazyLoadEvent({
+        first: (this.currentPage() - 1) * this.PAGE_SIZE,
+        rows: this.PAGE_SIZE,
+      });
+    }
   }
 
   handleConfirmEvent($event: string) {
@@ -215,6 +245,10 @@ export class UserDetailComponent implements OnInit {
     return (
       this.authService.userData.username.toLowerCase().trim() === user.email.toLowerCase().trim()
     );
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 
   private setTitle() {

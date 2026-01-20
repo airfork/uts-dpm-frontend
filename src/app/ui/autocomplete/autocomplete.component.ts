@@ -98,8 +98,13 @@ export class AutocompleteComponent implements ControlValueAccessor {
     // Delay to allow click on suggestion
     setTimeout(() => {
       if (this.forceSelection() && !this.suggestions().includes(this.inputValue())) {
-        this.inputValue.set('');
-        this.onChange('');
+        // Only call onChange if the value is actually being cleared (was not already empty)
+        // This prevents marking the form dirty when user just focuses and blurs without typing
+        const currentValue = this.inputValue();
+        if (currentValue) {
+          this.inputValue.set('');
+          this.onChange('');
+        }
       }
       this.isOpen.set(false);
     }, 200);
@@ -108,7 +113,7 @@ export class AutocompleteComponent implements ControlValueAccessor {
   selectSuggestion(suggestion: string): void {
     this.inputValue.set(suggestion);
     this.onChange(suggestion);
-    this.onSelect.emit(suggestion);
+    this.selected.emit(suggestion);
     this.isOpen.set(false);
     this.highlightedIndex.set(-1);
   }

@@ -7,6 +7,7 @@ import {
   TemplateRef,
   ContentChild,
   effect,
+  untracked,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { TableColumn, LazyLoadEvent, PageChangeEvent } from './data-table.types';
@@ -55,11 +56,13 @@ export class DataTableComponent<T = unknown> {
 
   constructor() {
     // Sync currentPage when first input changes (for external control)
+    // Use untracked for currentPage to prevent the effect from re-running
+    // when currentPage changes (which would reset it back)
     effect(() => {
       const first = this.first();
       const rows = this.currentRows();
       const page = Math.floor(first / rows);
-      if (this.currentPage() !== page) {
+      if (untracked(() => this.currentPage()) !== page) {
         this.currentPage.set(page);
       }
     });

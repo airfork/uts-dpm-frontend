@@ -4,4 +4,5 @@ export default interface AutogenDpm {
   startTime: string;
   endTime: string;
   type: string;
+  positive: boolean;
 }

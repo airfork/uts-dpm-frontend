@@ -27,6 +27,7 @@ import { NotificationService } from '../../services/notification.service';
 import CreateUserDto from '../../models/create-user-dto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgClass } from '@angular/common';
+import { ButtonComponent } from '../../ui/button/button.component';
 
 const POINTS_VALIDATORS = [Validators.required, Validators.pattern(/-?\d+/)];
 
@@ -34,7 +35,7 @@ const POINTS_VALIDATORS = [Validators.required, Validators.pattern(/-?\d+/)];
   selector: 'app-user-form',
   templateUrl: './user-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, FormsModule, ReactiveFormsModule],
+  imports: [NgClass, FormsModule, ReactiveFormsModule, ButtonComponent],
 })
 export class UserFormComponent implements OnInit, OnChanges {
   private userService = inject(UserService);
@@ -49,6 +50,9 @@ export class UserFormComponent implements OnInit, OnChanges {
   userId = signal<string | null>(null);
   waiting = signal(false);
   roles = signal<string[]>([]);
+
+  // Store original values for change detection
+  private originalValues: Record<string, unknown> | null = null;
 
   userFormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -85,7 +89,7 @@ export class UserFormComponent implements OnInit, OnChanges {
 
   isButtonDisabled(): boolean {
     if (this.layout === 'edit') {
-      return !this.userFormGroup.valid || this.userFormGroup.pristine;
+      return !this.userFormGroup.valid || !this.hasFormChanged();
     }
 
     return !this.userFormGroup.valid;
@@ -96,15 +100,42 @@ export class UserFormComponent implements OnInit, OnChanges {
     return control.invalid && (control.dirty || control.touched);
   }
 
-  setStatusClass(control: AbstractControl | null, isInput = true): string {
-    if (control == null) return '';
-    const prefix = isInput ? 'input-' : 'text-';
+  hasFormChanged(): boolean {
+    if (!this.originalValues) return false;
+    // Use getRawValue() to include disabled form controls (like role when viewing own profile)
+    const currentValues = this.userFormGroup.getRawValue();
+    return Object.keys(this.originalValues).some(
+      (key) => this.originalValues![key] !== currentValues[key as keyof typeof currentValues]
+    );
+  }
 
-    if (this.hasErrors(control)) return prefix + 'error';
-    if (this.layout === 'create' && (control.dirty || control.touched)) {
-      return prefix + 'success';
+  hasFieldChanged(controlName: string): boolean {
+    if (!this.originalValues || this.layout !== 'edit') return false;
+    const currentValue = this.userFormGroup.get(controlName)?.value;
+    return this.originalValues[controlName] !== currentValue;
+  }
+
+  resetForm(): void {
+    if (this.layout === 'edit' && this.originalValues) {
+      this.userFormGroup.reset(this.originalValues);
+      this.userFormGroup.markAsPristine();
+      this.userFormGroup.markAsUntouched();
     }
-    return '';
+  }
+
+  getInputBorderClass(control: AbstractControl | null, controlName?: string): string {
+    if (control == null) {
+      return 'border-neutral-200 dark:border-neutral-600 focus:border-primary-500 focus:ring-primary-500/20';
+    }
+
+    if (this.hasErrors(control)) {
+      return 'border-error-500 focus:border-error-500 focus:ring-error-500/20';
+    }
+    // Show success state only if control is valid AND value has actually changed from original
+    if (control.valid && controlName && this.hasFieldChanged(controlName)) {
+      return 'border-success-500 focus:border-success-500 focus:ring-success-500/20';
+    }
+    return 'border-neutral-200 dark:border-neutral-600 focus:border-primary-500 focus:ring-primary-500/20';
   }
 
   getEmailValidationMessages(): string {
@@ -175,7 +206,7 @@ export class UserFormComponent implements OnInit, OnChanges {
     const user = this.user();
     if (!user) return;
 
-    this.userFormGroup.reset({
+    const initialValues = {
       email: user.email,
       firstname: user.firstname,
       lastname: user.lastname,
@@ -183,7 +214,10 @@ export class UserFormComponent implements OnInit, OnChanges {
       manager: this.managers![0],
       role: this.roles()[0],
       fullTime: user.fullTime,
-    });
+    };
+
+    this.userFormGroup.reset(initialValues);
+    this.originalValues = { ...initialValues };
   }
 
   private setCreateFormData() {
@@ -278,6 +312,8 @@ export class UserFormComponent implements OnInit, OnChanges {
 
           this.userFormGroup.reset({ ...newValues });
           this.userFormGroup.markAsPristine();
+          // Update original values so the form knows the new baseline
+          this.originalValues = { ...newValues };
         },
         error: () => {
           this.waiting.set(false);

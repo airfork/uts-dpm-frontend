@@ -17,7 +17,7 @@ export class StatCardComponent {
     const baseClasses = 'p-4 rounded-lg backdrop-blur border';
 
     const variantClasses: Record<StatCardVariant, string> = {
-      default: 'bg-white/10 border-white/20',
+      default: 'bg-secondary-500/15 border-secondary-400/30',
       success: 'bg-success-500/20 border-success-400/30',
       error: 'bg-error-500/20 border-error-400/30',
       warning: 'bg-warning-500/20 border-warning-400/30',
@@ -29,7 +29,7 @@ export class StatCardComponent {
 
   titleClasses = computed(() => {
     const variantClasses: Record<StatCardVariant, string> = {
-      default: 'text-white/70',
+      default: 'text-secondary-100',
       success: 'text-success-100',
       error: 'text-error-100',
       warning: 'text-warning-100',

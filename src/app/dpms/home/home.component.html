@@ -18,9 +18,7 @@
         />
       } @else {
         <!-- Hero Section -->
-        <section
-          class="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-6 md:p-8"
-        >
+        <section class="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-6 md:p-8">
           <div class="flex items-center gap-4 mb-6">
             <div
               class="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center"
@@ -41,28 +39,18 @@
               </svg>
             </div>
             <div>
-              <h1 class="text-2xl font-bold text-white">
-                Performance Overview
-              </h1>
+              <h1 class="text-2xl font-bold text-white">Performance Overview</h1>
               <p class="text-sm text-white/70">Your current DPM summary</p>
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <app-stat-card
-              title="Total DPMs"
-              [value]="totalCount()"
-              variant="default"
-            />
+            <app-stat-card title="Total DPMs" [value]="totalCount()" variant="default" />
             <app-stat-card
               title="Positive Points"
               [value]="'+' + positivePoints()"
               variant="success"
             />
-            <app-stat-card
-              title="Negative Points"
-              [value]="negativePoints()"
-              variant="error"
-            />
+            <app-stat-card title="Negative Points" [value]="negativePoints()" variant="error" />
           </div>
         </section>
 
@@ -105,22 +93,15 @@
 
               <!-- Expanded Details -->
               @if (isExpanded(dpm)) {
-                <div
-                  class="home-mobile-expanded"
-                  (click)="$event.stopPropagation()"
-                >
+                <div class="home-mobile-expanded" (click)="$event.stopPropagation()">
                   <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                     <div class="home-detail-item">
                       <span class="home-detail-label">Block</span>
-                      <span class="home-detail-value">{{
-                        dpm.block | block
-                      }}</span>
+                      <span class="home-detail-value">{{ dpm.block | block }}</span>
                     </div>
                     <div class="home-detail-item">
                       <span class="home-detail-label">Location</span>
-                      <span class="home-detail-value">{{
-                        dpm.location | uppercase
-                      }}</span>
+                      <span class="home-detail-value">{{ dpm.location | uppercase }}</span>
                     </div>
                     <div class="home-detail-item">
                       <span class="home-detail-label">Time</span>
@@ -164,15 +145,11 @@
                 [class.home-row-negative]="dpm.points < 0"
                 [class.home-row-expanded]="isExpanded(dpm)"
                 [class.home-row-new]="isInitialLoad()"
-                [style.animation-delay]="
-                  isInitialLoad() ? i * 30 + 'ms' : '0ms'
-                "
+                [style.animation-delay]="isInitialLoad() ? i * 30 + 'ms' : '0ms'"
                 (click)="toggleExpand(dpm)"
               >
                 <td class="px-6 py-4">
-                  <span class="font-medium text-base-content">{{
-                    dpm.type
-                  }}</span>
+                  <span class="font-medium text-base-content">{{ dpm.type }}</span>
                 </td>
                 <td class="px-6 py-4">
                   <span
@@ -185,9 +162,7 @@
                 </td>
                 <td class="px-6 py-4">
                   <div class="flex items-center justify-between">
-                    <span class="text-sm text-base-content/70">{{
-                      dpm.date
-                    }}</span>
+                    <span class="text-sm text-base-content/70">{{ dpm.date }}</span>
                     <i
                       class="pi pi-chevron-down text-base-content/40 transition-transform duration-200"
                       [class.rotate-180]="isExpanded(dpm)"
@@ -205,20 +180,14 @@
                       [class.home-expanded-positive]="dpm.points >= 0"
                       [class.home-expanded-negative]="dpm.points < 0"
                     >
-                      <div
-                        class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 text-sm"
-                      >
+                      <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 text-sm">
                         <div class="home-detail-item">
                           <span class="home-detail-label">Block</span>
-                          <span class="home-detail-value">{{
-                            dpm.block | block
-                          }}</span>
+                          <span class="home-detail-value">{{ dpm.block | block }}</span>
                         </div>
                         <div class="home-detail-item">
                           <span class="home-detail-label">Location</span>
-                          <span class="home-detail-value">{{
-                            dpm.location | uppercase
-                          }}</span>
+                          <span class="home-detail-value">{{ dpm.location | uppercase }}</span>
                         </div>
                         <div class="home-detail-item">
                           <span class="home-detail-label">Time</span>
@@ -229,13 +198,9 @@
                           <span class="home-detail-value">{{ dpm.date }}</span>
                         </div>
                         @if (dpm.notes) {
-                          <div
-                            class="home-detail-item col-span-2 md:col-span-4"
-                          >
+                          <div class="home-detail-item col-span-2 md:col-span-4">
                             <span class="home-detail-label">Notes</span>
-                            <span class="home-detail-value">{{
-                              dpm.notes
-                            }}</span>
+                            <span class="home-detail-value">{{ dpm.notes }}</span>
                           </div>
                         }
                       </div>

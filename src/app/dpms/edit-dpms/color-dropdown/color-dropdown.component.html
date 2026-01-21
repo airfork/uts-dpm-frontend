@@ -35,10 +35,7 @@
           [disabled]="isColorInUse(color)"
           (click)="selectColor(color)"
         >
-          <span
-            class="color-swatch"
-            [style.background-color]="color.hexCode"
-          ></span>
+          <span class="color-swatch" [style.background-color]="color.hexCode"></span>
           <span>{{ color.colorName }}</span>
           @if (isColorInUse(color)) {
             <span class="text-xs text-base-content/50 ml-auto">(in use)</span>

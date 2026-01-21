@@ -80,9 +80,7 @@
         routerLink="/"
         class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-white font-bold text-xl hover:bg-white/10 transition-colors"
       >
-        <div
-          class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center"
-        >
+        <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="w-5 h-5 text-white"
@@ -139,12 +137,10 @@
         (click)="toggleTheme()"
         class="ml-2 p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
         [attr.aria-label]="
-          currentTheme() === 'light'
-            ? 'Switch to dark mode'
-            : 'Switch to light mode'
+          currentTheme() === 'light' ? 'Switch to dark mode' : 'Switch to light mode'
         "
       >
-        @if (currentTheme() === "light") {
+        @if (currentTheme() === 'light') {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -160,7 +156,7 @@
             />
           </svg>
         }
-        @if (currentTheme() === "dark") {
+        @if (currentTheme() === 'dark') {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"

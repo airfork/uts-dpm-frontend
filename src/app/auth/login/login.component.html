@@ -34,15 +34,9 @@
     <div
       class="bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-8 shadow-xl"
     >
-      <h2 class="text-xl font-semibold text-base-content mb-6">
-        Sign in to your account
-      </h2>
+      <h2 class="text-xl font-semibold text-base-content mb-6">Sign in to your account</h2>
 
-      <form
-        class="space-y-5"
-        [formGroup]="loginFormGroup"
-        (ngSubmit)="onSubmit()"
-      >
+      <form class="space-y-5" [formGroup]="loginFormGroup" (ngSubmit)="onSubmit()">
         <div class="space-y-2">
           <label
             for="username"
@@ -60,18 +54,13 @@
               'border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/50 dark:bg-error-900/10':
                 hasErrors(username) || badCredentials(),
             }"
-            [attr.aria-describedby]="
-              getUsernameValidationMessages() ? 'username-error' : null
-            "
+            [attr.aria-describedby]="getUsernameValidationMessages() ? 'username-error' : null"
             placeholder="Enter your username"
             formControlName="username"
             (input)="onUserInput()"
           />
           @if (getUsernameValidationMessages()) {
-            <p
-              id="username-error"
-              class="text-sm text-error-600 font-medium mt-1.5"
-            >
+            <p id="username-error" class="text-sm text-error-600 font-medium mt-1.5">
               {{ getUsernameValidationMessages() }}
             </p>
           }
@@ -95,9 +84,7 @@
                 'border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/50 dark:bg-error-900/10':
                   hasErrors(password) || badCredentials(),
               }"
-              [attr.aria-describedby]="
-                getPasswordValidationMessages() ? 'password-error' : null
-              "
+              [attr.aria-describedby]="getPasswordValidationMessages() ? 'password-error' : null"
               placeholder="Enter your password"
               formControlName="password"
               (input)="onUserInput()"
@@ -112,10 +99,7 @@
             </button>
           </div>
           @if (getPasswordValidationMessages()) {
-            <p
-              id="password-error"
-              class="text-sm text-error-600 font-medium mt-1.5"
-            >
+            <p id="password-error" class="text-sm text-error-600 font-medium mt-1.5">
               {{ getPasswordValidationMessages() }}
             </p>
           }

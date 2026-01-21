@@ -5,10 +5,7 @@
     <!-- Row 1: Driver Name, Block Name, Location -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div class="flex flex-col gap-1.5">
-        <label
-          for="dpmNameInput"
-          class="block text-sm font-semibold dpm-form-label"
-        >
+        <label for="dpmNameInput" class="block text-sm font-semibold dpm-form-label">
           Driver Name
         </label>
         <app-autocomplete
@@ -19,9 +16,7 @@
             'w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 ' +
             getInputBorderClass(name)
           "
-          [panelClass]="
-            'dpm-form-input border border-neutral-200 rounded-lg shadow-lg mt-1'
-          "
+          [panelClass]="'dpm-form-input border border-neutral-200 rounded-lg shadow-lg mt-1'"
           [suggestions]="autocompleteResults()"
           (completeMethod)="search($event)"
           [showEmptyMessage]="true"
@@ -37,10 +32,7 @@
       </div>
 
       <div class="flex flex-col gap-1.5">
-        <label
-          for="dpmBlockInput"
-          class="block text-sm font-semibold dpm-form-label"
-        >
+        <label for="dpmBlockInput" class="block text-sm font-semibold dpm-form-label">
           Block Name
         </label>
         <input
@@ -65,10 +57,7 @@
       </div>
 
       <div class="flex flex-col gap-1.5">
-        <label
-          for="dpmLocationInput"
-          class="block text-sm font-semibold dpm-form-label"
-        >
+        <label for="dpmLocationInput" class="block text-sm font-semibold dpm-form-label">
           Location
         </label>
         <input
@@ -96,12 +85,7 @@
     <!-- Row 2: Date, Start Time, End Time -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div class="flex flex-col gap-1.5">
-        <label
-          for="dpmDateInput"
-          class="block text-sm font-semibold dpm-form-label"
-        >
-          Date
-        </label>
+        <label for="dpmDateInput" class="block text-sm font-semibold dpm-form-label"> Date </label>
         <app-date-picker
           [inputId]="'dpmDateInput'"
           formControlName="dpmDate"
@@ -121,10 +105,7 @@
       </div>
 
       <div class="flex flex-col gap-1.5">
-        <label
-          for="dpmStartTimeInput"
-          class="block text-sm font-semibold dpm-form-label"
-        >
+        <label for="dpmStartTimeInput" class="block text-sm font-semibold dpm-form-label">
           Start Time
         </label>
         <input
@@ -150,10 +131,7 @@
       </div>
 
       <div class="flex flex-col gap-1.5">
-        <label
-          for="dpmEndTimeInput"
-          class="block text-sm font-semibold dpm-form-label"
-        >
+        <label for="dpmEndTimeInput" class="block text-sm font-semibold dpm-form-label">
           End Time
         </label>
         <input
@@ -182,10 +160,7 @@
     <!-- Row 3: DPM Type, Additional Notes -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="flex flex-col gap-1.5">
-        <label
-          for="dpmTypeInput"
-          class="block text-sm font-semibold dpm-form-label"
-        >
+        <label for="dpmTypeInput" class="block text-sm font-semibold dpm-form-label">
           DPM Type
         </label>
         <select
@@ -196,9 +171,7 @@
           @for (group of dpmGroups(); track group.groupName) {
             <optgroup label="{{ group.groupName }}">
               @for (dpm of group.dpms; track dpm.name) {
-                <option [value]="dpm.id">
-                  {{ dpm.name }} {{ formatPoints(dpm.points) }}
-                </option>
+                <option [value]="dpm.id">{{ dpm.name }} {{ formatPoints(dpm.points) }}</option>
               }
             </optgroup>
           }
@@ -206,10 +179,7 @@
       </div>
 
       <div class="flex flex-col gap-1.5">
-        <label
-          for="dpmNotesInput"
-          class="block text-sm font-semibold dpm-form-label"
-        >
+        <label for="dpmNotesInput" class="block text-sm font-semibold dpm-form-label">
           Additional Notes
         </label>
         <input

@@ -52,8 +52,7 @@
           type="button"
           class="px-5 py-2.5 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer"
           [ngClass]="{
-            'bg-primary-600 text-white shadow-sm':
-              activeTabName() === 'detail-actions',
+            'bg-primary-600 text-white shadow-sm': activeTabName() === 'detail-actions',
             'bg-transparent text-base-content/60 hover:text-base-content hover:bg-base-300/50':
               activeTabName() !== 'detail-actions',
           }"
@@ -72,10 +71,7 @@
         <div
           class="bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-md overflow-hidden"
         >
-          <app-user-form
-            layout="edit"
-            [userInfo]="{ user, id: userId() }"
-          ></app-user-form>
+          <app-user-form layout="edit" [userInfo]="{ user, id: userId() }"></app-user-form>
         </div>
       </div>
 
@@ -86,10 +82,7 @@
         [class.tab-content-hidden]="activeTabName() !== 'dpms'"
       >
         @if (dpms().length === 0 && !loadingDpms()) {
-          <app-empty-state
-            heading="No DPMs Found"
-            description="This user has no DPM records."
-          />
+          <app-empty-state heading="No DPMs Found" description="This user has no DPM records." />
         } @else {
           <!-- Mobile Card Layout -->
           <div class="md:hidden space-y-3">
@@ -98,16 +91,12 @@
                 class="user-dpm-mobile-card"
                 [class.user-dpm-mobile-card-expanded]="isExpanded(dpm)"
                 [class.user-dpm-card-new]="isInitialLoad()"
-                [style.animation-delay]="
-                  isInitialLoad() ? i * 30 + 'ms' : '0ms'
-                "
+                [style.animation-delay]="isInitialLoad() ? i * 30 + 'ms' : '0ms'"
                 (click)="toggleExpand(dpm)"
               >
                 <!-- Card Header -->
                 <div class="flex items-center justify-between">
-                  <span class="font-medium text-base-content">{{
-                    dpm.type
-                  }}</span>
+                  <span class="font-medium text-base-content">{{ dpm.type }}</span>
                   <div class="flex items-center gap-2">
                     <span
                       class="px-2 py-0.5 text-xs font-medium rounded-full"
@@ -132,65 +121,46 @@
                 </div>
 
                 <!-- Card Date -->
-                <div
-                  class="mt-2 flex items-center gap-2 text-sm text-base-content/60"
-                >
+                <div class="mt-2 flex items-center gap-2 text-sm text-base-content/60">
                   <i class="pi pi-calendar text-xs"></i>
                   {{ dpm.date }}
                 </div>
 
                 <!-- Expanded Details -->
                 @if (isExpanded(dpm)) {
-                  <div
-                    class="user-dpm-mobile-expanded"
-                    (click)="$event.stopPropagation()"
-                  >
+                  <div class="user-dpm-mobile-expanded" (click)="$event.stopPropagation()">
                     <!-- Details Grid -->
                     <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                       @if (dpm.createdBy) {
                         <div class="approvals-detail-item">
                           <span class="approvals-detail-label">Created By</span>
-                          <span class="approvals-detail-value">{{
-                            dpm.createdBy
-                          }}</span>
+                          <span class="approvals-detail-value">{{ dpm.createdBy }}</span>
                         </div>
                       }
                       <div class="approvals-detail-item">
                         <span class="approvals-detail-label">Points</span>
-                        <span class="approvals-detail-value">{{
-                          dpm.points | points
-                        }}</span>
+                        <span class="approvals-detail-value">{{ dpm.points | points }}</span>
                       </div>
                       <div class="approvals-detail-item">
                         <span class="approvals-detail-label">Block</span>
-                        <span class="approvals-detail-value">{{
-                          dpm.block | block
-                        }}</span>
+                        <span class="approvals-detail-value">{{ dpm.block | block }}</span>
                       </div>
                       <div class="approvals-detail-item">
                         <span class="approvals-detail-label">Location</span>
-                        <span class="approvals-detail-value">{{
-                          dpm.location | uppercase
-                        }}</span>
+                        <span class="approvals-detail-value">{{ dpm.location | uppercase }}</span>
                       </div>
                       <div class="approvals-detail-item">
                         <span class="approvals-detail-label">Time</span>
-                        <span class="approvals-detail-value">{{
-                          dpm.time
-                        }}</span>
+                        <span class="approvals-detail-value">{{ dpm.time }}</span>
                       </div>
                       <div class="approvals-detail-item">
                         <span class="approvals-detail-label">Created At</span>
-                        <span class="approvals-detail-value">{{
-                          dpm.createdAt
-                        }}</span>
+                        <span class="approvals-detail-value">{{ dpm.createdAt }}</span>
                       </div>
                       @if (dpm.notes) {
                         <div class="approvals-detail-item col-span-2">
                           <span class="approvals-detail-label">Notes</span>
-                          <span class="approvals-detail-value">{{
-                            dpm.notes
-                          }}</span>
+                          <span class="approvals-detail-value">{{ dpm.notes }}</span>
                         </div>
                       }
                     </div>
@@ -229,9 +199,7 @@
                 </span>
                 <button
                   class="user-mobile-page-btn"
-                  [disabled]="
-                    currentPage() >= totalPages() - 1 || loadingDpms()
-                  "
+                  [disabled]="currentPage() >= totalPages() - 1 || loadingDpms()"
                   (click)="goToNextPage()"
                 >
                   Next
@@ -270,16 +238,12 @@
                   class="user-dpm-row cursor-pointer"
                   [class.user-dpm-row-expanded]="isExpanded(dpm)"
                   [class.user-dpm-row-new]="isInitialLoad()"
-                  [style.animation-delay]="
-                    isInitialLoad() ? i * 30 + 'ms' : '0ms'
-                  "
+                  [style.animation-delay]="isInitialLoad() ? i * 30 + 'ms' : '0ms'"
                   (click)="toggleExpand(dpm)"
                 >
                   <td class="px-4 py-3">
                     <div class="flex items-center gap-2">
-                      <span class="text-sm font-medium text-base-content">{{
-                        dpm.type
-                      }}</span>
+                      <span class="text-sm font-medium text-base-content">{{ dpm.type }}</span>
                     </div>
                   </td>
                   <td class="px-4 py-3 text-sm text-base-content/70">
@@ -317,61 +281,39 @@
                       <div class="user-dpm-expanded-content">
                         <div class="flex flex-col md:flex-row gap-6">
                           <!-- Details Section -->
-                          <div
-                            class="flex-1 grid grid-cols-2 gap-x-6 gap-y-2 text-sm"
-                          >
+                          <div class="flex-1 grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
                             @if (dpm.createdBy) {
                               <div class="approvals-detail-item">
-                                <span class="approvals-detail-label"
-                                  >Created By</span
-                                >
-                                <span class="approvals-detail-value">{{
-                                  dpm.createdBy
-                                }}</span>
+                                <span class="approvals-detail-label">Created By</span>
+                                <span class="approvals-detail-value">{{ dpm.createdBy }}</span>
                               </div>
                             }
                             <div class="approvals-detail-item">
                               <span class="approvals-detail-label">Points</span>
-                              <span class="approvals-detail-value">{{
-                                dpm.points | points
-                              }}</span>
+                              <span class="approvals-detail-value">{{ dpm.points | points }}</span>
                             </div>
                             <div class="approvals-detail-item">
                               <span class="approvals-detail-label">Block</span>
-                              <span class="approvals-detail-value">{{
-                                dpm.block | block
-                              }}</span>
+                              <span class="approvals-detail-value">{{ dpm.block | block }}</span>
                             </div>
                             <div class="approvals-detail-item">
-                              <span class="approvals-detail-label"
-                                >Location</span
-                              >
+                              <span class="approvals-detail-label">Location</span>
                               <span class="approvals-detail-value">{{
                                 dpm.location | uppercase
                               }}</span>
                             </div>
                             <div class="approvals-detail-item">
                               <span class="approvals-detail-label">Time</span>
-                              <span class="approvals-detail-value">{{
-                                dpm.time
-                              }}</span>
+                              <span class="approvals-detail-value">{{ dpm.time }}</span>
                             </div>
                             <div class="approvals-detail-item">
-                              <span class="approvals-detail-label"
-                                >Created At</span
-                              >
-                              <span class="approvals-detail-value">{{
-                                dpm.createdAt
-                              }}</span>
+                              <span class="approvals-detail-label">Created At</span>
+                              <span class="approvals-detail-value">{{ dpm.createdAt }}</span>
                             </div>
                             @if (dpm.notes) {
                               <div class="approvals-detail-item col-span-2">
-                                <span class="approvals-detail-label"
-                                  >Notes</span
-                                >
-                                <span class="approvals-detail-value">{{
-                                  dpm.notes
-                                }}</span>
+                                <span class="approvals-detail-label">Notes</span>
+                                <span class="approvals-detail-value">{{ dpm.notes }}</span>
                               </div>
                             }
                           </div>
@@ -410,58 +352,35 @@
         [class.tab-content-hidden]="activeTabName() !== 'detail-actions'"
       >
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div
-            class="user-action-card border-l-primary-500"
-            (click)="resetClick()"
-          >
+          <div class="user-action-card border-l-primary-500" (click)="resetClick()">
             <div class="flex items-center gap-3 mb-3">
-              <div
-                class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center"
-              >
+              <div class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center">
                 <i class="pi pi-lock text-primary-500"></i>
               </div>
-              <h3 class="text-lg font-semibold text-base-content">
-                Reset Password
-              </h3>
+              <h3 class="text-lg font-semibold text-base-content">Reset Password</h3>
             </div>
             <p class="text-sm text-base-content/60">
               Send a password reset link to the user's email.
             </p>
           </div>
 
-          <div
-            class="user-action-card border-l-success-500"
-            (click)="sendEmailClick()"
-          >
+          <div class="user-action-card border-l-success-500" (click)="sendEmailClick()">
             <div class="flex items-center gap-3 mb-3">
-              <div
-                class="w-10 h-10 rounded-lg bg-success-500/10 flex items-center justify-center"
-              >
+              <div class="w-10 h-10 rounded-lg bg-success-500/10 flex items-center justify-center">
                 <i class="pi pi-envelope text-success-500"></i>
               </div>
-              <h3 class="text-lg font-semibold text-base-content">
-                Send Points Email
-              </h3>
+              <h3 class="text-lg font-semibold text-base-content">Send Points Email</h3>
             </div>
-            <p class="text-sm text-base-content/60">
-              Email the user their current point balance.
-            </p>
+            <p class="text-sm text-base-content/60">Email the user their current point balance.</p>
           </div>
 
           @if (!viewingSelf()) {
-            <div
-              class="user-action-card border-l-error-500"
-              (click)="deleteUserClick()"
-            >
+            <div class="user-action-card border-l-error-500" (click)="deleteUserClick()">
               <div class="flex items-center gap-3 mb-3">
-                <div
-                  class="w-10 h-10 rounded-lg bg-error-500/10 flex items-center justify-center"
-                >
+                <div class="w-10 h-10 rounded-lg bg-error-500/10 flex items-center justify-center">
                   <i class="pi pi-trash text-error-500"></i>
                 </div>
-                <h3 class="text-lg font-semibold text-base-content">
-                  Delete User
-                </h3>
+                <h3 class="text-lg font-semibold text-base-content">Delete User</h3>
               </div>
               <p class="text-sm text-base-content/60">
                 Permanently remove this user from the system.

@@ -41,8 +41,7 @@
           type="button"
           class="px-5 py-2.5 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer"
           [ngClass]="{
-            'bg-primary-600 text-white shadow-sm':
-              activeTabName() === 'actions',
+            'bg-primary-600 text-white shadow-sm': activeTabName() === 'actions',
             'bg-transparent text-base-content/60 hover:text-base-content hover:bg-base-300/50':
               activeTabName() !== 'actions',
           }"
@@ -90,9 +89,7 @@
               <div
                 class="user-mobile-card"
                 [class.user-card-new]="isInitialLoad()"
-                [style.animation-delay]="
-                  isInitialLoad() ? i * 30 + 'ms' : '0ms'
-                "
+                [style.animation-delay]="isInitialLoad() ? i * 30 + 'ms' : '0ms'"
                 (click)="handlerUserClick(user.id)"
               >
                 <div class="flex items-center gap-3">
@@ -101,8 +98,8 @@
                   </div>
                   <div class="flex-1 min-w-0">
                     <div class="font-medium text-base-content truncate">
-                      {{ user.name | name: "first" }}
-                      {{ user.name | name: "last" }}
+                      {{ user.name | name: 'first' }}
+                      {{ user.name | name: 'last' }}
                     </div>
                   </div>
                   <i class="pi pi-chevron-right text-base-content/40"></i>
@@ -116,9 +113,7 @@
             class="hidden md:block bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-md overflow-hidden"
           >
             <!-- Search bar inside card -->
-            <div
-              class="p-4 border-b border-neutral-200 dark:border-neutral-700"
-            >
+            <div class="p-4 border-b border-neutral-200 dark:border-neutral-700">
               <div class="relative max-w-md">
                 <i
                   class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40"
@@ -159,9 +154,7 @@
                 <tr
                   class="user-row"
                   [class.user-row-new]="isInitialLoad()"
-                  [style.animation-delay]="
-                    isInitialLoad() ? i * 30 + 'ms' : '0ms'
-                  "
+                  [style.animation-delay]="isInitialLoad() ? i * 30 + 'ms' : '0ms'"
                   (click)="handlerUserClick(user.id)"
                 >
                   <td class="px-4 py-3">
@@ -170,12 +163,12 @@
                         {{ getInitials(user.name) }}
                       </div>
                       <span class="text-sm font-medium text-base-content">
-                        {{ user.name | name: "last" }}
+                        {{ user.name | name: 'last' }}
                       </span>
                     </div>
                   </td>
                   <td class="px-4 py-3 text-sm text-base-content/70">
-                    {{ user.name | name: "first" }}
+                    {{ user.name | name: 'first' }}
                   </td>
                 </tr>
               </ng-template>
@@ -198,10 +191,7 @@
         <div
           class="bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-md overflow-hidden"
         >
-          <app-user-form
-            layout="create"
-            [managers]="managers()"
-          ></app-user-form>
+          <app-user-form layout="create" [managers]="managers()"></app-user-form>
         </div>
       </div>
 
@@ -212,42 +202,27 @@
         [class.tab-content-hidden]="activeTabName() !== 'actions'"
       >
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div
-            class="user-action-card border-l-primary-500"
-            (click)="sendEmailClick()"
-          >
+          <div class="user-action-card border-l-primary-500" (click)="sendEmailClick()">
             <div class="flex items-center gap-3 mb-3">
-              <div
-                class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center"
-              >
+              <div class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center">
                 <i class="pi pi-envelope text-primary-500"></i>
               </div>
-              <h3 class="text-lg font-semibold text-base-content">
-                Send Points Email
-              </h3>
+              <h3 class="text-lg font-semibold text-base-content">Send Points Email</h3>
             </div>
             <p class="text-sm text-base-content/60">
               Send an email to all users with their current point balance.
             </p>
           </div>
 
-          <div
-            class="user-action-card border-l-error-500"
-            (click)="resetPointsClick()"
-          >
+          <div class="user-action-card border-l-error-500" (click)="resetPointsClick()">
             <div class="flex items-center gap-3 mb-3">
-              <div
-                class="w-10 h-10 rounded-lg bg-error-500/10 flex items-center justify-center"
-              >
+              <div class="w-10 h-10 rounded-lg bg-error-500/10 flex items-center justify-center">
                 <i class="pi pi-refresh text-error-500"></i>
               </div>
-              <h3 class="text-lg font-semibold text-base-content">
-                Reset Points Balance
-              </h3>
+              <h3 class="text-lg font-semibold text-base-content">Reset Points Balance</h3>
             </div>
             <p class="text-sm text-base-content/60">
-              Reset all users' point balances back to zero. This action cannot
-              be undone.
+              Reset all users' point balances back to zero. This action cannot be undone.
             </p>
           </div>
         </div>

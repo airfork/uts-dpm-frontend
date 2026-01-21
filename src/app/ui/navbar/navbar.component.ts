@@ -3,9 +3,9 @@ import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
 import { Roles } from '../../auth/roles.types';
-import { RemoveIfUnauthorizedDirective } from '../../auth/directives/remove-if-unauthorized.directive';
+import { AuthorizedDirective } from '../../auth/directives/authorized.directive';
 
-interface navbarLinks {
+interface NavbarLink {
   path?: string;
   name: string;
   allowedRoles: Roles[];
@@ -14,7 +14,7 @@ interface navbarLinks {
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  imports: [RouterLink, RouterLinkActive, RemoveIfUnauthorizedDirective],
+  imports: [RouterLink, RouterLinkActive, AuthorizedDirective],
 })
 export class NavbarComponent {
   private authService = inject(AuthService);
@@ -35,16 +35,15 @@ export class NavbarComponent {
   }
 
   constructor() {
-    effect(() => {
+    effect((onCleanup) => {
       if (this.isDropdownOpen()) {
         this.addDocumentListeners();
-      } else {
-        this.removeDocumentListeners();
+        onCleanup(() => this.removeDocumentListeners());
       }
     });
   }
 
-  links: navbarLinks[] = [
+  links: NavbarLink[] = [
     {
       path: '/dpm',
       name: 'DPM',

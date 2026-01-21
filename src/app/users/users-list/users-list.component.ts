@@ -270,13 +270,6 @@ export class UsersListComponent implements OnInit {
     });
   }
 
-  private clearQueryParams() {
-    this.router.navigate(['.'], {
-      relativeTo: this.route,
-      replaceUrl: true,
-    });
-  }
-
   private sendPointsBalanceAll() {
     this.userService
       .sendPointsBalanceAll()

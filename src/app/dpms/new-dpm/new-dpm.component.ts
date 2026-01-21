@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, input, signal, inject } from '@angular/core';
+import { afterNextRender, Component, input, signal, inject } from '@angular/core';
 import { AbstractControl, FormGroup, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { DpmService } from '../../services/dpm.service';
 import { NotificationService } from '../../services/notification.service';
@@ -7,6 +7,7 @@ import PostDpmDto from '../../models/post-dpm-dto';
 import UsernameDto from '../../models/username-dto';
 import { first } from 'rxjs';
 import { DPMGroup } from '../../models/dpm-type';
+import { setDefaultDpmType } from '../shared/dpm-form.utils';
 import { AutocompleteComponent } from '../../ui/autocomplete/autocomplete.component';
 import { AutocompleteCompleteEvent } from '../../ui/autocomplete/autocomplete.types';
 import { DatePickerComponent } from '../../ui/date-picker/date-picker.component';
@@ -19,7 +20,7 @@ type startEndTime = 'Start Time' | 'End Time';
   templateUrl: './new-dpm.component.html',
   imports: [ReactiveFormsModule, AutocompleteComponent, DatePickerComponent, ButtonComponent],
 })
-export class NewDpmComponent implements AfterViewInit {
+export class NewDpmComponent {
   private dpmService = inject(DpmService);
   private notificationService = inject(NotificationService);
   private formatService = inject(FormatService);
@@ -30,30 +31,16 @@ export class NewDpmComponent implements AfterViewInit {
   dpmGroups = input.required<DPMGroup[]>();
   isGroupsLoaded = input.required<boolean>();
 
-  ngAfterViewInit() {
-    // additional check after view init in case the above wasn't enough
-    setTimeout(() => {
+  constructor() {
+    afterNextRender(() => {
       if (this.isGroupsLoaded() && !this.homeFormGroup().get('type')?.value) {
         this.setDefaultDpmType();
       }
-    }, 0);
+    });
   }
 
-  // New helper method to set the default DPM type
   private setDefaultDpmType() {
-    const groups = this.dpmGroups();
-    if (groups && groups.length > 0 && groups[0].dpms && groups[0].dpms.length > 0) {
-      this.homeFormGroup().patchValue({
-        type: groups[0].dpms[0].id,
-      });
-
-      // Force detection of the change
-      setTimeout(() => {
-        this.homeFormGroup().updateValueAndValidity();
-      }, 0);
-    } else {
-      console.warn('No DPM groups or types found to set as default');
-    }
+    setDefaultDpmType(this.dpmGroups(), this.homeFormGroup());
   }
 
   search(event: AutocompleteCompleteEvent) {

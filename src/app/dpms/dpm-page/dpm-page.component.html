@@ -8,11 +8,7 @@
       variant="primary"
     />
 
-    <div
-      role="tablist"
-      class="flex gap-2"
-      [appRemoveIfUnauthorized]="editRoles"
-    >
+    <div *appAuthorized="editRoles" role="tablist" class="flex gap-2">
       <button
         role="tab"
         type="button"

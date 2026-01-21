@@ -150,17 +150,17 @@ export class AutocompleteComponent implements ControlValueAccessor {
     }
   }
 
-  highlightMatch(text: string): string {
+  getHighlightParts(text: string): { text: string; highlight: boolean }[] {
     const query = this.inputValue().toLowerCase();
-    if (!query) return text;
+    if (!query) return [{ text, highlight: false }];
 
     const index = text.toLowerCase().indexOf(query);
-    if (index === -1) return text;
+    if (index === -1) return [{ text, highlight: false }];
 
-    const before = text.slice(0, index);
-    const match = text.slice(index, index + query.length);
-    const after = text.slice(index + query.length);
-
-    return `${before}<strong class="text-primary-600 dark:text-primary-400">${match}</strong>${after}`;
+    return [
+      { text: text.slice(0, index), highlight: false },
+      { text: text.slice(index, index + query.length), highlight: true },
+      { text: text.slice(index + query.length), highlight: false },
+    ].filter((p) => p.text);
   }
 }

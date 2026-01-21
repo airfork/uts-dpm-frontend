@@ -97,14 +97,6 @@
   isolation: isolate;
 }
 
-/* Compact textarea - looks like a text input until content wraps */
-.compact-textarea {
-  padding: 0.375rem 0.5rem;
-  line-height: 1.4;
-  min-height: unset;
-  overflow: hidden;
-}
-
 /* Column header row */
 .dpm-header-row {
   display: grid;

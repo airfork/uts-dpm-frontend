@@ -25,8 +25,8 @@ export class AutogenService {
     );
   }
 
-  submit(): Observable<unknown> {
-    return this.http.post(BASE_URL + '/submit', null).pipe(
+  submit(): Observable<void> {
+    return this.http.post<void>(BASE_URL + '/submit', null).pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(
           error,

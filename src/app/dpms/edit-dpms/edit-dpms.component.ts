@@ -1,4 +1,15 @@
-import { Component, effect, inject, input, model, OnInit, signal } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  effect,
+  inject,
+  Injector,
+  input,
+  model,
+  OnInit,
+  Renderer2,
+  signal,
+} from '@angular/core';
 import {
   CdkDrag,
   CdkDragDrop,
@@ -30,6 +41,7 @@ import { CardComponent } from '../../ui/card/card.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { ColorByIdPipe } from '../../shared/pipes/color-by-id.pipe';
 import { ColorDropdownComponent } from './color-dropdown/color-dropdown.component';
+import { ANIMATION_DURATIONS } from '../../shared/constants/animations';
 
 interface DpmListDropData {
   groupControl: AbstractControl; // This is the FormGroup for the DPM group
@@ -79,6 +91,8 @@ const DPM_GROUP_NAME_VALIDATORS = [Validators.required, Validators.maxLength(500
 export class EditDpmsComponent implements OnInit {
   private notificationService = inject(NotificationService);
   private dpmService = inject(DpmService);
+  private renderer = inject(Renderer2);
+  private injector = inject(Injector);
 
   dpmGroupsNeedRefresh = model.required<boolean>();
   dpmGroupsInput = input.required<DPMGroup[]>();
@@ -177,23 +191,31 @@ export class EditDpmsComponent implements OnInit {
     });
     dpmsArray.push(newDpm);
 
-    // Scroll to new item and highlight
-    setTimeout(() => {
-      const element = document.getElementById(`dpmName-${newId}`);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Scroll to new item and highlight after render
+    this.scrollToAndHighlight(`dpmName-${newId}`);
+  }
 
-        // Add highlight class to parent row
-        const row = element.closest('.dpm-type-box');
-        if (row) {
-          row.classList.add('dpm-highlight-pulse');
-          setTimeout(() => row.classList.remove('dpm-highlight-pulse'), 300);
+  private scrollToAndHighlight(elementId: string) {
+    afterNextRender(
+      () => {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          const row = element.closest('.dpm-type-box');
+          if (row) {
+            this.renderer.addClass(row, 'dpm-highlight-pulse');
+            setTimeout(
+              () => this.renderer.removeClass(row, 'dpm-highlight-pulse'),
+              ANIMATION_DURATIONS.HIGHLIGHT_PULSE
+            );
+          }
+
+          element.focus();
         }
-
-        // Focus the name input
-        element.focus();
-      }
-    }, 50);
+      },
+      { injector: this.injector }
+    );
   }
 
   confirmRemoveGroup(groupIndex: number) {
@@ -513,8 +535,11 @@ export class EditDpmsComponent implements OnInit {
           // Highlight the group card
           const card = element.closest('app-card');
           if (card) {
-            card.classList.add('dpm-highlight-pulse');
-            setTimeout(() => card.classList.remove('dpm-highlight-pulse'), 300);
+            this.renderer.addClass(card, 'dpm-highlight-pulse');
+            setTimeout(
+              () => this.renderer.removeClass(card, 'dpm-highlight-pulse'),
+              ANIMATION_DURATIONS.HIGHLIGHT_PULSE
+            );
           }
         }
         break;

@@ -46,7 +46,7 @@
           >
             <div class="py-2">
               @for (link of links; track link) {
-                <div [appRemoveIfUnauthorized]="link.allowedRoles">
+                <div *appAuthorized="link.allowedRoles">
                   @if (link.path) {
                     <a
                       routerLink="{{ link.path }}"
@@ -110,7 +110,7 @@
     <!-- Right side: Desktop nav links + Theme switcher -->
     <div class="hidden lg:flex items-center gap-1">
       @for (link of links; track link) {
-        <div [appRemoveIfUnauthorized]="link.allowedRoles">
+        <div *appAuthorized="link.allowedRoles">
           @if (link.path) {
             <a
               routerLink="{{ link.path }}"

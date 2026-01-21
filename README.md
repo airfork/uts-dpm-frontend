@@ -230,13 +230,47 @@ firebase deploy --only hosting
 
 ## Testing
 
-### Unit Tests (Karma + Jasmine)
+The project uses **Karma** as the test runner and **Jasmine** as the testing framework. There are 733+ unit tests covering services, components, guards, pipes, and directives.
+
+### Running Tests
 
 ```bash
-npm test                    # Run in watch mode
+# Run tests in watch mode (opens Chrome browser, re-runs on file changes)
+npm test
+
+# Run tests once in headless mode (no browser window, good for CI)
+npm test -- --no-watch --browsers=ChromeHeadless
+
+# Run a specific test file
+npm test -- --include=src/app/services/auth.service.spec.ts
+
+# Run tests matching a pattern (e.g., all auth-related tests)
+npm test -- --include="**/auth*.spec.ts"
 ```
 
-Tests are located alongside their corresponding components and services.
+### Test File Locations
+
+Tests are co-located with their source files using the `.spec.ts` extension:
+
+```
+src/app/
+├── services/
+│   ├── auth.service.ts
+│   └── auth.service.spec.ts      # Service tests
+├── dpms/home/
+│   ├── home.component.ts
+│   └── home.component.spec.ts    # Component tests
+├── ui/button/
+│   ├── button.component.ts
+│   └── button.component.spec.ts  # UI component tests
+├── auth/
+│   └── auth.guard.spec.ts        # Guard tests
+└── shared/
+    ├── pipes/
+    │   └── points-display.pipe.spec.ts  # Pipe tests
+    └── directives/
+        └── tooltip.directive.spec.ts    # Directive tests
+```
 
 ## Common Workflows
 

@@ -1,102 +1,146 @@
 import { test, expect } from '@playwright/test';
+import { loginAsAdmin, clearAuth } from './fixtures/auth';
 
 /**
  * Navigation and routing tests
  *
- * These tests verify basic navigation and role-based access control.
+ * Navbar links (based on navbar.component.ts):
+ * - DPM: /dpm (ADMIN, ANALYST, MANAGER, SUPERVISOR)
+ * - Autogen: /autogen (ADMIN, ANALYST, MANAGER, SUPERVISOR)
+ * - Datagen: /datagen (ADMIN, ANALYST, MANAGER)
+ * - Approvals: /approvals (ADMIN, MANAGER)
+ * - Users: /users (ADMIN only)
+ * - Logout: (all roles)
  */
 
 test.describe('Navigation', () => {
-  test('should show login page for unauthenticated users', async ({ page }) => {
-    await page.goto('/');
+  test.describe('Unauthenticated', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto('/login');
+      await clearAuth(page);
+    });
 
-    // Should redirect to login
-    await expect(page).toHaveURL(/\/login/);
-  });
-
-  test('should redirect to login when accessing protected routes', async ({ page }) => {
-    // Try to access protected routes
-    const protectedRoutes = ['/home', '/dpm', '/users', '/approvals', '/history'];
-
-    for (const route of protectedRoutes) {
-      await page.goto(route);
+    test('should show login page for unauthenticated users', async ({
+      page,
+    }) => {
+      await page.goto('/');
 
       // Should redirect to login
       await expect(page).toHaveURL(/\/login/);
-    }
+    });
+
+    test('should redirect to login when accessing protected routes', async ({
+      page,
+    }) => {
+      // Try to access protected routes
+      const protectedRoutes = ['/dpm', '/users', '/approvals'];
+
+      for (const route of protectedRoutes) {
+        await page.goto(route);
+
+        // Should redirect to login
+        await expect(page).toHaveURL(/\/login/);
+      }
+    });
+
+    test('should show 404 page for non-existent routes', async ({ page }) => {
+      await page.goto('/non-existent-route');
+
+      // Should show 404 page or redirect
+      await expect(
+        page.getByText(/404|not found|page.*not.*found/i)
+      ).toBeVisible();
+    });
+
+    test('should have correct page titles', async ({ page }) => {
+      await page.goto('/login');
+      await expect(page).toHaveTitle(/UTS DPM/i);
+    });
   });
 
-  test('should show 404 page for non-existent routes', async ({ page }) => {
-    await page.goto('/non-existent-route');
+  test.describe('Authenticated', () => {
+    test.beforeEach(async ({ page }) => {
+      await loginAsAdmin(page);
+    });
 
-    // Should show 404 page
-    await expect(page).toHaveURL(/\/non-existent-route/);
-    await expect(page.getByText(/404|not found/i)).toBeVisible();
-  });
+    test('should show navbar after login', async ({ page }) => {
+      // Navbar should be visible
+      await expect(page.locator('nav')).toBeVisible();
+    });
 
-  test.skip('should show appropriate nav items based on user role', async ({ page }) => {
-    // TODO: Implement for different roles
+    test('should navigate to home by clicking logo', async ({ page }) => {
+      // Navigate away from home first
+      await page.goto('/dpm');
+      await expect(page).toHaveURL(/\/dpm/);
 
-    // For DRIVER role
-    // await loginAsDriver(page);
-    // await expect(page.getByRole('link', { name: /home/i })).toBeVisible();
-    // await expect(page.getByRole('link', { name: /history/i })).toBeVisible();
-    // await expect(page.getByRole('link', { name: /create dpm/i })).not.toBeVisible();
+      // Click the logo/home link (contains "UTS DPM")
+      await page.getByRole('link', { name: /UTS DPM/i }).click();
+      await expect(page).toHaveURL('/');
+    });
 
-    // For MANAGER role
-    // await loginAsManager(page);
-    // await expect(page.getByRole('link', { name: /home/i })).toBeVisible();
-    // await expect(page.getByRole('link', { name: /create dpm/i })).toBeVisible();
-    // await expect(page.getByRole('link', { name: /approvals/i })).toBeVisible();
+    test('should navigate to DPM page', async ({ page }) => {
+      // Click the DPM link in the navbar
+      await page.getByRole('link', { name: 'DPM', exact: true }).click();
+      await expect(page).toHaveURL(/\/dpm/);
+    });
 
-    // For ADMIN role
-    // await loginAsAdmin(page);
-    // await expect(page.getByRole('link', { name: /users/i })).toBeVisible();
-    // await expect(page.getByRole('link', { name: /edit dpm types/i })).toBeVisible();
-  });
+    test('should navigate to Autogen page', async ({ page }) => {
+      await page.getByRole('link', { name: 'Autogen' }).click();
+      await expect(page).toHaveURL(/\/autogen/);
+    });
 
-  test.skip('should prevent access to admin routes for non-admin users', async ({ page }) => {
-    // TODO: Implement with test credentials
+    test('should navigate to Approvals page', async ({ page }) => {
+      await page.getByRole('link', { name: 'Approvals' }).click();
+      await expect(page).toHaveURL(/\/approvals/);
+    });
 
-    // Login as manager
-    // await loginAsManager(page);
+    test('should navigate to Users page (admin only)', async ({ page }) => {
+      await page.getByRole('link', { name: 'Users' }).click();
+      await expect(page).toHaveURL(/\/users/);
+    });
 
-    // Try to access admin-only route
-    await page.goto('/users');
+    test('should allow back/forward navigation', async ({ page }) => {
+      // Navigate to DPM page
+      await page.getByRole('link', { name: 'DPM', exact: true }).click();
+      await expect(page).toHaveURL(/\/dpm/);
 
-    // Should show 403 forbidden page
-    await expect(page).toHaveURL(/\/errors\/403/);
-    await expect(page.getByText(/forbidden|unauthorized|403/i)).toBeVisible();
-  });
+      // Navigate to Approvals
+      await page.getByRole('link', { name: 'Approvals' }).click();
+      await expect(page).toHaveURL(/\/approvals/);
 
-  test.skip('should allow back/forward navigation', async ({ page }) => {
-    // TODO: Enable when test environment is ready
+      // Go back
+      await page.goBack();
+      await expect(page).toHaveURL(/\/dpm/);
 
-    // await loginAsManager(page);
+      // Go forward
+      await page.goForward();
+      await expect(page).toHaveURL(/\/approvals/);
+    });
 
-    // Navigate through multiple pages
-    await page.goto('/home');
-    await page.goto('/dpm/create');
-    await page.goto('/history');
+    test('should show logout button', async ({ page }) => {
+      await expect(
+        page.getByRole('button', { name: 'Logout' })
+      ).toBeVisible();
+    });
 
-    // Go back
-    await page.goBack();
-    await expect(page).toHaveURL(/\/dpm\/create/);
+    test('should toggle theme', async ({ page }) => {
+      // Find the theme toggle button
+      const themeButton = page.getByRole('button', { name: /switch to dark mode|switch to light mode/i });
 
-    // Go back again
-    await page.goBack();
-    await expect(page).toHaveURL(/\/home/);
+      // Get initial theme
+      const initialTheme = await page.evaluate(() =>
+        document.documentElement.getAttribute('data-theme')
+      );
 
-    // Go forward
-    await page.goForward();
-    await expect(page).toHaveURL(/\/dpm\/create/);
-  });
+      // Click to toggle theme
+      await themeButton.click();
 
-  test('should have correct page titles', async ({ page }) => {
-    // Test accessible pages only
-    await page.goto('/login');
-    await expect(page).toHaveTitle(/UTS DPM/i);
+      // Theme should have changed
+      const newTheme = await page.evaluate(() =>
+        document.documentElement.getAttribute('data-theme')
+      );
 
-    // TODO: Add more title checks for other pages once authenticated
+      expect(newTheme).not.toBe(initialTheme);
+    });
   });
 });

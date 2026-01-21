@@ -6,10 +6,15 @@
   <div class="px-4 py-6 md:px-6 md:py-8">
     <div class="max-w-5xl mx-auto space-y-6">
       @if (dpms.length === 0) {
-        <app-empty-state
+        <app-page-header
           icon="pi-file-edit"
+          title="My DPMs"
+          subtitle="Your performance overview"
+          variant="primary"
+        />
+        <app-empty-state
           heading="No DPMs Yet"
-          description="Your performance records will appear here once actions are logged."
+          description="Your DPMs will appear here once actions are logged."
         />
       } @else {
         <!-- Hero Section -->

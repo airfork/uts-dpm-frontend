@@ -10,6 +10,7 @@ import { DataTableComponent } from '../../ui/data-table/data-table.component';
 import { TableColumn } from '../../ui/data-table/data-table.types';
 import HomeDpmDto from '../../models/home-dpm-dto';
 import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component';
+import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
 
 @Component({
   selector: 'app-home',
@@ -23,6 +24,7 @@ import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component'
     UpperCasePipe,
     DataTableComponent,
     EmptyStateComponent,
+    PageHeaderComponent,
   ],
 })
 export class HomeComponent {

@@ -8,11 +8,17 @@
         variant="primary"
       />
 
-      @if (dpmsList.length === 0 && !loadingDpms()) {
-        <app-empty-state
-          heading="No Pending Approvals"
-          description="All DPMs have been reviewed. Check back later for new submissions."
-        />
+      @if (dpmsList.length === 0) {
+        @if (loadingDpms()) {
+          <div class="flex items-center justify-center py-16">
+            <i class="pi pi-spin pi-spinner text-3xl text-primary-500"></i>
+          </div>
+        } @else {
+          <app-empty-state
+            heading="No Pending Approvals"
+            description="All DPMs have been reviewed. Check back later for new submissions."
+          />
+        }
       } @else {
         <!-- Mobile Card Layout -->
         <div class="md:hidden space-y-3">
@@ -69,13 +75,6 @@
                     [class.approvals-badge-negative]="isNegativeDpm(dpm)"
                   >
                     {{ dpm.type | uppercase }}
-                  </span>
-                  <span
-                    class="approvals-points"
-                    [class.text-success-600]="isPositiveDpm(dpm)"
-                    [class.text-error-600]="isNegativeDpm(dpm)"
-                  >
-                    {{ dpm.points > 0 ? "+" : "" }}{{ dpm.points }}
                   </span>
                   <i
                     class="pi pi-chevron-down text-base-content/40 transition-transform duration-200"
@@ -271,13 +270,6 @@
                       [class.approvals-badge-negative]="isNegativeDpm(dpm)"
                     >
                       {{ getShortType(dpm.type) }}
-                    </span>
-                    <span
-                      class="approvals-points"
-                      [class.text-success-600]="isPositiveDpm(dpm)"
-                      [class.text-error-600]="isNegativeDpm(dpm)"
-                    >
-                      {{ dpm.points > 0 ? "+" : "" }}{{ dpm.points }}
                     </span>
                     <i
                       class="pi pi-chevron-down text-base-content/40 ml-auto transition-transform duration-200"

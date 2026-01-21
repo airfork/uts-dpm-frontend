@@ -115,7 +115,7 @@ export class ApprovalsComponent {
 
     // Wait for exit animation, then remove
     setTimeout(() => {
-      this.dpms.update((prev) => prev.filter((dto) => dto.id !== dpm.id));
+      this.dpms.update((prev) => prev?.filter((dto) => dto.id !== dpm.id) ?? null);
       this.removingDpmId.set(null);
     }, 350);
 
@@ -135,7 +135,7 @@ export class ApprovalsComponent {
 
     // Wait for exit animation, then remove
     setTimeout(() => {
-      this.dpms.update((prev) => prev.filter((dto) => dto.id !== dpm.id));
+      this.dpms.update((prev) => prev?.filter((dto) => dto.id !== dpm.id) ?? null);
       this.removingDpmId.set(null);
     }, 350);
 
@@ -160,7 +160,7 @@ export class ApprovalsComponent {
     // Check if we removed the last item on this page (count was 1 before removal)
     // and we're not on page 0. Note: dpms() may still have the item if API
     // returned before the 250ms animation timeout, so check for <= 1
-    const isLastItemOnPage = this.dpms().length <= 1;
+    const isLastItemOnPage = (this.dpms()?.length ?? 0) <= 1;
 
     // Save scroll position before reload
     const scrollY = window.scrollY;

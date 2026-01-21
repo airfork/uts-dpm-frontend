@@ -71,6 +71,45 @@ When investigating bugs or issues:
 ```bash
 npm start        # Development server
 npm run build    # Production build
-npm test         # Run tests
 npm run lint     # Lint code
 ```
+
+## Testing
+
+The project uses Jasmine/Karma for unit testing with 733+ tests covering services, components, UI components, guards, pipes, and directives.
+
+### Running Tests
+
+```bash
+# Run tests in watch mode (default - opens browser)
+npm test
+
+# Run tests once in headless mode (CI-friendly)
+npm test -- --no-watch --browsers=ChromeHeadless
+
+# Run specific test file
+npm test -- --include=src/app/services/auth.service.spec.ts
+
+# Run tests matching a pattern
+npm test -- --include="**/auth*.spec.ts"
+```
+
+### Test Structure
+
+| Directory | Coverage |
+| --- | --- |
+| `src/app/services/*.spec.ts` | Service unit tests (API, auth, state) |
+| `src/app/**/*.component.spec.ts` | Component unit tests |
+| `src/app/ui/**/*.spec.ts` | UI component tests |
+| `src/app/auth/*.spec.ts` | Guards and auth tests |
+| `src/app/shared/pipes/*.spec.ts` | Pipe tests |
+| `src/app/shared/directives/*.spec.ts` | Directive tests |
+| `src/app/auth/directives/*.spec.ts` | Validator directive tests |
+
+### Writing Tests
+
+- Use `TestBed.configureTestingModule()` for Angular dependency injection
+- Use `fixture.componentRef.setInput()` for signal inputs
+- Use `jasmine.createSpyObj()` for service mocks
+- Use `fakeAsync`/`tick` for async operations
+- Set component inputs BEFORE first `detectChanges()` to avoid NG0100 errors

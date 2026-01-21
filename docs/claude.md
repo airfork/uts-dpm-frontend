@@ -6,9 +6,7 @@ Project documentation, architecture guides, and development history.
 
 | File | What | When to read |
 | --- | --- | --- |
-| `ARCHITECTURE.md` | Detailed technical architecture | System design, component patterns |
 | `claude.md` | AI agent context with patterns and conventions | Understanding codebase patterns, common workflows |
-| `DEVELOPMENT_HISTORY.md` | Development phases and progress log | Project evolution, past decisions |
 
 ## Directories
 

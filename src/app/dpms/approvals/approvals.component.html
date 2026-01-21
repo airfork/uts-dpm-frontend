@@ -231,7 +231,7 @@
                 [style.animation-delay]="isNewItem(dpm) ? i * 30 + 'ms' : '0ms'"
                 (click)="toggleExpand(dpm)"
               >
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 w-2/5">
                   <div class="flex items-center gap-3">
                     <div
                       class="approvals-avatar"
@@ -252,7 +252,7 @@
                     </div>
                   </div>
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 w-1/5">
                   <div class="flex flex-col">
                     <span class="font-mono text-sm text-base-content">{{
                       dpm.block | block
@@ -262,7 +262,7 @@
                     }}</span>
                   </div>
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-4 w-2/5">
                   <div class="flex items-center gap-2">
                     <span
                       class="approvals-badge"

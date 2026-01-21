@@ -43,9 +43,19 @@ export class ApprovalsComponent {
   first = computed(() => this.currentPage() * this.pageSize());
 
   columns: TableColumn<ApprovalDpmDto>[] = [
-    { field: 'driver', header: 'Driver' },
-    { field: 'block', header: 'Block/Time' },
-    { field: 'type', header: 'Type' },
+    {
+      field: 'driver',
+      header: 'Driver',
+      headerClass: 'w-2/5',
+      cellClass: 'w-2/5',
+    },
+    {
+      field: 'block',
+      header: 'Block/Time',
+      headerClass: 'w-1/5',
+      cellClass: 'w-1/5',
+    },
+    { field: 'type', header: 'Type', headerClass: 'w-2/5', cellClass: 'w-2/5' },
   ];
 
   constructor() {

@@ -10,7 +10,12 @@
   </button>
 
   @if (isOpen()) {
-    <div class="color-dropdown-menu">
+    <div
+      class="color-dropdown-menu"
+      [ngClass]="{ 'dropdown-up': dropdownUp() }"
+      [style.top.px]="dropdownPosition().top"
+      [style.left.px]="dropdownPosition().left"
+    >
       <button
         type="button"
         class="color-option"

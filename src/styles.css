@@ -71,6 +71,18 @@ body {
   background-color: var(--color-base-100);
 }
 
+/* Hide scrollbar on CDK drag preview element */
+.cdk-drag-preview {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+}
+
+.cdk-drag-preview::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 /* WebKit browsers */
 input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button {

@@ -103,6 +103,8 @@ export class EditDpmsComponent implements OnInit {
   confirmModalMessage = signal('');
   confirmModalCallback = signal<() => void>(() => {});
 
+  private initialFormValue: string = '';
+
   dpmEditForm!: FormGroup; // Main form group
 
   private fb = inject(FormBuilder);
@@ -143,6 +145,9 @@ export class EditDpmsComponent implements OnInit {
 
     this.dpmEditForm.setControl('groups', groupsFormArray);
     this.dpmEditForm.markAsPristine();
+
+    // Store initial value for comparison
+    this.initialFormValue = JSON.stringify(this.dpmEditForm.value);
   }
 
   createDpmGroupFormGroup(group: DPMGroup): FormGroup {
@@ -200,22 +205,49 @@ export class EditDpmsComponent implements OnInit {
       () => {
         const element = document.getElementById(elementId);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-          const row = element.closest('.dpm-type-box');
-          if (row) {
-            this.renderer.addClass(row, 'dpm-highlight-pulse');
-            setTimeout(
-              () => this.renderer.removeClass(row, 'dpm-highlight-pulse'),
-              ANIMATION_DURATIONS.HIGHLIGHT_PULSE
-            );
-          }
-
-          element.focus();
+          this.smoothScrollToElement(element, ANIMATION_DURATIONS.SMOOTH_SCROLL, () => {
+            const row = element.closest('.dpm-type-box');
+            if (row) {
+              this.renderer.addClass(row, 'dpm-highlight-pulse');
+              setTimeout(
+                () => this.renderer.removeClass(row, 'dpm-highlight-pulse'),
+                ANIMATION_DURATIONS.HIGHLIGHT_PULSE
+              );
+            }
+            element.focus();
+          });
         }
       },
       { injector: this.injector }
     );
+  }
+
+  private smoothScrollToElement(element: HTMLElement, duration: number, onComplete?: () => void) {
+    const rect = element.getBoundingClientRect();
+    const absoluteTop = rect.top + window.scrollY;
+    const targetPosition = absoluteTop - window.innerHeight / 2 + rect.height / 2;
+    const startPosition = window.scrollY;
+    const distance = targetPosition - startPosition;
+    let startTime: number | null = null;
+
+    // Easing function for smooth, natural motion
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const animation = (currentTime: number) => {
+      if (startTime === null) startTime = currentTime;
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+
+      window.scrollTo(0, startPosition + distance * easeOutCubic(progress));
+
+      if (progress < 1) {
+        requestAnimationFrame(animation);
+      } else if (onComplete) {
+        onComplete();
+      }
+    };
+
+    requestAnimationFrame(animation);
   }
 
   confirmRemoveGroup(groupIndex: number) {
@@ -244,12 +276,73 @@ export class EditDpmsComponent implements OnInit {
   }
 
   // --- Drag and Drop ---
+  private scrollInterval: ReturnType<typeof setInterval> | null = null;
+
+  onDragStarted() {
+    this.renderer.addClass(document.documentElement, 'cdk-drag-active');
+    this.renderer.addClass(document.body, 'cdk-drag-active');
+  }
+
+  onDragEnded() {
+    this.renderer.removeClass(document.documentElement, 'cdk-drag-active');
+    this.renderer.removeClass(document.body, 'cdk-drag-active');
+    // Clear any scroll interval
+    if (this.scrollInterval) {
+      clearInterval(this.scrollInterval);
+      this.scrollInterval = null;
+    }
+  }
+
+  onDragMoved(event: { pointerPosition: { x: number; y: number } }) {
+    const scrollMargin = 100; // Distance from edge to start scrolling
+    const scrollSpeed = 15; // Pixels per frame
+    const viewportHeight = window.innerHeight;
+    const y = event.pointerPosition.y;
+
+    // Clear existing interval
+    if (this.scrollInterval) {
+      clearInterval(this.scrollInterval);
+      this.scrollInterval = null;
+    }
+
+    // Scroll up if near top
+    if (y < scrollMargin) {
+      this.scrollInterval = setInterval(() => {
+        window.scrollBy(0, -scrollSpeed);
+      }, 16);
+    }
+    // Scroll down if near bottom
+    else if (y > viewportHeight - scrollMargin) {
+      this.scrollInterval = setInterval(() => {
+        window.scrollBy(0, scrollSpeed);
+      }, 16);
+    }
+  }
+
   dropGroups(event: CdkDragDrop<AbstractControl[]>) {
     if (event.previousIndex == event.currentIndex) return;
 
     moveItemInArray(this.groupsFormArray.controls, event.previousIndex, event.currentIndex);
     this.groupsFormArray.updateValueAndValidity();
     this.groupsFormArray.markAsDirty();
+
+    // Scroll to the dropped group after render
+    const movedControl = this.groupsFormArray.at(event.currentIndex);
+    const groupId = movedControl?.value?.id;
+    if (groupId) {
+      afterNextRender(
+        () => {
+          const element = document.getElementById(`dpmGroupName-${groupId}`);
+          if (element) {
+            const card = element.closest('.group-card');
+            if (card) {
+              card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        },
+        { injector: this.injector }
+      );
+    }
   }
 
   dropDpms(event: CdkDragDrop<DpmListDropData>, targetGroupControl: AbstractControl) {
@@ -302,7 +395,7 @@ export class EditDpmsComponent implements OnInit {
   }
 
   groupNameHasErrors(groupControl: AbstractControl): boolean {
-    return this.controlHasErrors(groupControl.get('name'));
+    return this.controlHasVisibleErrors(groupControl.get('name'));
   }
 
   groupHasErrors(groupControl: AbstractControl): boolean {
@@ -321,20 +414,22 @@ export class EditDpmsComponent implements OnInit {
     const dpmsArray = this.getDpmsFormArray(groupControl);
 
     const errors: string[] = [];
-    if (nameControl?.errors?.['required']) {
-      errors.push('Group name is required.');
-    }
 
-    if (nameControl?.errors?.['maxlength']) {
-      errors.push('Group name cannot be longer than 500 characters.');
+    // Only show name errors if touched/dirty
+    if (nameControl && (nameControl.touched || nameControl.dirty)) {
+      if (nameControl.errors?.['required']) {
+        errors.push('Group name is required.');
+      }
+      if (nameControl.errors?.['maxlength']) {
+        errors.push('Group name cannot be longer than 500 characters.');
+      }
+      if (nameControl.value && this.groupNameIsDuplicated(groupControl)) {
+        errors.push('Group name must be unique.');
+      }
     }
 
     if (!dpmsArray || dpmsArray.length === 0) {
       errors.push('Group must have at least one DPM.');
-    }
-
-    if (this.groupNameIsDuplicated(groupControl)) {
-      errors.push('Group name must be unique.');
     }
 
     return errors;
@@ -366,7 +461,7 @@ export class EditDpmsComponent implements OnInit {
 
   dpmHasErrors(dpmControl: AbstractControl, controlName: string): boolean {
     const control = this.getDpmFormControl(dpmControl, controlName);
-    return this.controlHasErrors(control);
+    return this.controlHasVisibleErrors(control);
   }
 
   dpmNameIsDuplicated(groupControl: AbstractControl, dpmControl: AbstractControl): boolean {
@@ -387,24 +482,31 @@ export class EditDpmsComponent implements OnInit {
     const pointsControl = this.getDpmFormControl(dpmControl, 'points');
 
     const errors: string[] = [];
-    if (nameControl?.errors?.['required']) {
-      errors.push('DPM name is required.');
+
+    // Only show errors for touched/dirty controls
+    if (nameControl && (nameControl.touched || nameControl.dirty)) {
+      if (nameControl.errors?.['required']) {
+        errors.push('DPM name is required.');
+      }
+      if (nameControl.errors?.['maxlength']) {
+        errors.push('DPM name cannot be longer than 255 characters.');
+      }
     }
 
-    if (nameControl?.errors?.['maxlength']) {
-      errors.push('DPM name cannot be longer than 255 characters.');
+    if (pointsControl && (pointsControl.touched || pointsControl.dirty)) {
+      if (pointsControl.errors?.['required']) {
+        errors.push('DPM points are required.');
+      }
+      if (pointsControl.errors?.['min'] || pointsControl.errors?.['max']) {
+        errors.push('DPM points must be between -100 and 100 (inclusive).');
+      }
     }
 
-    if (pointsControl?.errors?.['required']) {
-      errors.push('DPM points are required.');
-    }
-
-    if (pointsControl?.errors?.['min'] || pointsControl?.errors?.['max']) {
-      errors.push('DPM points must be between -100 and 100 (inclusive).');
-    }
-
-    if (this.dpmNameIsDuplicated(groupControl, dpmControl)) {
-      errors.push('DPM name must be unique.');
+    // Duplicate check only if name is touched/dirty and has a value
+    if (nameControl && (nameControl.touched || nameControl.dirty) && nameControl.value) {
+      if (this.dpmNameIsDuplicated(groupControl, dpmControl)) {
+        errors.push('DPM name must be unique.');
+      }
     }
 
     return errors;
@@ -516,6 +618,10 @@ export class EditDpmsComponent implements OnInit {
     return !this.dpmEditForm.valid || this.formHasNonFormGroupErrors();
   }
 
+  formMatchesOriginal(): boolean {
+    return JSON.stringify(this.dpmEditForm.value) === this.initialFormValue;
+  }
+
   getTotalErrorCount(): number {
     let count = 0;
     this.groupsFormArray.controls.forEach((groupControl) => {
@@ -524,7 +630,7 @@ export class EditDpmsComponent implements OnInit {
     return count;
   }
 
-  private scrollToFirstError() {
+  scrollToFirstError() {
     for (const groupControl of this.groupsFormArray.controls) {
       if (this.groupHasErrors(groupControl) || this.dpmsInGroupHaveErrors(groupControl)) {
         const groupId = groupControl.value.id;
@@ -550,6 +656,12 @@ export class EditDpmsComponent implements OnInit {
   private controlHasErrors(control: AbstractControl | null): boolean {
     if (!control) return false;
     return control.invalid;
+  }
+
+  private controlHasVisibleErrors(control: AbstractControl | null): boolean {
+    if (!control) return false;
+    // Only show errors if the control has been touched or is dirty
+    return control.invalid && (control.touched || control.dirty);
   }
 
   private groupNameIsDuplicated(groupControl: AbstractControl): boolean {

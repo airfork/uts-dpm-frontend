@@ -1,7 +1,7 @@
 <app-modal [open]="isOpen()" [size]="'sm'" (close)="requestClose()">
-  <h3 modal-header class="text-xl font-semibold">{{ title() }}</h3>
+  <h3 modal-header class="text-xl font-semibold text-base-content">{{ title() }}</h3>
   <div modal-body>
-    <p class="text-base">{{ message() }}</p>
+    <p class="text-base text-base-content/80">{{ message() }}</p>
   </div>
   <div modal-footer class="flex justify-end gap-2">
     <app-button variant="ghost" (click)="requestClose()"> Cancel </app-button>

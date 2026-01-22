@@ -45,13 +45,7 @@
             (mousedown)="selectSuggestion(suggestion)"
             (mouseenter)="highlightedIndex.set(i)"
           >
-            @for (part of getHighlightParts(suggestion); track $index) {
-              @if (part.highlight) {
-                <strong class="text-primary-600 dark:text-primary-400">{{ part.text }}</strong>
-              } @else {
-                {{ part.text }}
-              }
-            }
+            @for (part of getHighlightParts(suggestion); track $index) {@if (part.highlight) {<strong class="text-primary-600 dark:text-primary-400">{{ part.text }}</strong>} @else {<span>{{ part.text }}</span>}}
           </div>
         }
       }

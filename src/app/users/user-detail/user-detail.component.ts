@@ -92,19 +92,19 @@ export class UserDetailComponent implements OnInit {
   ngOnInit() {
     this.route.params.pipe(first()).subscribe((value) => {
       const { id } = value as { id: string };
+      // Set userId immediately so it's available for tab activation
+      this.userId.set(id);
+
       this.userService
         .getUser(id)
         .pipe(first())
         .subscribe((user) => {
           this.user.set(user);
           this.setTitle();
-          this.userId.set(id);
         });
-    });
 
-    // jump to tab based on query param
-    this.route.queryParamMap.pipe(first()).subscribe((value) => {
-      const tab = value.get('tab') as DetailTab;
+      // Check for tab query param after userId is set
+      const tab = this.route.snapshot.queryParamMap.get('tab') as DetailTab;
       if (tab) this.activateTab(tab);
     });
   }
@@ -119,6 +119,33 @@ export class UserDetailComponent implements OnInit {
 
   isExpanded(dpm: DpmDetailDto): boolean {
     return this.expandedDpmId() === dpm.id;
+  }
+
+  getStatusLabel(dpm: DpmDetailDto): string {
+    // Check for "invisible" in status (e.g., "Approved; invisible to driver")
+    if (dpm.status.toLowerCase().includes('invisible')) {
+      return 'Hidden';
+    }
+    return dpm.status;
+  }
+
+  getStatusClasses(dpm: DpmDetailDto): string {
+    // Check for "invisible" status first (e.g., "Approved; invisible to driver")
+    if (dpm.status.toLowerCase().includes('invisible')) {
+      return 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400';
+    }
+    switch (dpm.status) {
+      case 'Approved':
+        return 'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-400';
+      case 'Pending':
+        return 'bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-400';
+      case 'Denied':
+        return 'bg-error-100 text-error-700 dark:bg-error-900/30 dark:text-error-400';
+      case 'Not looked at':
+        return 'bg-info-100 text-info-700 dark:bg-info-900/30 dark:text-info-400';
+      default:
+        return 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400';
+    }
   }
 
   denyDpm(dpm: DpmDetailDto, event: Event) {

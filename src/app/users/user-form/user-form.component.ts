@@ -61,7 +61,7 @@ export class UserFormComponent implements OnInit, OnChanges {
     points: new FormControl(0, POINTS_VALIDATORS),
     manager: new FormControl(''),
     role: new FormControl(''),
-    fullTime: new FormControl(false),
+    fullTime: new FormControl(false, { nonNullable: true }),
   });
 
   ngOnChanges(changes: SimpleChanges) {
@@ -225,10 +225,12 @@ export class UserFormComponent implements OnInit, OnChanges {
       this.userFormGroup.reset({
         manager: this.managers[0],
         role: this.roles()[0],
+        fullTime: false,
       });
     } else {
       this.userFormGroup.reset({
         role: this.roles()[0],
+        fullTime: false,
       });
     }
     this.points?.removeValidators(POINTS_VALIDATORS);
@@ -331,6 +333,7 @@ export class UserFormComponent implements OnInit, OnChanges {
           this.userFormGroup.reset({
             manager: this.managers![0],
             role: this.roles()[0],
+            fullTime: false,
           });
           this.changeDetector.detectChanges();
         },

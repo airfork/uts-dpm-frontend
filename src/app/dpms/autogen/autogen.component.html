@@ -118,7 +118,7 @@
             } @else {
               <app-button variant="primary" size="lg" [disabled]="empty()" (click)="onSubmit()">
                 <i class="pi pi-send mr-2"></i>
-                Submit {{ autogenDpms().length }} DPMs
+                Submit {{ autogenDpms().length }} {{ autogenDpms().length === 1 ? 'DPM' : 'DPMs' }}
               </app-button>
             }
           </div>
@@ -226,7 +226,7 @@
             } @else {
               <app-button variant="primary" size="lg" [disabled]="empty()" (click)="onSubmit()">
                 <i class="pi pi-send mr-2"></i>
-                Submit {{ autogenDpms().length }} DPMs
+                Submit {{ autogenDpms().length }} {{ autogenDpms().length === 1 ? 'DPM' : 'DPMs' }}
               </app-button>
             }
           </div>

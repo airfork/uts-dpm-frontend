@@ -7,6 +7,7 @@ import {
   ElementRef,
   HostListener,
   inject,
+  Injector,
 } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { GetDpmColors } from '../../../models/get-dpm-colors';
@@ -20,6 +21,7 @@ import { GetDpmColors } from '../../../models/get-dpm-colors';
 })
 export class ColorDropdownComponent {
   private elementRef = inject(ElementRef);
+  private injector = inject(Injector);
 
   // Inputs
   colors = input.required<GetDpmColors[]>();
@@ -31,6 +33,8 @@ export class ColorDropdownComponent {
 
   // State
   isOpen = signal(false);
+  dropdownUp = signal(false);
+  dropdownPosition = signal<{ top: number; left: number }>({ top: 0, left: 0 });
 
   // Computed
   displayText = computed(() => {
@@ -44,7 +48,38 @@ export class ColorDropdownComponent {
   });
 
   toggle() {
+    if (!this.isOpen()) {
+      // Check if dropdown should open upward
+      this.checkDropdownPosition();
+    }
     this.isOpen.update((v) => !v);
+  }
+
+  private checkDropdownPosition() {
+    const element = this.elementRef.nativeElement;
+    const button = element.querySelector('.color-cell');
+    if (!button) return;
+
+    const rect = button.getBoundingClientRect();
+    const dropdownHeight = 256; // max-height of dropdown (16rem)
+    const spaceBelow = window.innerHeight - rect.bottom;
+
+    // If not enough space below, open upward
+    const openUp = spaceBelow < dropdownHeight && rect.top > dropdownHeight;
+    this.dropdownUp.set(openUp);
+
+    // Calculate fixed position
+    if (openUp) {
+      this.dropdownPosition.set({
+        top: rect.top - dropdownHeight - 4,
+        left: rect.left,
+      });
+    } else {
+      this.dropdownPosition.set({
+        top: rect.bottom + 4,
+        left: rect.left,
+      });
+    }
   }
 
   selectColor(color: GetDpmColors | null) {
@@ -62,6 +97,13 @@ export class ColorDropdownComponent {
   @HostListener('document:click', ['$event'])
   onClickOutside(event: Event) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.isOpen.set(false);
+    }
+  }
+
+  @HostListener('window:scroll')
+  onScroll() {
+    if (this.isOpen()) {
       this.isOpen.set(false);
     }
   }

@@ -15,7 +15,7 @@
         variant="ghost"
         size="sm"
         (click)="confirmReset()"
-        [disabled]="dpmEditForm.pristine"
+        [disabled]="formMatchesOriginal()"
         appTooltip="Reset Changes"
         tooltipPosition="top"
       >
@@ -25,13 +25,15 @@
   }
 
   @if (dpmEditForm) {
-    <form [formGroup]="dpmEditForm">
+    <form [formGroup]="dpmEditForm" cdkDropListGroup>
       <div
         cdkDropList
-        cdkDropListGroup
         formArrayName="groups"
-        class="space-y-4"
+        class="groups-container"
+        style="display: flex; flex-direction: column; gap: 1rem"
         [cdkDropListData]="groupsFormArray.controls"
+        [cdkDropListSortingDisabled]="false"
+        [cdkDropListAutoScrollStep]="10"
         (cdkDropListDropped)="dropGroups($event)"
       >
         @for (
@@ -42,13 +44,15 @@
           <app-card
             [formGroupName]="groupIndex"
             cdkDrag
+            (cdkDragStarted)="onDragStarted()"
+            (cdkDragMoved)="onDragMoved($event)"
+            (cdkDragEnded)="onDragEnded()"
             variant="default"
             [hover]="true"
             class="w-full cursor-move border-2 group-card"
             [ngClass]="{
-              'border-base-300':
-                !groupHasErrors(groupControl) && !dpmsInGroupHaveErrors(groupControl),
-              'border-error': groupHasErrors(groupControl) || dpmsInGroupHaveErrors(groupControl),
+              'border-base-300': getGroupErrorCount(groupControl) === 0,
+              'border-error': getGroupErrorCount(groupControl) > 0,
             }"
           >
             <!-- Drag Handle -->
@@ -69,7 +73,7 @@
               ></textarea>
 
               <!-- Error Badge -->
-              @if (groupHasErrors(groupControl) || dpmsInGroupHaveErrors(groupControl)) {
+              @if (getGroupErrorCount(groupControl) > 0) {
                 <span class="group-error-badge">
                   <i class="pi pi-exclamation-triangle text-xs"></i>
                   {{ getGroupErrorCount(groupControl) }}
@@ -149,7 +153,13 @@
                 track dpmControl.value.id;
                 let dpmIndex = $index
               ) {
-                <div class="dpm-type-box" cdkDrag [formGroupName]="dpmIndex">
+                <div
+                  class="dpm-type-box"
+                  cdkDrag
+                  (cdkDragStarted)="onDragStarted()"
+                  (cdkDragEnded)="onDragEnded()"
+                  [formGroupName]="dpmIndex"
+                >
                   <div class="dpm-data-row">
                     <!-- Drag Handle -->
                     <div
@@ -236,20 +246,26 @@
     </form>
 
     <div class="sticky-save-bar">
-      @if (formHasErrors()) {
-        <div class="error-indicator">
+      @if (formHasErrors() && getTotalErrorCount() > 0) {
+        <button
+          type="button"
+          class="error-indicator"
+          (click)="scrollToFirstError()"
+          appTooltip="Click to scroll to first error"
+          tooltipPosition="top"
+        >
           <i class="pi pi-exclamation-triangle"></i>
           <span
-            >{{ getTotalErrorCount() }} {{ getTotalErrorCount() === 1 ? 'error' : 'errors' }} -
-            scroll up to fix</span
+            >{{ getTotalErrorCount() }} {{ getTotalErrorCount() === 1 ? 'error' : 'errors' }}</span
           >
-        </div>
+          <i class="pi pi-arrow-up text-xs"></i>
+        </button>
       }
       <app-button
         variant="primary"
         size="md"
         [disabled]="
-          !dpmEditForm.valid || dpmEditForm.pristine || isSaving() || formHasNonFormGroupErrors()
+          !dpmEditForm.valid || formMatchesOriginal() || isSaving() || formHasNonFormGroupErrors()
         "
         (click)="save()"
       >

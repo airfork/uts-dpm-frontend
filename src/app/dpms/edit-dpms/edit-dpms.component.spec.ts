@@ -66,10 +66,12 @@ describe('EditDpmsComponent', () => {
       expect(errorCount).toBe(0);
     });
 
-    it('should count errors when DPM name is empty', () => {
+    it('should count errors when DPM name is empty and touched', () => {
       const groupControl = component.groupsFormArray.at(0);
       const dpmsArray = component.getDpmsFormArray(groupControl);
-      dpmsArray.at(0).get('name')?.setValue('');
+      const nameControl = dpmsArray.at(0).get('name');
+      nameControl?.setValue('');
+      nameControl?.markAsTouched();
 
       const errorCount = component.getGroupErrorCount(groupControl);
       expect(errorCount).toBeGreaterThan(0);

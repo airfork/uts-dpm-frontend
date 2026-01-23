@@ -4,6 +4,16 @@
   display: none !important;
 }
 
+/* Groups container */
+.groups-container {
+  /* Allow overflow during drag for proper animations */
+}
+
+/* Only clip overflow when not dragging */
+.groups-container:not(.cdk-drop-list-dragging) {
+  overflow: clip;
+}
+
 /* Add bottom padding to form so sticky footer has room at page end */
 :host ::ng-deep form {
   padding-bottom: 4rem;
@@ -21,7 +31,7 @@
   border: solid 1px var(--color-base-300);
   background: var(--color-base-100);
   border-radius: 4px;
-  overflow: hidden;
+  overflow: clip;
   display: block;
 }
 
@@ -56,13 +66,19 @@
     0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14),
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  overflow: hidden !important;
 }
 
 .cdk-drag-placeholder {
   opacity: 0.5;
-  border: 2px dashed var(--color-primary-400);
+  /* Use outline instead of border to avoid affecting layout */
+  border: none !important;
+  outline: 2px dashed var(--color-primary-400);
+  outline-offset: -2px;
   border-radius: 8px;
   background: var(--color-primary-50);
+  box-sizing: border-box;
+  margin: 0 !important;
 }
 
 .cdk-drag-animating {
@@ -163,15 +179,57 @@
   }
 }
 
+/* Group card base styles */
+.group-card {
+  overflow: clip;
+}
+
 /* Group card drag animation (match DPM items) */
 .group-card.cdk-drag-animating {
-  transition: transform 150ms ease-out;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   will-change: transform;
 }
 
-.cdk-drop-list-dragging .group-card:not(.cdk-drag-placeholder) {
-  transition: transform 150ms ease-out;
+/* Animate other group cards when dragging to make room */
+.groups-container.cdk-drop-list-dragging .group-card:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   will-change: transform;
+}
+
+/* Also target via ng-deep for CDK classes */
+:host ::ng-deep .cdk-drop-list-dragging .group-card:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1) !important;
+  will-change: transform;
+}
+
+/* Group card placeholder - clean drop zone matching row style */
+.group-card.cdk-drag-placeholder {
+  min-height: 4rem !important;
+  max-height: 4rem !important;
+  height: 4rem !important;
+  overflow: hidden !important;
+  border: none !important;
+  outline: none !important;
+  border-radius: 0.5rem;
+  padding: 0 !important;
+  opacity: 0.5;
+  position: relative;
+}
+
+/* Solid overlay to cover all content */
+.group-card.cdk-drag-placeholder::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-primary-50);
+  border: 2px dashed var(--color-primary-400);
+  z-index: 1;
+  border-radius: 0.5rem;
+}
+
+/* Hide all content inside placeholder */
+.group-card.cdk-drag-placeholder * {
+  visibility: hidden !important;
 }
 
 /* Group card drag preview - match static appearance exactly */
@@ -183,6 +241,8 @@
     0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14),
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  /* Add slight scale and rotation for better visual feedback */
+  transform: scale(1.02) rotate(1deg);
 }
 
 /* Hide inner dpm-list in drag preview to prevent extended bottom */
@@ -203,6 +263,13 @@
   color: var(--color-error-700);
   background: var(--color-error-100);
   border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.error-indicator:hover {
+  background: var(--color-error-200);
 }
 
 .error-indicator i {
@@ -229,4 +296,94 @@
 
 ::ng-deep .delete-btn-wrapper:hover .delete-btn button {
   background-color: var(--color-error-50) !important;
+}
+
+/* ============================================
+   Dark Mode Styles
+   ============================================ */
+
+/* Dark mode drag placeholder */
+:host-context([data-theme='dark']) .cdk-drag-placeholder {
+  background: var(--color-primary-900);
+  outline-color: var(--color-primary-500);
+}
+
+:host-context([data-theme='dark']) .group-card.cdk-drag-placeholder::before {
+  background: var(--color-primary-900);
+  border-color: var(--color-primary-500);
+}
+
+/* Dark mode receiving list */
+:host-context([data-theme='dark']) .dpm-list.cdk-drop-list-receiving {
+  background: var(--color-primary-900);
+  border-color: var(--color-primary-500);
+}
+
+/* Dark mode error badge */
+:host-context([data-theme='dark']) .group-error-badge {
+  background: var(--color-error-900);
+  color: var(--color-error-300);
+}
+
+/* Dark mode error indicator */
+:host-context([data-theme='dark']) .error-indicator {
+  background: var(--color-error-900);
+  color: var(--color-error-300);
+}
+
+:host-context([data-theme='dark']) .error-indicator:hover {
+  background: var(--color-error-800);
+}
+
+/* Dark mode delete button hover */
+:host-context([data-theme='dark']) .delete-btn-wrapper:hover .delete-btn {
+  color: var(--color-error-400);
+}
+
+:host-context([data-theme='dark']) ::ng-deep .delete-btn-wrapper:hover .delete-btn button {
+  background-color: var(--color-error-900) !important;
+}
+
+/* System preference dark mode fallback */
+@media (prefers-color-scheme: dark) {
+  :host-context(:root:not([data-theme='light'])) .cdk-drag-placeholder {
+    background: var(--color-primary-900);
+    outline-color: var(--color-primary-500);
+  }
+
+  :host-context(:root:not([data-theme='light'])) .group-card.cdk-drag-placeholder::before {
+    background: var(--color-primary-900);
+    border-color: var(--color-primary-500);
+  }
+
+  :host-context(:root:not([data-theme='light'])) .dpm-list.cdk-drop-list-receiving {
+    background: var(--color-primary-900);
+    border-color: var(--color-primary-500);
+  }
+
+  :host-context(:root:not([data-theme='light'])) .group-error-badge {
+    background: var(--color-error-900);
+    color: var(--color-error-300);
+  }
+
+  :host-context(:root:not([data-theme='light'])) .error-indicator {
+    background: var(--color-error-900);
+    color: var(--color-error-300);
+  }
+
+  :host-context(:root:not([data-theme='light'])) .error-indicator:hover {
+    background: var(--color-error-800);
+  }
+
+  :host-context(:root:not([data-theme='light'])) .delete-btn-wrapper:hover .delete-btn {
+    color: var(--color-error-400);
+  }
+
+  :host-context(:root:not([data-theme='light']))
+    ::ng-deep
+    .delete-btn-wrapper:hover
+    .delete-btn
+    button {
+    background-color: var(--color-error-900) !important;
+  }
 }

@@ -1,6 +1,22 @@
 <div>
+  <!-- Mobile: Show message to use desktop -->
+  <div
+    class="sm:hidden flex flex-col items-center justify-center py-12 px-6 bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700"
+  >
+    <div
+      class="w-16 h-16 rounded-full bg-gradient-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-700 flex items-center justify-center mb-4 shadow-inner"
+    >
+      <i class="pi pi-desktop text-2xl text-neutral-400"></i>
+    </div>
+    <h3 class="text-lg font-semibold text-base-content mb-2">Desktop Required</h3>
+    <p class="text-sm text-base-content/60 text-center">
+      The DPM type editor requires a larger screen. Please use a tablet or desktop device.
+    </p>
+  </div>
+
+  <!-- Desktop: Show the editor -->
   @if (dpmEditForm) {
-    <div class="flex justify-end gap-2 mb-4">
+    <div class="hidden sm:flex justify-end gap-2 mb-4">
       <app-button
         variant="primary"
         size="sm"
@@ -25,7 +41,7 @@
   }
 
   @if (dpmEditForm) {
-    <form [formGroup]="dpmEditForm" cdkDropListGroup>
+    <form [formGroup]="dpmEditForm" cdkDropListGroup class="hidden sm:block">
       <div
         cdkDropList
         formArrayName="groups"
@@ -245,7 +261,7 @@
       </div>
     </form>
 
-    <div class="sticky-save-bar">
+    <div class="sticky-save-bar hidden sm:flex">
       @if (formHasErrors() && getTotalErrorCount() > 0) {
         <button
           type="button"

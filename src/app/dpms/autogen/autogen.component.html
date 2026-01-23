@@ -15,22 +15,19 @@
         <div
           class="sm:hidden flex items-center justify-center gap-6 py-3 px-4 mb-4 bg-base-100 rounded-xl border border-neutral-200 dark:border-neutral-700"
         >
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5">
             <i class="pi pi-list text-primary-500"></i>
             <span class="font-semibold text-base-content">{{ autogenDpms().length }}</span>
-            <span class="text-xs text-base-content/60">Total</span>
           </div>
           <div class="w-px h-6 bg-neutral-200 dark:bg-neutral-700"></div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5">
             <i class="pi pi-plus-circle text-success-500"></i>
             <span class="font-semibold text-success-600">{{ getPositiveCount() }}</span>
-            <span class="text-xs text-base-content/60">Positive</span>
           </div>
           <div class="w-px h-6 bg-neutral-200 dark:bg-neutral-700"></div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5">
             <i class="pi pi-minus-circle text-error-500"></i>
             <span class="font-semibold text-error-600">{{ getNegativeCount() }}</span>
-            <span class="text-xs text-base-content/60">Negative</span>
           </div>
         </div>
 

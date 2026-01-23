@@ -100,7 +100,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   /* Fixed height for consistent sizing */
@@ -111,6 +111,13 @@
   z-index: 10;
   /* For absolute positioning of error indicator */
   isolation: isolate;
+}
+
+/* Show save bar only on tablet and up */
+@media (min-width: 640px) {
+  .sticky-save-bar {
+    display: flex;
+  }
 }
 
 /* Column header row */

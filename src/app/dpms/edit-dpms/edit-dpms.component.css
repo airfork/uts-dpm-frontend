@@ -387,3 +387,28 @@
     background-color: var(--color-error-900) !important;
   }
 }
+
+/* ============================================
+   Light Mode Border Visibility
+   ============================================ */
+
+/* Slightly darker borders for better visibility in light mode */
+:host-context([data-theme='light']) .dpm-list {
+  border-color: oklch(0.88 0 0);
+}
+
+:host-context([data-theme='light']) .dpm-type-box {
+  border-bottom-color: oklch(0.88 0 0);
+}
+
+:host-context([data-theme='light']) .dpm-header-row {
+  border-bottom-color: oklch(0.88 0 0);
+}
+
+:host-context([data-theme='light']) .sticky-save-bar {
+  border-top-color: oklch(0.88 0 0);
+}
+
+:host-context([data-theme='light']) .group-card {
+  border-color: oklch(0.91 0 0);
+}

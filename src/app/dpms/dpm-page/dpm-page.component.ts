@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, effect, OnInit, signal, inject } from '@angular/core';
+import { afterNextRender, Component, effect, OnInit, signal, inject } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { DPMGroup } from '../../models/dpm-type';
+import { setDefaultDpmType } from '../shared/dpm-form.utils';
 import { DpmService } from '../../services/dpm.service';
 import { first } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -10,9 +11,10 @@ import { Title } from '@angular/platform-browser';
 import { GenerateTitle } from '../../shared/title-helper';
 import { NewDpmComponent } from '../new-dpm/new-dpm.component';
 import { EditDpmsComponent } from '../edit-dpms/edit-dpms.component';
+import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
 import UsernameDto from '../../models/username-dto';
 import { UserService } from '../../services/user.service';
-import { RemoveIfUnauthorizedDirective } from '../../auth/directives/remove-if-unauthorized.directive';
+import { AuthorizedDirective } from '../../auth/directives/authorized.directive';
 import { Roles } from '../../auth/roles.types';
 import { AuthService } from '../../services/auth.service';
 
@@ -21,11 +23,11 @@ const editRoles: Roles[] = ['ADMIN'];
 
 @Component({
   selector: 'app-dpm-page',
-  imports: [NgClass, NewDpmComponent, EditDpmsComponent, RemoveIfUnauthorizedDirective],
+  imports: [NgClass, NewDpmComponent, EditDpmsComponent, AuthorizedDirective, PageHeaderComponent],
   templateUrl: './dpm-page.component.html',
   styleUrl: './dpm-page.component.css',
 })
-export class DpmPageComponent implements OnInit, AfterViewInit {
+export class DpmPageComponent implements OnInit {
   private dpmService = inject(DpmService);
   private userService = inject(UserService);
   private authService = inject(AuthService);
@@ -64,6 +66,12 @@ export class DpmPageComponent implements OnInit, AfterViewInit {
     effect(() => {
       if (this.groupsNeedRefresh()) this.getDpmGroups();
     });
+
+    afterNextRender(() => {
+      if (this.isGroupsLoaded() && !this.homeFormGroup.get('type')?.value) {
+        this.setDefaultDpmType();
+      }
+    });
   }
 
   ngOnInit() {
@@ -76,15 +84,6 @@ export class DpmPageComponent implements OnInit, AfterViewInit {
       .getUserNames()
       .pipe(first())
       .subscribe((users) => this.driverNames.set(users));
-  }
-
-  ngAfterViewInit() {
-    // additional check after view init in case the above wasn't enough
-    setTimeout(() => {
-      if (this.isGroupsLoaded() && !this.homeFormGroup.get('type')?.value) {
-        this.setDefaultDpmType();
-      }
-    }, 0);
   }
 
   activateTab(tab: DpmTab) {
@@ -137,21 +136,8 @@ export class DpmPageComponent implements OnInit, AfterViewInit {
       });
   }
 
-  // New helper method to set the default DPM type
   private setDefaultDpmType() {
-    const groups = this.dpmGroups();
-    if (groups && groups.length > 0 && groups[0].dpms && groups[0].dpms.length > 0) {
-      this.homeFormGroup.patchValue({
-        type: groups[0].dpms[0].id,
-      });
-
-      // Force detection of the change
-      setTimeout(() => {
-        this.homeFormGroup.updateValueAndValidity();
-      }, 0);
-    } else {
-      console.warn('No DPM groups or types found to set as default');
-    }
+    setDefaultDpmType(this.dpmGroups(), this.homeFormGroup);
   }
 
   private saveTabInUrl(tab: DpmTab) {

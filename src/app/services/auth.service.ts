@@ -66,8 +66,8 @@ export class AuthService {
     );
   }
 
-  changePassword(dto: ChangePasswordDto): Observable<unknown> {
-    return this.http.patch(BASE_URL + '/changePassword', dto);
+  changePassword(dto: ChangePasswordDto): Observable<void> {
+    return this.http.patch<void>(BASE_URL + '/changePassword', dto);
   }
 
   private setUserData() {

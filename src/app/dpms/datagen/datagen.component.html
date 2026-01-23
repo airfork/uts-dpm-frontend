@@ -1,91 +1,173 @@
-<div>
-  <h3 class="text-2xl pb-4 font-bold">DPM Data</h3>
-  <form
-    class="grid grid-cols-6 mx-5 gap-x-6"
-    [formGroup]="dpmDataFormGroup"
-    (ngSubmit)="getDpmData()"
-  >
-    <fieldset class="fieldset col-span-6 md:col-span-3 lg:col-span-2">
-      <legend
-        class="fieldset-legend text-sm"
-        [ngClass]="{
-          'text-error':
-            dpmDataFormGroup.errors?.['mixedDate'] && !getAll?.value,
-        }"
-      >
-        Start Date
-      </legend>
-      <p-date-picker
-        id="startDate"
-        formControlName="startDate"
-        [placeholder]="format.dpmDate(null, true)"
-        styleClass="input w-full {{ errorsOrEmpty() }}"
-        [required]="true"
-        [touchUI]="mobileMode()"
-      ></p-date-picker>
-      <p class="label text-error">{{ getStartTimeValidationMessages() }}</p>
-    </fieldset>
+<div class="px-4 py-6 md:px-6 md:py-8">
+  <div class="max-w-5xl mx-auto">
+    <app-page-header
+      icon="pi-database"
+      title="Data Generation"
+      subtitle="Generate reports and data"
+      variant="info"
+    />
 
-    <fieldset class="fieldset col-span-6 md:col-span-3 lg:col-span-2">
-      <legend
-        class="fieldset-legend text-sm"
-        [ngClass]="{
-          'text-error':
-            dpmDataFormGroup.errors?.['mixedDate'] && !getAll?.value,
-        }"
-      >
-        End Date
-      </legend>
-      <p-date-picker
-        id="endDate"
-        formControlName="endDate"
-        [placeholder]="format.dpmDate()"
-        styleClass="input w-full {{ errorsOrEmpty() }}"
-        [required]="true"
-        [touchUI]="mobileMode()"
-      ></p-date-picker>
-      <p class="label text-error">{{ getEndTimeValidationMessages() }}</p>
-    </fieldset>
+    <!-- DPM Data Section -->
+    <div
+      class="bg-base-100 rounded-2xl border-l-4 border-l-primary-500 dark:border-l-primary-400 border border-neutral-200 dark:border-neutral-700 shadow-md p-6 mb-6"
+    >
+      <div class="flex items-center gap-2 mb-4">
+        <i class="pi pi-file-export text-primary-500 dark:text-primary-400"></i>
+        <h3 class="text-lg font-semibold text-base-content">DPM Data</h3>
+      </div>
 
-    <div class="fieldset col-span-6 lg:col-span-2 self-center">
-      <label
-        class="label cursor-pointer justify-center lg:justify-start items-center lg:mt-5"
-      >
-        <span class="text-base-content text-[1rem] mr-3">Get All</span>
-        <input
-          id="getAllCheckbox"
-          type="checkbox"
-          class="checkbox checkbox-lg checkbox-secondary dark:checkbox-primary"
-          formControlName="getAll"
-        />
-      </label>
+      <form class="space-y-5" [formGroup]="dpmDataFormGroup" (ngSubmit)="getDpmData()">
+        <!-- Date Presets -->
+        <div class="flex flex-wrap gap-2">
+          @for (preset of datePresets; track preset.id) {
+            <button
+              type="button"
+              class="datagen-preset-chip"
+              [class.datagen-preset-chip-active]="selectedPreset() === preset.id"
+              (click)="applyPreset(preset.id)"
+            >
+              {{ preset.label }}
+            </button>
+          }
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="flex flex-col gap-1.5">
+            <label
+              for="startDate"
+              class="block text-sm font-semibold dpm-form-label"
+              [ngClass]="{
+                '!text-error-600 dark:!text-error-400':
+                  dpmDataFormGroup.errors?.['mixedDate'] && !getAll?.value,
+              }"
+            >
+              Start Date
+            </label>
+            <app-date-picker
+              #startDatePicker
+              [inputId]="'startDate'"
+              formControlName="startDate"
+              [placeholder]="format.dpmDate(null, true)"
+              [inputClass]="
+                'w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 ' +
+                (dpmDataFormGroup.errors?.['mixedDate'] && !getAll?.value
+                  ? 'border-error-500 focus:border-error-500 focus:ring-error-500/20'
+                  : 'border-neutral-200 focus:border-primary-500 focus:ring-primary-500/20')
+              "
+              (onOpen)="onStartDateOpen()"
+            ></app-date-picker>
+            <div class="min-h-5">
+              @if (getStartTimeValidationMessages()) {
+                <p class="text-sm text-error-600 font-medium">
+                  {{ getStartTimeValidationMessages() }}
+                </p>
+              }
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label
+              for="endDate"
+              class="block text-sm font-semibold dpm-form-label"
+              [ngClass]="{
+                '!text-error-600 dark:!text-error-400':
+                  dpmDataFormGroup.errors?.['mixedDate'] && !getAll?.value,
+              }"
+            >
+              End Date
+            </label>
+            <app-date-picker
+              #endDatePicker
+              [inputId]="'endDate'"
+              formControlName="endDate"
+              [placeholder]="format.dpmDate()"
+              [inputClass]="
+                'w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0 ' +
+                (dpmDataFormGroup.errors?.['mixedDate'] && !getAll?.value
+                  ? 'border-error-500 focus:border-error-500 focus:ring-error-500/20'
+                  : 'border-neutral-200 focus:border-primary-500 focus:ring-primary-500/20')
+              "
+              (onOpen)="onEndDateOpen()"
+            ></app-date-picker>
+            <div class="min-h-5">
+              @if (getEndTimeValidationMessages()) {
+                <p class="text-sm text-error-600 font-medium">
+                  {{ getEndTimeValidationMessages() }}
+                </p>
+              }
+            </div>
+          </div>
+
+          <div class="hidden md:flex flex-col gap-1.5">
+            <span class="block text-sm font-semibold dpm-form-label invisible">Placeholder</span>
+            <label
+              class="flex items-center gap-3 cursor-pointer h-[42px] px-4 py-2.5 rounded-lg border border-neutral-200 dpm-form-input shadow-sm hover:border-primary-300 transition-colors"
+            >
+              <input
+                id="getAllCheckbox"
+                type="checkbox"
+                class="form-checkbox form-checkbox-primary rounded"
+                formControlName="getAll"
+              />
+              <span class="text-base-content font-medium text-sm">Get All Records</span>
+            </label>
+            <div class="min-h-5"></div>
+          </div>
+        </div>
+
+        <!-- Mobile checkbox -->
+        <label class="md:hidden flex items-center gap-3 cursor-pointer">
+          <input
+            id="getAllCheckboxMobile"
+            type="checkbox"
+            class="form-checkbox form-checkbox-primary rounded"
+            formControlName="getAll"
+          />
+          <span class="text-base-content font-medium">Get All Records</span>
+        </label>
+
+        <div class="flex justify-center pt-2">
+          <app-button
+            type="submit"
+            variant="primary"
+            [disabled]="loadingDpm() || (!dpmDataFormGroup.valid && !getAll?.value)"
+          >
+            @if (loadingDpm()) {
+              <i class="pi pi-spinner pi-spin mr-2"></i>
+              Generating...
+            } @else {
+              <i class="pi pi-download mr-2"></i>
+              Generate DPM Report
+            }
+          </app-button>
+        </div>
+      </form>
     </div>
 
-    <div class="grid place-items-center col-span-6 mt-4">
-      <button
-        pRipple
-        id="submitButton"
-        type="submit"
-        class="btn btn-secondary m-auto w-full md:btn-wide"
-        [disabled]="!dpmDataFormGroup.valid && !getAll?.value"
-      >
-        Generate
-      </button>
-    </div>
-  </form>
+    <!-- User Data Section -->
+    <div
+      class="bg-base-100 rounded-2xl border-l-4 border-l-secondary-500 dark:border-l-secondary-400 border border-neutral-200 dark:border-neutral-700 shadow-md p-6"
+    >
+      <div class="flex items-center gap-2 mb-4">
+        <i class="pi pi-users text-secondary-500 dark:text-secondary-400"></i>
+        <h3 class="text-lg font-semibold text-base-content">User Data</h3>
+      </div>
 
-  <div class="divider mt-10 mb-7"></div>
+      <p class="text-sm text-base-content/60 mb-4">
+        Export a list of all users and their current point balances.
+      </p>
 
-  <div>
-    <h3 class="text-2xl pb-4 font-bold">User Data</h3>
-    <div class="grid place-items-center mt-2 mx-5">
-      <button
-        pRipple
-        class="btn btn-secondary m-auto w-full md:btn-wide font-bold"
-        (click)="getUserData()"
-      >
-        Generate
-      </button>
+      <div class="flex justify-center">
+        <app-button variant="secondary" [disabled]="loadingUser()" (click)="getUserData()">
+          @if (loadingUser()) {
+            <i class="pi pi-spinner pi-spin mr-2"></i>
+            Generating...
+          } @else {
+            <i class="pi pi-download mr-2"></i>
+            Generate User Report
+          }
+        </app-button>
+      </div>
     </div>
   </div>
 </div>

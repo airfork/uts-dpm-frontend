@@ -31,8 +31,8 @@ export class DpmService {
     );
   }
 
-  create(dpm: PostDpmDto): Observable<unknown> {
-    return this.http.post(BASE_URL, dpm).pipe(
+  create(dpm: PostDpmDto): Observable<void> {
+    return this.http.post<void>(BASE_URL, dpm).pipe(
       catchError((error) => {
         return this.errorService.errorResponse(
           error,
@@ -75,8 +75,8 @@ export class DpmService {
     );
   }
 
-  updateDpmGroups(groups: PutDpmGroup[]): Observable<unknown> {
-    return this.http.put(BASE_URL + '/list', groups).pipe(
+  updateDpmGroups(groups: PutDpmGroup[]): Observable<void> {
+    return this.http.put<void>(BASE_URL + '/list', groups).pipe(
       catchError((error) => {
         return this.errorService.errorResponse(
           error,

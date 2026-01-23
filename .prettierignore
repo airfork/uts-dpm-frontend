@@ -1,6 +1,12 @@
 # Ignore all SCSS files
 **/*.scss
 
+# Ignore Angular 17+ templates with @if/@for syntax (prettier doesn't support them)
+src/app/ui/autocomplete/*.html
+src/app/ui/form-field/*.html
+src/app/ui/empty-state/*.html
+src/app/ui/page-header/*.html
+
 # Other ignored paths
 dist/
 coverage/

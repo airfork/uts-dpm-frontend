@@ -7,6 +7,4 @@ import { NavbarComponent } from '../../ui/navbar/navbar.component';
   templateUrl: './users.component.html',
   imports: [RouterOutlet, NavbarComponent],
 })
-export class UsersComponent {
-  constructor() {}
-}
+export class UsersComponent {}

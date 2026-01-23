@@ -1,0 +1,5 @@
+export const ANIMATION_DURATIONS = {
+  HIGHLIGHT_PULSE: 300,
+  TOAST_DISPLAY: 3000,
+  STAGGER_DELAY: 50,
+} as const;

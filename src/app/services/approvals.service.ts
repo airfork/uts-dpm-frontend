@@ -25,8 +25,8 @@ export class ApprovalsService {
     );
   }
 
-  updatePoints(id: number, points: number): Observable<unknown> {
-    return this.http.patch<unknown>(`${BASE_URL}/${id}`, { points: points }).pipe(
+  updatePoints(id: number, points: number): Observable<void> {
+    return this.http.patch<void>(`${BASE_URL}/${id}`, { points: points }).pipe(
       catchError((error) => {
         return this.errorService.errorResponse(
           error,
@@ -36,8 +36,8 @@ export class ApprovalsService {
     );
   }
 
-  approveDpm(id: number): Observable<unknown> {
-    return this.http.patch<unknown>(`${BASE_URL}/${id}`, { approved: true }).pipe(
+  approveDpm(id: number): Observable<void> {
+    return this.http.patch<void>(`${BASE_URL}/${id}`, { approved: true }).pipe(
       retry(2),
       catchError((error) => {
         return this.errorService.errorResponse(
@@ -48,8 +48,8 @@ export class ApprovalsService {
     );
   }
 
-  denyDpm(id: number): Observable<unknown> {
-    return this.http.patch<unknown>(`${BASE_URL}/${id}`, { ignored: true }).pipe(
+  denyDpm(id: number): Observable<void> {
+    return this.http.patch<void>(`${BASE_URL}/${id}`, { ignored: true }).pipe(
       catchError((error) => {
         return this.errorService.errorResponse(
           error,

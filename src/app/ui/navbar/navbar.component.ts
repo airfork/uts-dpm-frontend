@@ -1,11 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
 import { Roles } from '../../auth/roles.types';
-import { RemoveIfUnauthorizedDirective } from '../../auth/directives/remove-if-unauthorized.directive';
+import { AuthorizedDirective } from '../../auth/directives/authorized.directive';
 
-interface navbarLinks {
+interface NavbarLink {
   path?: string;
   name: string;
   allowedRoles: Roles[];
@@ -14,14 +14,36 @@ interface navbarLinks {
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  imports: [RouterLink, RouterLinkActive, RemoveIfUnauthorizedDirective],
+  imports: [RouterLink, RouterLinkActive, AuthorizedDirective],
 })
 export class NavbarComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   private notificationService = inject(NotificationService);
 
-  links: navbarLinks[] = [
+  isDropdownOpen = signal(false);
+  currentTheme = signal<'light' | 'dark'>(this.getInitialTheme());
+
+  private getInitialTheme(): 'light' | 'dark' {
+    if (typeof window === 'undefined') return 'light';
+    // Check localStorage first, then fall back to data-theme attribute
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      return savedTheme;
+    }
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  constructor() {
+    effect((onCleanup) => {
+      if (this.isDropdownOpen()) {
+        this.addDocumentListeners();
+        onCleanup(() => this.removeDocumentListeners());
+      }
+    });
+  }
+
+  links: NavbarLink[] = [
     {
       path: '/dpm',
       name: 'DPM',
@@ -49,7 +71,16 @@ export class NavbarComponent {
     },
   ];
 
+  toggleDropdown() {
+    this.isDropdownOpen.update((open) => !open);
+  }
+
+  closeDropdown() {
+    this.isDropdownOpen.set(false);
+  }
+
   menuItemClick() {
+    this.closeDropdown();
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();
     }
@@ -59,5 +90,36 @@ export class NavbarComponent {
     this.menuItemClick();
     this.authService.logout();
     this.router.navigate(['/login']).then(() => this.notificationService.showInfo('Logged out'));
+  }
+
+  toggleTheme() {
+    const newTheme = this.currentTheme() === 'light' ? 'dark' : 'light';
+    this.currentTheme.set(newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+  }
+
+  handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as HTMLElement;
+    const dropdown = document.getElementById('menuButton')?.closest('.relative');
+    if (dropdown && !dropdown.contains(target)) {
+      this.closeDropdown();
+    }
+  };
+
+  handleEscapeKey = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      this.closeDropdown();
+    }
+  };
+
+  addDocumentListeners() {
+    document.addEventListener('click', this.handleClickOutside);
+    document.addEventListener('keydown', this.handleEscapeKey);
+  }
+
+  removeDocumentListeners() {
+    document.removeEventListener('click', this.handleClickOutside);
+    document.removeEventListener('keydown', this.handleEscapeKey);
   }
 }

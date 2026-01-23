@@ -1,298 +1,264 @@
-<h2 class="text-3xl mb-5 font-bold">Edit DPMs</h2>
+<div>
+  @if (dpmEditForm) {
+    <div class="flex justify-end gap-2 mb-4">
+      <app-button
+        variant="primary"
+        size="sm"
+        (click)="addGroup()"
+        appTooltip="Add DPM Group"
+        tooltipPosition="top"
+      >
+        <i class="pi pi-plus mr-1"></i>
+        Add Group
+      </app-button>
+      <app-button
+        variant="ghost"
+        size="sm"
+        (click)="confirmReset()"
+        [disabled]="dpmEditForm.pristine"
+        appTooltip="Reset Changes"
+        tooltipPosition="top"
+      >
+        <i class="pi pi-refresh"></i>
+      </app-button>
+    </div>
+  }
 
-@if (dpmEditForm) {
-  <form [formGroup]="dpmEditForm">
-    <div
-      cdkDropList
-      cdkDropListGroup
-      formArrayName="groups"
-      class="grid grid-cols-1 place-items-center"
-      [cdkDropListData]="groupsFormArray.controls"
-      (cdkDropListDropped)="dropGroups($event)"
-    >
-      <div class="w-full lg:w-9/10 xl:w-4/5 grid grid-cols-1 gap-6">
-        <div class="flex justify-end w-full mt-3">
-          <div
-            class="tooltip tooltip-top tooltip-primary"
-            data-tip="Add DPM Group"
-          >
-            <button class="btn btn-primary btn-sm ml-2" (click)="addGroup()">
-              <i class="pi pi-plus text-lg"></i>
-            </button>
-          </div>
-          <div
-            class="tooltip tooltip-top tooltip-primary"
-            data-tip="Reset Changes"
-            [hidden]="dpmEditForm.pristine"
-          >
-            <button class="btn btn-sm ml-2" (click)="confirmReset()">
-              <i class="pi pi-refresh text-lg"></i>
-            </button>
-          </div>
-        </div>
-
+  @if (dpmEditForm) {
+    <form [formGroup]="dpmEditForm">
+      <div
+        cdkDropList
+        cdkDropListGroup
+        formArrayName="groups"
+        class="space-y-4"
+        [cdkDropListData]="groupsFormArray.controls"
+        (cdkDropListDropped)="dropGroups($event)"
+      >
         @for (
           groupControl of groupsFormArray.controls;
           track groupControl.value.id;
           let groupIndex = $index
         ) {
-          <div
+          <app-card
             [formGroupName]="groupIndex"
             cdkDrag
-            class="card w-full bg-base-100 card-lg shadow-sm cursor-move border-2 border-base-300 last:mb-5"
+            variant="default"
+            [hover]="true"
+            class="w-full cursor-move border-2 group-card"
             [ngClass]="{
               'border-base-300':
-                !groupHasErrors(groupControl) &&
-                !dpmsInGroupHaveErrors(groupControl),
-              'border-error':
-                groupHasErrors(groupControl) ||
-                dpmsInGroupHaveErrors(groupControl),
+                !groupHasErrors(groupControl) && !dpmsInGroupHaveErrors(groupControl),
+              'border-error': groupHasErrors(groupControl) || dpmsInGroupHaveErrors(groupControl),
             }"
           >
-            <div class="card-body">
-              <div class="flex justify-between items-center">
-                <textarea
-                  #autoResizeTextarea
-                  id="dpmGroupName-{{ groupControl.value.id }}"
-                  pInputTextarea
-                  [autoResize]="true"
-                  rows="1"
-                  class="textarea textarea-ghost grow textarea-xl min-h-0 resize-none"
-                  placeholder="Group Name"
-                  formControlName="name"
-                  [ngClass]="{
-                    'textarea-error': groupNameHasErrors(groupControl),
-                    'textarea-ghost': !groupNameHasErrors(groupControl),
-                  }"
-                ></textarea>
-
-                <div
-                  class="grid flex-none"
-                  [ngClass]="{
-                    'grid-cols-2 gap-2': groupControl.value.dpms.length === 0,
-                  }"
-                >
-                  <div class="tooltip tooltip-primary" data-tip="Add DPM">
-                    <button
-                      class="btn btn-primary btn-xs ml-2"
-                      (click)="addDpmToGroup(groupControl)"
-                    >
-                      <i class="pi pi-plus text-sm"></i>
-                    </button>
-                  </div>
-
-                  <div
-                    class="tooltip tooltip-primary"
-                    data-tip="Delete Group"
-                    *ngIf="groupControl.value.dpms.length === 0"
-                  >
-                    <button
-                      class="btn btn-xs ml-2"
-                      (click)="confirmRemoveGroup(groupIndex)"
-                    >
-                      <i class="pi pi-trash text-sm"></i>
-                    </button>
-                  </div>
-                </div>
+            <!-- Drag Handle -->
+            <div class="flex items-center gap-3 mb-4">
+              <div class="text-base-content/40 cursor-move" cdkDragHandle>
+                <i class="pi pi-bars text-lg"></i>
               </div>
+              <textarea
+                appAutoResize
+                id="dpmGroupName-{{ groupControl.value.id }}"
+                rows="1"
+                class="form-textarea form-textarea-compact grow text-xl font-semibold"
+                placeholder="Group Name"
+                formControlName="name"
+                [ngClass]="{
+                  'form-textarea-error': groupNameHasErrors(groupControl),
+                }"
+              ></textarea>
 
-              @if (groupHasErrors(groupControl)) {
-                <div class="mb-2">
-                  @for (
-                    errorMessage of getGroupErrorMessages(groupControl);
-                    track errorMessage
-                  ) {
-                    <p class="text-error text-xs">{{ errorMessage }}</p>
-                  }
-                </div>
+              <!-- Error Badge -->
+              @if (groupHasErrors(groupControl) || dpmsInGroupHaveErrors(groupControl)) {
+                <span class="group-error-badge">
+                  <i class="pi pi-exclamation-triangle text-xs"></i>
+                  {{ getGroupErrorCount(groupControl) }}
+                  {{ getGroupErrorCount(groupControl) === 1 ? 'error' : 'errors' }}
+                </span>
               }
 
               <div
-                cdkDropList
-                formArrayName="dpms"
-                [cdkDropListData]="{
-                  groupControl: groupControl,
-                  controls: getDpmsFormArray(groupControl).controls,
+                class="grid flex-none"
+                [ngClass]="{
+                  'grid-cols-2 gap-2': groupControl.value.dpms.length === 0,
                 }"
-                class="dpm-list"
-                (cdkDropListDropped)="dropDpms($event, groupControl)"
               >
-                @for (
-                  dpmControl of getDpmsFormArray(groupControl).controls;
-                  track dpmControl.value.id;
-                  let dpmIndex = $index
-                ) {
-                  <div class="dpm-type-box" cdkDrag [formGroupName]="dpmIndex">
-                    <div class="flex flex-row items-center">
-                      <div class="mr-5 grow">
-                        <textarea
-                          id="dpmName-{{ dpmControl.value.id }}"
-                          #autoResizeTextarea
-                          pInputTextarea
-                          [autoResize]="true"
-                          rows="1"
-                          class="textarea w-full min-h-0 resize-none"
-                          placeholder="DPM Name"
-                          formControlName="name"
-                          [ngClass]="{
-                            'textarea-error':
-                              dpmHasErrors(dpmControl, 'name') ||
-                              dpmNameIsDuplicated(groupControl, dpmControl),
-                            'textarea-ghost':
-                              !dpmHasErrors(dpmControl, 'name') &&
-                              !dpmNameIsDuplicated(groupControl, dpmControl),
-                          }"
-                        ></textarea>
-                      </div>
+                <app-button
+                  variant="primary"
+                  size="sm"
+                  (click)="addDpmToGroup(groupControl)"
+                  appTooltip="Add DPM"
+                  tooltipPosition="top"
+                >
+                  <i class="pi pi-plus text-sm"></i>
+                </app-button>
 
-                      <div class="min-w-1/10 flex-none">
-                        <input
-                          id="dpmPoints-{{ dpmControl.value.id }}"
-                          class="input input-sm w-20"
-                          formControlName="points"
-                          type="number"
-                          placeholder="Points"
-                          [ngClass]="{
-                            'input-error': dpmHasErrors(dpmControl, 'points'),
-                            'input-ghost': !dpmHasErrors(dpmControl, 'points'),
-                          }"
-                        />
-                      </div>
-
-                      <button
-                        class="btn btn-xs ml-2 border-2"
-                        type="button"
-                        [style.border-color]="dpmControl.value.color?.hexCode"
-                        (click)="showColorModal(dpmControl)"
-                      >
-                        <i class="pi pi-palette text-xs"></i>
-                      </button>
-
-                      <button
-                        class="btn btn-xs ml-2 border-2"
-                        type="button"
-                        (click)="
-                          confirmRemoveDpmFromGroup(groupControl, dpmIndex)
-                        "
-                      >
-                        <i class="pi pi-trash text-xs"></i>
-                      </button>
-                    </div>
-
-                    @if (
-                      getDpmErrorMessages(groupControl, dpmControl).length > 0
-                    ) {
-                      <div class="mt-2">
-                        @for (
-                          errorMessage of getDpmErrorMessages(
-                            groupControl,
-                            dpmControl
-                          );
-                          track errorMessage
-                        ) {
-                          <p class="text-error text-xs mt-1 basis-full">
-                            {{ errorMessage }}
-                          </p>
-                        }
-                      </div>
-                    }
-                  </div>
+                @if (groupControl.value.dpms.length === 0) {
+                  <app-button
+                    variant="outline"
+                    size="sm"
+                    (click)="confirmRemoveGroup(groupIndex)"
+                    appTooltip="Delete Group"
+                    tooltipPosition="top"
+                  >
+                    <i class="pi pi-trash text-sm"></i>
+                  </app-button>
                 }
               </div>
             </div>
-          </div>
+
+            @if (groupHasErrors(groupControl)) {
+              <div class="mb-4">
+                @for (errorMessage of getGroupErrorMessages(groupControl); track errorMessage) {
+                  <p class="text-error text-sm flex items-center gap-1">
+                    <i class="pi pi-exclamation-circle"></i>
+                    {{ errorMessage }}
+                  </p>
+                }
+              </div>
+            }
+
+            <!-- Column Headers -->
+            <div class="dpm-header-row">
+              <div></div>
+              <div>Name</div>
+              <div>Points</div>
+              <div class="header-color">
+                Color
+                <i
+                  class="pi pi-info-circle text-xs cursor-help"
+                  appTooltip="Colors link DPMs to WhenToWork shifts for Autogen"
+                  tooltipPosition="top"
+                ></i>
+              </div>
+              <div></div>
+            </div>
+
+            <div
+              cdkDropList
+              formArrayName="dpms"
+              [cdkDropListData]="{
+                groupControl: groupControl,
+                controls: getDpmsFormArray(groupControl).controls,
+              }"
+              class="dpm-list space-y-3"
+              (cdkDropListDropped)="dropDpms($event, groupControl)"
+            >
+              @for (
+                dpmControl of getDpmsFormArray(groupControl).controls;
+                track dpmControl.value.id;
+                let dpmIndex = $index
+              ) {
+                <div class="dpm-type-box" cdkDrag [formGroupName]="dpmIndex">
+                  <div class="dpm-data-row">
+                    <!-- Drag Handle -->
+                    <div
+                      class="text-base-content/30 cursor-move flex items-center justify-center"
+                      cdkDragHandle
+                    >
+                      <i class="pi pi-ellipsis-v text-sm"></i>
+                    </div>
+
+                    <!-- Name -->
+                    <div>
+                      <textarea
+                        appAutoResize
+                        id="dpmName-{{ dpmControl.value.id }}"
+                        rows="1"
+                        class="form-textarea form-textarea-compact w-full"
+                        placeholder="DPM Name"
+                        formControlName="name"
+                        [ngClass]="{
+                          'form-textarea-error':
+                            dpmHasErrors(dpmControl, 'name') ||
+                            dpmNameIsDuplicated(groupControl, dpmControl),
+                        }"
+                      ></textarea>
+                    </div>
+
+                    <!-- Points -->
+                    <div class="flex items-center">
+                      <input
+                        id="dpmPoints-{{ dpmControl.value.id }}"
+                        class="form-input form-input-sm w-16"
+                        formControlName="points"
+                        type="number"
+                        [ngClass]="{
+                          'form-input-error': dpmHasErrors(dpmControl, 'points'),
+                        }"
+                      />
+                    </div>
+
+                    <!-- Color -->
+                    <app-color-dropdown
+                      [colors]="dpmColors()"
+                      [selectedColor]="dpmColors() | colorById: dpmControl.value.color?.colorId"
+                      [usedColorIds]="getUsedColorIds(dpmControl.value.id)"
+                      (colorSelected)="onColorSelected(dpmControl, $event)"
+                    />
+
+                    <!-- Actions -->
+                    <div class="flex justify-center delete-btn-wrapper">
+                      <app-button
+                        variant="ghost"
+                        size="sm"
+                        type="button"
+                        class="delete-btn"
+                        (click)="confirmRemoveDpmFromGroup(groupControl, dpmIndex)"
+                        appTooltip="Delete DPM"
+                        tooltipPosition="top"
+                      >
+                        <i class="pi pi-trash text-sm"></i>
+                      </app-button>
+                    </div>
+                  </div>
+
+                  <!-- Error Messages -->
+                  @if (getDpmErrorMessages(groupControl, dpmControl).length > 0) {
+                    <div class="mt-2 pl-8">
+                      @for (
+                        errorMessage of getDpmErrorMessages(groupControl, dpmControl);
+                        track errorMessage
+                      ) {
+                        <p class="text-error text-sm flex items-center gap-1">
+                          <i class="pi pi-exclamation-circle"></i>
+                          {{ errorMessage }}
+                        </p>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </app-card>
         }
       </div>
-    </div>
-  </form>
-
-  <div class="flex w-full justify-center">
-    <button
-      class="btn btn-primary btn-wide mt-5 mb-10"
-      [ngClass]="{
-        'btn-active':
-          dpmEditForm.valid &&
-          !dpmEditForm.pristine &&
-          !formHasNonFormGroupErrors() &&
-          !isSaving(),
-        'btn-disabled':
-          !dpmEditForm.valid ||
-          dpmEditForm.pristine ||
-          isSaving() ||
-          formHasNonFormGroupErrors(),
-      }"
-      (click)="save()"
-    >
-      Save
-    </button>
-  </div>
-}
-
-<dialog #colorModal id="colorModal" class="modal cursor-default">
-  <div class="modal-box relative">
-    <h3 class="text-2xl font-bold mb-4">{{ currentModalDpm()?.name }}</h3>
-
-    <form [formGroup]="colorSelectionForm" (ngSubmit)="applyColorSelection()">
-      <p-panel
-        class="cursor-pointer"
-        toggler="header"
-        [collapsed]="true"
-        [toggleable]="true"
-      >
-        <ng-template #header>
-          <div class="flex items-center gap-2">
-            <span class="italic">Info</span>
-          </div>
-        </ng-template>
-        <p class="text-sm">
-          Select a color for this DPM in WhenToWork. This will allow this DPM
-          type to picked up by Autogen when it finds the color
-        </p>
-      </p-panel>
-
-      <fieldset class="fieldset mt-3">
-        <legend class="fieldset-legend text-lg">Color</legend>
-        <select
-          formControlName="selectedColor"
-          id="color-select"
-          class="select select-bordered w-full"
-          [ngClass]="{ 'select-error': selectedColorIsInUse() }"
-        >
-          <option [ngValue]="null">No Color</option>
-          @for (color of dpmColors(); track color.colorId) {
-            <option [ngValue]="color">
-              {{ color.colorName }}
-            </option>
-          }
-        </select>
-
-        <p class="label text-error" [hidden]="!selectedColorIsInUse()">
-          {{ selectedColor }} is already in use by another DPM.
-        </p>
-      </fieldset>
-
-      <div class="modal-action">
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="
-            colorSelectionForm.pristine ||
-            !colorSelectionForm.valid ||
-            selectedColorIsInUse()
-          "
-        >
-          Apply
-        </button>
-        <button type="button" class="btn" (click)="closeModalInternal()">
-          Cancel
-        </button>
-      </div>
     </form>
-  </div>
-  <form method="dialog" class="modal-backdrop">
-    <button id="dialogCloseButton">close</button>
-  </form>
-</dialog>
+
+    <div class="sticky-save-bar">
+      @if (formHasErrors()) {
+        <div class="error-indicator">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span
+            >{{ getTotalErrorCount() }} {{ getTotalErrorCount() === 1 ? 'error' : 'errors' }} -
+            scroll up to fix</span
+          >
+        </div>
+      }
+      <app-button
+        variant="primary"
+        size="md"
+        [disabled]="
+          !dpmEditForm.valid || dpmEditForm.pristine || isSaving() || formHasNonFormGroupErrors()
+        "
+        (click)="save()"
+      >
+        <i class="pi pi-save mr-2"></i>
+        Save Changes
+      </app-button>
+    </div>
+  }
+</div>
 
 <app-confirm-box
   [message]="confirmModalMessage()"

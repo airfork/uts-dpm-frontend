@@ -14,13 +14,13 @@ import { PasswordsEqualValidator } from '../directives/passwords-equal.directive
 import { PasswordsNotEqualValidator } from '../directives/passwords-not-equal.directive';
 import ChangePasswordDto from '../../models/change-password-dto';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Ripple } from 'primeng/ripple';
 import { LoadingComponent } from '../../shared/loading/loading.component';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
-  imports: [ReactiveFormsModule, Ripple, LoadingComponent],
+  imports: [ReactiveFormsModule, LoadingComponent, NgClass],
 })
 export class ChangePasswordComponent implements OnInit {
   private authService = inject(AuthService);
@@ -104,24 +104,6 @@ export class ChangePasswordComponent implements OnInit {
   hasErrors(control: AbstractControl | null): boolean {
     if (!control) return false;
     return control.invalid && (control.dirty || control.touched);
-  }
-
-  setStatusClass(control: AbstractControl | null, isInput = true): string {
-    if (control == null) return '';
-    const prefix = isInput ? 'input-' : 'text-';
-
-    if (this.hasErrors(control)) return prefix + 'error';
-
-    if (control === this.confirmPassword && this.getConfirmPasswordValidationMessages() !== '') {
-      return prefix + 'error';
-    }
-
-    if (control === this.newPassword && this.getNewPasswordValidationMessages() !== '') {
-      return prefix + 'error';
-    }
-
-    if (control.dirty || control.touched) return prefix + 'success';
-    return '';
   }
 
   getCurrentPasswordValidationMessages(): string {

@@ -1,17 +1,14 @@
 import {
-  AfterViewInit,
+  afterNextRender,
   Component,
   effect,
-  ElementRef,
-  HostListener,
   inject,
+  Injector,
   input,
   model,
   OnInit,
-  QueryList,
+  Renderer2,
   signal,
-  ViewChild,
-  ViewChildren,
 } from '@angular/core';
 import {
   CdkDrag,
@@ -22,8 +19,9 @@ import {
 } from '@angular/cdk/drag-drop';
 import { DPMGroup, DPMType } from '../../models/dpm-type';
 import { v4 as uuidv4 } from 'uuid';
-import { Textarea } from 'primeng/textarea';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
+import { AutoResizeDirective } from '../../shared/directives/auto-resize.directive';
+import { TooltipDirective } from '../../shared/directives/tooltip.directive';
 import {
   AbstractControl,
   FormArray,
@@ -39,7 +37,11 @@ import { DpmService } from '../../services/dpm.service';
 import { finalize } from 'rxjs';
 import { GetDpmColors } from '../../models/get-dpm-colors';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
-import { Panel } from 'primeng/panel';
+import { CardComponent } from '../../ui/card/card.component';
+import { ButtonComponent } from '../../ui/button/button.component';
+import { ColorByIdPipe } from '../../shared/pipes/color-by-id.pipe';
+import { ColorDropdownComponent } from './color-dropdown/color-dropdown.component';
+import { ANIMATION_DURATIONS } from '../../shared/constants/animations';
 
 interface DpmListDropData {
   groupControl: AbstractControl; // This is the FormGroup for the DPM group
@@ -75,36 +77,35 @@ const DPM_GROUP_NAME_VALIDATORS = [Validators.required, Validators.maxLength(500
     CdkDropList,
     CdkDrag,
     CdkDropListGroup,
-    Textarea,
     NgClass,
     ReactiveFormsModule,
-    NgIf,
     ConfirmBoxComponent,
-    Panel,
+    CardComponent,
+    ButtonComponent,
+    AutoResizeDirective,
+    TooltipDirective,
+    ColorByIdPipe,
+    ColorDropdownComponent,
   ],
 })
-export class EditDpmsComponent implements OnInit, AfterViewInit {
+export class EditDpmsComponent implements OnInit {
   private notificationService = inject(NotificationService);
   private dpmService = inject(DpmService);
+  private renderer = inject(Renderer2);
+  private injector = inject(Injector);
 
   dpmGroupsNeedRefresh = model.required<boolean>();
   dpmGroupsInput = input.required<DPMGroup[]>();
   isSaving = signal(false);
   dpmColors = signal<GetDpmColors[]>([]);
-  currentModalDpm = signal<DpmTypeFormValue | null>(null);
 
   confirmModalOpen = signal(false);
   confirmModalMessage = signal('');
   confirmModalCallback = signal<() => void>(() => {});
 
-  @ViewChild('colorModal') colorModalElement!: ElementRef<HTMLDialogElement>;
-
   dpmEditForm!: FormGroup; // Main form group
-  colorSelectionForm!: FormGroup;
 
   private fb = inject(FormBuilder);
-
-  @ViewChildren('autoResizeTextarea') textareaDirectives?: QueryList<Textarea>;
 
   constructor() {
     effect(() => {
@@ -117,27 +118,10 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
       this.dpmColors.set(colors);
     });
 
-    this.initializeColorSelectionModal();
-
     // Initialize form structure, possibly with empty array if input not ready
     this.dpmEditForm = this.fb.group({
       groups: this.fb.array([]),
     });
-  }
-
-  ngAfterViewInit() {
-    // Trigger resize for all textareas after the view is initialized.
-    // A small timeout can help ensure styles are applied and dimensions are correct.
-    setTimeout(() => this.triggerAllTextareasResize(), 0); // Initial resize
-    this.textareaDirectives?.changes.subscribe(() => {
-      // Handle new textareas, perhaps resize them too
-      setTimeout(() => this.triggerAllTextareasResize(), 0);
-    });
-  }
-
-  @HostListener('window:resize')
-  onWindowResize() {
-    this.triggerAllTextareasResize();
   }
 
   confirmReset() {
@@ -198,13 +182,40 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
 
   addDpmToGroup(groupControl: AbstractControl) {
     const dpmsArray = this.getDpmsFormArray(groupControl);
+    const newId = uuidv4();
     const newDpm = this.fb.group({
-      id: [uuidv4()],
+      id: [newId],
       name: [null, DPM_NAME_VALIDATORS],
       points: [1, DPM_POINTS_VALIDATORS],
       color: [null],
     });
     dpmsArray.push(newDpm);
+
+    // Scroll to new item and highlight after render
+    this.scrollToAndHighlight(`dpmName-${newId}`);
+  }
+
+  private scrollToAndHighlight(elementId: string) {
+    afterNextRender(
+      () => {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          const row = element.closest('.dpm-type-box');
+          if (row) {
+            this.renderer.addClass(row, 'dpm-highlight-pulse');
+            setTimeout(
+              () => this.renderer.removeClass(row, 'dpm-highlight-pulse'),
+              ANIMATION_DURATIONS.HIGHLIGHT_PULSE
+            );
+          }
+
+          element.focus();
+        }
+      },
+      { injector: this.injector }
+    );
   }
 
   confirmRemoveGroup(groupIndex: number) {
@@ -329,6 +340,26 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
     return errors;
   }
 
+  getGroupErrorCount(groupControl: AbstractControl): number {
+    let count = 0;
+
+    // Count group-level errors
+    if (this.groupNameHasErrors(groupControl)) count++;
+    if (this.groupNameIsDuplicated(groupControl)) count++;
+
+    const dpmsArray = this.getDpmsFormArray(groupControl);
+    if (!dpmsArray || dpmsArray.length === 0) count++;
+
+    // Count DPM-level errors
+    dpmsArray.controls.forEach((dpmControl) => {
+      if (this.dpmHasErrors(dpmControl, 'name')) count++;
+      if (this.dpmHasErrors(dpmControl, 'points')) count++;
+      if (this.dpmNameIsDuplicated(groupControl, dpmControl)) count++;
+    });
+
+    return count;
+  }
+
   getDpmFormControl(dpmControl: AbstractControl, controlName: string): AbstractControl | null {
     return dpmControl.get(controlName);
   }
@@ -393,106 +424,44 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-  // -- Modal functions --
+  // -- Color dropdown helpers --
+  getUsedColorIds(excludeDpmId: string): number[] {
+    const usedIds: number[] = [];
 
-  get selectedColor(): string {
-    const currentDpm = this.currentModalDpm();
-    if (!this.colorSelectionForm || !currentDpm) return '';
-
-    const selectedValue = this.colorSelectionForm.value.selectedColor as GetDpmColors;
-    return selectedValue ? selectedValue.colorName : '';
-  }
-
-  showColorModal(dpmControl: AbstractControl) {
-    const controlData = dpmControl.value as DpmTypeFormValue;
-    this.currentModalDpm.set(controlData);
-
-    const currentColor = this.dpmColors().find(
-      (color) => color.colorId === controlData.color?.colorId
-    );
-
-    this.initializeColorSelectionModal(currentColor);
-    this.showModalInternal();
-  }
-
-  initializeColorSelectionModal(selectedColor: GetDpmColors | null | undefined = null) {
-    this.colorSelectionForm = this.fb.group({
-      selectedColor: selectedColor,
-    });
-  }
-
-  selectedColorIsInUse(): boolean {
-    const currentDpm = this.currentModalDpm();
-    if (!this.colorSelectionForm || !currentDpm) return false;
-
-    const selectedValue = this.colorSelectionForm.value.selectedColor as GetDpmColors;
-    if (selectedValue == null) return false;
-
-    const groups = this.groupsFormArray.controls;
-    for (const groupControl of groups) {
+    this.groupsFormArray.controls.forEach((groupControl) => {
       const dpmsArray = this.getDpmsFormArray(groupControl);
-      const dpmsContainColor = dpmsArray.controls.some((dc) => {
-        const dpmFormGroup = dc as FormGroup;
-        const dpmValue = dpmFormGroup.value as DpmTypeFormValue;
-        return dpmValue.color?.colorId === selectedValue?.colorId && dpmValue.id !== currentDpm.id;
+      dpmsArray.controls.forEach((dpmControl) => {
+        const dpmValue = dpmControl.value;
+        if (dpmValue.id !== excludeDpmId && dpmValue.color?.colorId) {
+          usedIds.push(dpmValue.color.colorId);
+        }
       });
+    });
 
-      if (dpmsContainColor) return true;
-    }
-
-    return false;
+    return usedIds;
   }
 
-  applyColorSelection() {
-    const currentDpm = this.currentModalDpm();
-    if (!this.colorSelectionForm || !this.colorSelectionForm.valid || !currentDpm) return;
-
-    const selectedValue = this.colorSelectionForm.value.selectedColor as GetDpmColors;
-    const groups = this.groupsFormArray.controls;
-    for (const groupControl of groups) {
-      const dpmsArray = this.getDpmsFormArray(groupControl);
-      const targetDpmControl = dpmsArray.controls.find((dc) => dc.value.id === currentDpm.id);
-
-      if (targetDpmControl) {
-        (targetDpmControl as FormGroup).get('color')?.setValue(
-          selectedValue
-            ? {
-                colorId: selectedValue.colorId,
-                hexCode: selectedValue.hexCode,
-              }
-            : null
-        );
-        targetDpmControl.markAsDirty(); // Mark the main form control as dirty
-        this.dpmEditForm.markAsDirty();
-        break;
-      }
-    }
-
-    this.closeModalInternal();
-  }
-
-  showModalInternal() {
-    if (this.colorModalElement && this.colorModalElement.nativeElement) {
-      this.colorModalElement.nativeElement.showModal();
-    }
-  }
-
-  closeModalInternal() {
-    if (this.colorModalElement && this.colorModalElement.nativeElement) {
-      this.colorModalElement.nativeElement.close();
-    }
+  onColorSelected(dpmControl: AbstractControl, color: GetDpmColors | null) {
+    const colorValue = color ? { colorId: color.colorId, hexCode: color.hexCode } : null;
+    (dpmControl as FormGroup).get('color')?.setValue(colorValue);
+    dpmControl.markAsDirty();
+    this.dpmEditForm.markAsDirty();
   }
 
   // Save updates
   save() {
-    this.isSaving.set(true);
-
-    if (!this.dpmEditForm.valid) {
-      console.error('Trying to save but form is invalid!');
-      this.notificationService.showError('Something went wrong, please try again.', 'Error');
-      this.isSaving.set(false);
+    // Check for validation errors first
+    if (!this.dpmEditForm.valid || this.formHasNonFormGroupErrors()) {
+      const errorCount = this.getTotalErrorCount();
+      this.notificationService.showError(
+        `${errorCount} ${errorCount === 1 ? 'error' : 'errors'} found. Please fix before saving.`,
+        'Validation Error'
+      );
+      this.scrollToFirstError();
       return;
     }
+
+    this.isSaving.set(true);
 
     const requestData: PutDpmGroup[] = [];
     const groupsFormArray = this.groupsFormArray;
@@ -543,22 +512,44 @@ export class EditDpmsComponent implements OnInit, AfterViewInit {
       });
   }
 
+  formHasErrors(): boolean {
+    return !this.dpmEditForm.valid || this.formHasNonFormGroupErrors();
+  }
+
+  getTotalErrorCount(): number {
+    let count = 0;
+    this.groupsFormArray.controls.forEach((groupControl) => {
+      count += this.getGroupErrorCount(groupControl);
+    });
+    return count;
+  }
+
+  private scrollToFirstError() {
+    for (const groupControl of this.groupsFormArray.controls) {
+      if (this.groupHasErrors(groupControl) || this.dpmsInGroupHaveErrors(groupControl)) {
+        const groupId = groupControl.value.id;
+        const element = document.getElementById(`dpmGroupName-${groupId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          // Highlight the group card
+          const card = element.closest('app-card');
+          if (card) {
+            this.renderer.addClass(card, 'dpm-highlight-pulse');
+            setTimeout(
+              () => this.renderer.removeClass(card, 'dpm-highlight-pulse'),
+              ANIMATION_DURATIONS.HIGHLIGHT_PULSE
+            );
+          }
+        }
+        break;
+      }
+    }
+  }
+
   private controlHasErrors(control: AbstractControl | null): boolean {
     if (!control) return false;
     return control.invalid;
-  }
-
-  private triggerAllTextareasResize() {
-    if (this.textareaDirectives) {
-      this.textareaDirectives.forEach((directive) => {
-        // Check if the directive's element is visible before resizing
-        if (directive && directive.el && directive.el.nativeElement) {
-          if (directive.el.nativeElement.offsetParent !== null) {
-            directive.resize();
-          }
-        }
-      });
-    }
   }
 
   private groupNameIsDuplicated(groupControl: AbstractControl): boolean {

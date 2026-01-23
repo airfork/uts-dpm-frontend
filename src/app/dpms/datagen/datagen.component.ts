@@ -1,25 +1,51 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  signal,
+  inject,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormatService } from '../../services/format.service';
 import { environment } from '../../../environments/environment';
 import { MixedDateValidator } from '../mixed-date.directive';
 import { DatagenService } from '../../services/datagen.service';
 import { NgClass } from '@angular/common';
-import { Ripple } from 'primeng/ripple';
-import { DatePicker } from 'primeng/datepicker';
+import { DatePickerComponent } from '../../ui/date-picker/date-picker.component';
+import { ButtonComponent } from '../../ui/button/button.component';
+import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
 
 @Component({
   selector: 'app-datagen',
   templateUrl: './datagen.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, NgClass, Ripple, DatePicker],
+  imports: [
+    ReactiveFormsModule,
+    NgClass,
+    DatePickerComponent,
+    ButtonComponent,
+    PageHeaderComponent,
+  ],
 })
 export class DatagenComponent implements OnInit {
   private formatService = inject(FormatService);
   private datagenService = inject(DatagenService);
 
+  @ViewChild('startDatePicker') startDatePicker!: DatePickerComponent;
+  @ViewChild('endDatePicker') endDatePicker!: DatePickerComponent;
+
   private BASE_URL = environment.baseUrl + '/datagen';
   mobileMode = signal(false);
+  selectedPreset = signal<string | null>('last30');
+  loadingDpm = signal(false);
+  loadingUser = signal(false);
+
+  readonly datePresets = [
+    { id: 'last30', label: 'Last 30 days' },
+    { id: 'thisMonth', label: 'This month' },
+    { id: 'lastMonth', label: 'Last month' },
+  ] as const;
 
   dpmDataFormGroup = new FormGroup(
     {
@@ -37,24 +63,63 @@ export class DatagenComponent implements OnInit {
     ) {
       this.mobileMode.set(true);
     }
+
+    // Set default to last 30 days
+    this.applyPreset('last30');
+  }
+
+  applyPreset(presetId: string) {
+    const today = new Date();
+    let startDate: Date;
+    let endDate: Date = today;
+
+    switch (presetId) {
+      case 'last30':
+        startDate = new Date(today);
+        startDate.setDate(today.getDate() - 30);
+        break;
+      case 'thisMonth':
+        startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        break;
+      case 'lastMonth':
+        startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        endDate = new Date(today.getFullYear(), today.getMonth(), 0);
+        break;
+      default:
+        return;
+    }
+
+    this.dpmDataFormGroup.patchValue({ startDate, endDate });
+    this.selectedPreset.set(presetId);
+  }
+
+  onDateChange() {
+    this.selectedPreset.set(null);
+  }
+
+  onStartDateOpen() {
+    this.endDatePicker?.close();
+  }
+
+  onEndDateOpen() {
+    this.startDatePicker?.close();
   }
 
   getUserData() {
+    this.loadingUser.set(true);
     this.datagenService.downloadUserData();
+    // Brief loading state for feedback, actual download is quick
+    setTimeout(() => this.loadingUser.set(false), 500);
   }
 
   getDpmData() {
-    this.datagenService.downloadDpmData(this.generateDownloadUrl(), () =>
-      this.dpmDataFormGroup.reset({ endDate: new Date() })
-    );
-  }
-
-  errorsOrEmpty(): string {
-    if (this.dpmDataFormGroup.errors?.['mixedDate'] && !this.getAll?.value) {
-      return 'input-error';
-    }
-
-    return '';
+    this.loadingDpm.set(true);
+    this.datagenService.downloadDpmData(this.generateDownloadUrl(), () => {
+      this.loadingDpm.set(false);
+      this.applyPreset('last30'); // Reset to default
+    });
+    // Fallback timeout in case callback doesn't fire
+    setTimeout(() => this.loadingDpm.set(false), 3000);
   }
 
   getStartTimeValidationMessages(): string {

@@ -1,106 +1,217 @@
-<dialog #dpmModal class="modal cursor-default">
-  <div class="modal-box relative">
-    <form method="dialog">
-      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-        ✕
-      </button>
-    </form>
-    @if (currentDpm(); as currentDpm) {
-      <div>
-        <h3 class="text-xl font-bold mx-4">{{ currentDpm.type }}</h3>
-        <table
-          class="my-4 border-separate border-spacing-x-4 border-spacing-y-1.5"
-        >
-          <tbody class="text-left align-text-top">
-            <tr>
-              <th>Points:</th>
-              <td>{{ currentDpm.points | points }}</td>
-            </tr>
-            <tr>
-              <th>Block:</th>
-              <td>{{ currentDpm.block | block }}</td>
-            </tr>
-            <tr>
-              <th>Location:</th>
-              <td>{{ currentDpm.location | uppercase }}</td>
-            </tr>
-            <tr>
-              <th>Date:</th>
-              <td>{{ currentDpm.date }}</td>
-            </tr>
-            <tr>
-              <th>Time:</th>
-              <td>
-                {{ currentDpm.time }}
-              </td>
-            </tr>
-            @if (currentDpm.notes) {
-              <tr class="break-words whitespace-normal">
-                <th>Notes:</th>
-                <td>{{ currentDpm.notes }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    }
-  </div>
-  <form method="dialog" class="modal-backdrop">
-    <button>close</button>
-  </form>
-</dialog>
-
 <ng-template #loading>
   <app-loading></app-loading>
 </ng-template>
 
 @if (currentDpms(); as dpms) {
-  <div>
-    <h2 class="text-3xl mb-5 font-bold">Current DPMs</h2>
-    <div class="rounded-box bg-base-100">
-      <p-table
-        #dt
-        [value]="dpms"
-        dataKey="id"
-        styleClass="table"
-        [rowHover]="true"
-        [rows]="10"
-        [showCurrentPageReport]="true"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [loading]="false"
-        responsiveLayout="scroll"
-        [paginator]="true"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      >
-        <ng-template pTemplate="header" class="table">
-          <tr>
-            <th class="lg:text-base break-words">Type</th>
-            <th class="lg:text-base break-words">Points</th>
-            <th class="lg:text-base break-words">Date</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-dpm>
-          <tr
-            class="hover:bg-base-300 hover:cursor-pointer"
-            (click)="clickRow(dpm)"
+  <div class="px-4 py-6 md:px-6 md:py-8">
+    <div class="max-w-5xl mx-auto space-y-6">
+      @if (dpms.length === 0) {
+        <app-page-header
+          icon="pi-file-edit"
+          title="My DPMs"
+          subtitle="Your performance overview"
+          variant="primary"
+        />
+        <app-empty-state
+          heading="No DPMs Yet"
+          description="Your DPMs will appear here once actions are logged."
+        />
+      } @else {
+        <!-- Hero Section -->
+        <section class="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-6 md:p-8">
+          <div class="flex items-center gap-4 mb-6">
+            <div
+              class="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold text-white">Performance Overview</h1>
+              <p class="text-sm text-white/70">Your current DPM summary</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <app-stat-card title="Total DPMs" [value]="totalCount()" variant="default" />
+            <app-stat-card
+              title="Positive Points"
+              [value]="'+' + positivePoints()"
+              variant="success"
+            />
+            <app-stat-card title="Negative Points" [value]="negativePoints()" variant="error" />
+          </div>
+        </section>
+
+        <!-- Mobile Card Layout -->
+        <div class="md:hidden space-y-3">
+          @for (dpm of dpms; track dpm; let i = $index) {
+            <div
+              class="home-mobile-card"
+              [class.home-mobile-card-positive]="dpm.points >= 0"
+              [class.home-mobile-card-negative]="dpm.points < 0"
+              [class.home-mobile-card-expanded]="isExpanded(dpm)"
+              [class.home-mobile-card-new]="isInitialLoad()"
+              [style.animation-delay]="isInitialLoad() ? i * 30 + 'ms' : '0ms'"
+              (click)="toggleExpand(dpm)"
+            >
+              <!-- Card Header -->
+              <div class="flex items-center justify-between">
+                <div class="flex-1 min-w-0">
+                  <div class="font-medium text-base-content truncate">
+                    {{ dpm.type }}
+                  </div>
+                  <div class="text-xs text-base-content/50">
+                    {{ dpm.date }}
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span
+                    class="home-badge"
+                    [class.home-badge-positive]="dpm.points >= 0"
+                    [class.home-badge-negative]="dpm.points < 0"
+                  >
+                    {{ dpm.points | points }}
+                  </span>
+                  <i
+                    class="pi pi-chevron-down text-base-content/40 transition-transform duration-200"
+                    [class.rotate-180]="isExpanded(dpm)"
+                  ></i>
+                </div>
+              </div>
+
+              <!-- Expanded Details -->
+              @if (isExpanded(dpm)) {
+                <div class="home-mobile-expanded" (click)="$event.stopPropagation()">
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                    <div class="home-detail-item">
+                      <span class="home-detail-label">Block</span>
+                      <span class="home-detail-value">{{ dpm.block | block }}</span>
+                    </div>
+                    <div class="home-detail-item">
+                      <span class="home-detail-label">Location</span>
+                      <span class="home-detail-value">{{ dpm.location | uppercase }}</span>
+                    </div>
+                    <div class="home-detail-item">
+                      <span class="home-detail-label">Time</span>
+                      <span class="home-detail-value">{{ dpm.time }}</span>
+                    </div>
+                    <div class="home-detail-item">
+                      <span class="home-detail-label">Date</span>
+                      <span class="home-detail-value">{{ dpm.date }}</span>
+                    </div>
+                    @if (dpm.notes) {
+                      <div class="home-detail-item col-span-2">
+                        <span class="home-detail-label">Notes</span>
+                        <span class="home-detail-value">{{ dpm.notes }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Desktop Table Section -->
+        <div
+          class="hidden md:block bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-lg overflow-hidden"
+        >
+          <app-data-table
+            [data]="dpms"
+            [columns]="columns"
+            [rows]="10"
+            [rowsPerPageOptions]="[10, 25, 50]"
+            [paginator]="true"
+            [showCurrentPageReport]="true"
+            [emptyMessage]="'No DPMs found.'"
           >
-            <td class="text-base break-words whitespace-normal">
-              {{ dpm.type }}
-            </td>
-            <td class="text-base break-words whitespace-normal">
-              {{ dpm.points | points }}
-            </td>
-            <td class="text-base break-words whitespace-normal">
-              {{ dpm.date }}
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td colspan="8">No DPMs found.</td>
-          </tr>
-        </ng-template>
-      </p-table>
+            <ng-template #bodyTemplate let-dpm let-i="index">
+              <!-- Main Row -->
+              <tr
+                class="home-row cursor-pointer"
+                [class.home-row-positive]="dpm.points >= 0"
+                [class.home-row-negative]="dpm.points < 0"
+                [class.home-row-expanded]="isExpanded(dpm)"
+                [class.home-row-new]="isInitialLoad()"
+                [style.animation-delay]="isInitialLoad() ? i * 30 + 'ms' : '0ms'"
+                (click)="toggleExpand(dpm)"
+              >
+                <td class="px-6 py-4">
+                  <span class="font-medium text-base-content">{{ dpm.type }}</span>
+                </td>
+                <td class="px-6 py-4">
+                  <span
+                    class="home-badge"
+                    [class.home-badge-positive]="dpm.points >= 0"
+                    [class.home-badge-negative]="dpm.points < 0"
+                  >
+                    {{ dpm.points | points }}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-base-content/70">{{ dpm.date }}</span>
+                    <i
+                      class="pi pi-chevron-down text-base-content/40 transition-transform duration-200"
+                      [class.rotate-180]="isExpanded(dpm)"
+                    ></i>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Expanded Details Row -->
+              @if (isExpanded(dpm)) {
+                <tr class="home-expanded-row">
+                  <td colspan="3" class="p-0">
+                    <div
+                      class="home-expanded-content"
+                      [class.home-expanded-positive]="dpm.points >= 0"
+                      [class.home-expanded-negative]="dpm.points < 0"
+                    >
+                      <div class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2 text-sm">
+                        <div class="home-detail-item">
+                          <span class="home-detail-label">Block</span>
+                          <span class="home-detail-value">{{ dpm.block | block }}</span>
+                        </div>
+                        <div class="home-detail-item">
+                          <span class="home-detail-label">Location</span>
+                          <span class="home-detail-value">{{ dpm.location | uppercase }}</span>
+                        </div>
+                        <div class="home-detail-item">
+                          <span class="home-detail-label">Time</span>
+                          <span class="home-detail-value">{{ dpm.time }}</span>
+                        </div>
+                        <div class="home-detail-item">
+                          <span class="home-detail-label">Date</span>
+                          <span class="home-detail-value">{{ dpm.date }}</span>
+                        </div>
+                        @if (dpm.notes) {
+                          <div class="home-detail-item col-span-2 md:col-span-4">
+                            <span class="home-detail-label">Notes</span>
+                            <span class="home-detail-value">{{ dpm.notes }}</span>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </ng-template>
+          </app-data-table>
+        </div>
+      }
     </div>
   </div>
 } @else {

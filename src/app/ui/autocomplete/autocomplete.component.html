@@ -1,0 +1,60 @@
+<div class="relative">
+  <input
+    #inputRef
+    type="text"
+    [id]="inputId()"
+    [placeholder]="placeholder()"
+    [value]="inputValue()"
+    [disabled]="disabled"
+    [class]="inputClass()"
+    autocomplete="off"
+    role="combobox"
+    aria-autocomplete="list"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-activedescendant]="
+      highlightedIndex() >= 0 ? 'suggestion-' + highlightedIndex() : null
+    "
+    (input)="onInputChange($event)"
+    (focus)="onInputFocus()"
+    (blur)="onInputBlur()"
+  />
+
+  @if (isOpen() && (suggestions().length > 0 || showEmptyMessage())) {
+    <div
+      [class]="
+        'absolute z-50 w-full mt-1 bg-base-200 border border-neutral-200 dark:border-neutral-700 rounded-lg shadow-lg max-h-60 overflow-auto ' +
+        panelClass()
+      "
+      role="listbox"
+    >
+      @if (suggestions().length === 0) {
+        <div class="px-4 py-3 text-sm text-base-content/60">
+          {{ emptyMessage() }}
+        </div>
+      } @else {
+        @for (suggestion of suggestions(); track suggestion; let i = $index) {
+          <div
+            [id]="'suggestion-' + i"
+            role="option"
+            [attr.aria-selected]="i === highlightedIndex()"
+            class="px-4 py-3 text-sm text-base-content cursor-pointer transition-colors"
+            [class.bg-primary-100]="i === highlightedIndex()"
+            [class.dark:bg-primary-900/30]="i === highlightedIndex()"
+            [class.hover:bg-primary-50]="i !== highlightedIndex()"
+            [class.dark:hover:bg-primary-900/20]="i !== highlightedIndex()"
+            (mousedown)="selectSuggestion(suggestion)"
+            (mouseenter)="highlightedIndex.set(i)"
+          >
+            @for (part of getHighlightParts(suggestion); track $index) {
+              @if (part.highlight) {
+                <strong class="text-primary-600 dark:text-primary-400">{{ part.text }}</strong>
+              } @else {
+                {{ part.text }}
+              }
+            }
+          </div>
+        }
+      }
+    </div>
+  }
+</div>

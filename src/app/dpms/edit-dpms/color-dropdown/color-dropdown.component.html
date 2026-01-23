@@ -1,0 +1,50 @@
+<div class="color-dropdown">
+  <button type="button" class="color-cell" (click)="toggle()">
+    @if (displayHex()) {
+      <span class="color-swatch" [style.background-color]="displayHex()"></span>
+    } @else {
+      <span class="color-swatch color-swatch-none"></span>
+    }
+    <span class="color-cell-text">{{ displayText() }}</span>
+    <i class="pi pi-chevron-down text-xs"></i>
+  </button>
+
+  @if (isOpen()) {
+    <div class="color-dropdown-menu">
+      <button
+        type="button"
+        class="color-option"
+        [ngClass]="{ 'color-option-selected': !selectedColor() }"
+        (click)="selectColor(null)"
+      >
+        <span class="color-swatch color-swatch-none"></span>
+        <span>None</span>
+        @if (!selectedColor()) {
+          <i class="pi pi-check text-xs ml-auto"></i>
+        }
+      </button>
+
+      @for (color of colors(); track color.colorId) {
+        <button
+          type="button"
+          class="color-option"
+          [ngClass]="{
+            'color-option-selected': selectedColor()?.colorId === color.colorId,
+            'color-option-disabled': isColorInUse(color),
+          }"
+          [disabled]="isColorInUse(color)"
+          (click)="selectColor(color)"
+        >
+          <span class="color-swatch" [style.background-color]="color.hexCode"></span>
+          <span>{{ color.colorName }}</span>
+          @if (isColorInUse(color)) {
+            <span class="text-xs text-base-content/50 ml-auto">(in use)</span>
+          }
+          @if (selectedColor()?.colorId === color.colorId) {
+            <i class="pi pi-check text-xs ml-auto"></i>
+          }
+        </button>
+      }
+    </div>
+  }
+</div>

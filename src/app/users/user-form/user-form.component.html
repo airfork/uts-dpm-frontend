@@ -1,154 +1,164 @@
-<div>
-  <form
-    class="grid grid-cols-3 gap-x-6 gap-y-2 rounded"
-    [formGroup]="userFormGroup"
-    (ngSubmit)="onSubmit()"
-  >
-    <fieldset class="fieldset col-span-3 md:col-span-1">
-      <legend
-        class="fieldset-legend text-sm {{ setStatusClass(email, false) }}"
-      >
-        Email
-      </legend>
+<form class="space-y-6 p-6 md:p-8" [formGroup]="userFormGroup" (ngSubmit)="onSubmit()">
+  <!-- Row 1: Email, First Name, Last Name -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="flex flex-col gap-1.5">
+      <label for="userEmail" class="block text-sm font-semibold dpm-form-label"> Email </label>
       <input
         id="userEmail"
         type="text"
-        placeholder="Email"
-        class="input w-full {{ setStatusClass(email) }}"
+        placeholder="jane.doe@example.com"
+        class="w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+        [ngClass]="getInputBorderClass(email, 'email')"
         formControlName="email"
         autocomplete="off"
         required
       />
-      <p class="label text-error">{{ getEmailValidationMessages() }}</p>
-    </fieldset>
+      <div class="min-h-5">
+        @if (getEmailValidationMessages()) {
+          <p class="text-sm text-error-600 font-medium">
+            {{ getEmailValidationMessages() }}
+          </p>
+        }
+      </div>
+    </div>
 
-    <fieldset class="fieldset col-span-3 md:col-span-1">
-      <legend
-        class="fieldset-legend text-sm {{ setStatusClass(firstname, false) }}"
-      >
-        First Name
-      </legend>
+    <div class="flex flex-col gap-1.5">
+      <label for="firstname" class="block text-sm font-semibold dpm-form-label"> First Name </label>
       <input
         id="firstname"
         type="text"
         placeholder="Jane"
-        class="input w-full capitalize {{ setStatusClass(firstname) }}"
+        class="w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 capitalize shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+        [ngClass]="getInputBorderClass(firstname, 'firstname')"
         formControlName="firstname"
         autocomplete="off"
         required
       />
-      <p class="label text-error">{{ getFirstnameValidationMessages() }}</p>
-    </fieldset>
+      <div class="min-h-5">
+        @if (getFirstnameValidationMessages()) {
+          <p class="text-sm text-error-600 font-medium">
+            {{ getFirstnameValidationMessages() }}
+          </p>
+        }
+      </div>
+    </div>
 
-    <fieldset class="fieldset col-span-3 md:col-span-1">
-      <legend
-        class="fieldset-legend text-sm {{ setStatusClass(lastname, false) }}"
-      >
-        Last Name
-      </legend>
+    <div class="flex flex-col gap-1.5">
+      <label for="lastname" class="block text-sm font-semibold dpm-form-label"> Last Name </label>
       <input
         id="lastname"
         type="text"
         placeholder="Doe"
-        class="input w-full capitalize {{ setStatusClass(lastname) }}"
+        class="w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 capitalize shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+        [ngClass]="getInputBorderClass(lastname, 'lastname')"
         formControlName="lastname"
         autocomplete="off"
         required
       />
-      <p class="label text-error">{{ getLastnameValidationMessages() }}</p>
-    </fieldset>
+      <div class="min-h-5">
+        @if (getLastnameValidationMessages()) {
+          <p class="text-sm text-error-600 font-medium">
+            {{ getLastnameValidationMessages() }}
+          </p>
+        }
+      </div>
+    </div>
+  </div>
 
-    @if (layout === "edit") {
-      <fieldset class="fieldset col-span-3 md:col-span-1">
-        <legend
-          class="fieldset-legend text-sm"
-          [ngClass]="{ 'text-error': hasErrors(points) }"
-        >
-          Points
-        </legend>
+  <!-- Row 2: Points (edit only), Manager, Role -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    @if (layout === 'edit') {
+      <div class="flex flex-col gap-1.5">
+        <label for="points" class="block text-sm font-semibold dpm-form-label"> Points </label>
         <input
           id="points"
           type="text"
           placeholder="0"
-          class="input w-full"
+          class="w-full px-4 py-2.5 rounded-lg dpm-form-input border text-base-content placeholder:text-neutral-400 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-0"
+          [ngClass]="getInputBorderClass(points, 'points')"
           formControlName="points"
           autocomplete="off"
           required
-          [ngClass]="{ 'input-error': hasErrors(points) }"
         />
-        <p class="label text-error">{{ getPointsValidationMessages() }}</p>
-      </fieldset>
+        <div class="min-h-5">
+          @if (getPointsValidationMessages()) {
+            <p class="text-sm text-error-600 font-medium">
+              {{ getPointsValidationMessages() }}
+            </p>
+          }
+        </div>
+      </div>
     }
 
-    <fieldset class="fieldset col-span-3 md:col-span-1">
-      <legend class="fieldset-legend text-sm">Manager</legend>
+    <div class="flex flex-col gap-1.5">
+      <label for="manager-select" class="block text-sm font-semibold dpm-form-label">
+        Manager
+      </label>
       <select
         id="manager-select"
-        class="select select-bordered w-full"
+        class="w-full px-4 py-2.5 pr-10 rounded-lg dpm-form-input text-base-content shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 cursor-pointer appearance-none bg-no-repeat bg-[length:1.25rem] bg-[right_0.75rem_center] bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3d%22http%3a%2f%2fwww.w3.org%2f2000%2fsvg%22%20viewBox%3d%220%200%2020%2020%22%20fill%3d%22%236b7280%22%3e%3cpath%20fill-rule%3d%22evenodd%22%20d%3d%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3d%22evenodd%22%2f%3e%3c%2fsvg%3e')]"
         formControlName="manager"
       >
         @for (manager of managers; track manager) {
-          <option [value]="manager">
-            {{ manager }}
-          </option>
+          <option [value]="manager">{{ manager }}</option>
         }
       </select>
-      <p class="label">
-        <!-- Spacing -->
-      </p>
-    </fieldset>
+    </div>
 
-    <fieldset class="fieldset col-span-3 md:col-span-1">
-      <legend class="fieldset-legend text-sm">Role</legend>
-      <select
-        id="role-select"
-        class="select select-bordered w-full"
-        formControlName="role"
+    <div class="flex flex-col gap-1.5">
+      <label for="role-select" class="block text-sm font-semibold dpm-form-label"> Role </label>
+      <div
+        class="relative"
+        [title]="userFormGroup.get('role')?.disabled ? 'You cannot change your own role' : ''"
       >
-        @for (role of roles(); track role) {
-          <option [value]="role">
-            {{ role }}
-          </option>
-        }
-      </select>
-      <p class="label">
-        <!-- Spacing -->
-      </p>
-    </fieldset>
-
-    <div
-      class="grid col-span-3"
-      [ngClass]="{
-        'justify-items-center': layout === 'edit',
-        'md:col-span-1 md:justify-items-start': layout === 'create',
-      }"
-    >
-      <div class="fieldset" [ngClass]="{ 'self-center': layout === 'create' }">
-        <label
-          class="label cursor-pointer justify-center md:justify-start items-center"
-          [ngClass]="{ 'md:mt-4': layout === 'create' }"
+        <select
+          id="role-select"
+          class="w-full px-4 py-2.5 pr-10 rounded-lg dpm-form-input text-base-content shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 appearance-none bg-no-repeat bg-[length:1.25rem] bg-[right_0.75rem_center] bg-[url('data:image/svg+xml;charset=UTF-8,%3csvg%20xmlns%3d%22http%3a%2f%2fwww.w3.org%2f2000%2fsvg%22%20viewBox%3d%220%200%2020%2020%22%20fill%3d%22%236b7280%22%3e%3cpath%20fill-rule%3d%22evenodd%22%20d%3d%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3d%22evenodd%22%2f%3e%3c%2fsvg%3e')] disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-neutral-100 dark:disabled:bg-neutral-800"
+          [ngClass]="userFormGroup.get('role')?.disabled ? 'cursor-not-allowed' : 'cursor-pointer'"
+          formControlName="role"
         >
-          <span class="text-base-content text-[1rem] mr-6">Full Time</span>
-          <input
-            id="fullTimeCheckBox"
-            type="checkbox"
-            class="checkbox checkbox-lg checkbox-secondary dark:checkbox-primary"
-            formControlName="fullTime"
-          />
-        </label>
+          @for (role of roles(); track role) {
+            <option [value]="role">{{ role }}</option>
+          }
+        </select>
       </div>
     </div>
+  </div>
 
-    <div class="grid place-items-center col-span-3 mt-2">
-      <button
-        pRipple
-        id="submitButton"
-        type="submit"
-        class="btn btn-secondary m-auto w-full md:btn-wide"
-        [disabled]="isButtonDisabled() || waiting()"
+  <!-- Row 3: Full Time Checkbox -->
+  <div class="flex items-center gap-3">
+    <input
+      id="fullTimeCheckBox"
+      type="checkbox"
+      class="form-checkbox form-checkbox-primary rounded"
+      formControlName="fullTime"
+    />
+    <label for="fullTimeCheckBox" class="text-base-content font-medium text-sm cursor-pointer">
+      Full Time Employee
+    </label>
+  </div>
+
+  <!-- Form Actions -->
+  <div class="pt-4 flex gap-4">
+    <app-button
+      [id]="'submitButton'"
+      [type]="'submit'"
+      [variant]="'primary'"
+      [size]="'md'"
+      [disabled]="isButtonDisabled() || waiting()"
+    >
+      {{ layout === 'edit' ? 'Update' : 'Create' }}
+    </app-button>
+    @if (layout === 'edit') {
+      <app-button
+        [type]="'button'"
+        [variant]="'ghost'"
+        [size]="'md'"
+        [disabled]="!hasFormChanged() || waiting()"
+        (click)="resetForm()"
       >
-        {{ layout === "edit" ? "Update" : "Create" }}
-      </button>
-    </div>
-  </form>
-</div>
+        Reset
+      </app-button>
+    }
+  </div>
+</form>

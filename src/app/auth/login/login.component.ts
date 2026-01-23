@@ -11,12 +11,11 @@ import { NotificationService } from '../../services/notification.service';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgClass } from '@angular/common';
-import { Ripple } from 'primeng/ripple';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  imports: [NgClass, ReactiveFormsModule, Ripple],
+  imports: [NgClass, ReactiveFormsModule],
 })
 export class LoginComponent {
   private authService = inject(AuthService);
@@ -30,6 +29,7 @@ export class LoginComponent {
 
   badCredentials = signal(false);
   loading = signal(false);
+  showPassword = signal(false);
 
   onSubmit() {
     this.loading.set(true);
@@ -52,15 +52,10 @@ export class LoginComponent {
   }
 
   getUsernameValidationMessages(): string {
-    const badCredentials = this.badCredentials();
-    if (!this.hasErrors(this.username) && !badCredentials) return '';
+    if (!this.hasErrors(this.username)) return '';
 
-    if (this.username?.errors?.['required'] && this.hasErrors(this.username)) {
+    if (this.username?.errors?.['required']) {
       return 'Username is required';
-    }
-
-    if (badCredentials) {
-      return 'Username and/or password is incorrect';
     }
 
     return '';

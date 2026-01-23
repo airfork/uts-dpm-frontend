@@ -1,39 +1,66 @@
 @let active = activeTab();
-<div
-  role="tablist"
-  class="tabs tabs-lg tabs-border mb-5 grid justify-items-center lg:justify-items-start"
-  [appRemoveIfUnauthorized]="editRoles"
->
-  <div>
-    <a
-      role="tab"
-      class="tab tab-lg tab-bordered"
-      [ngClass]="{ 'tab-active': active.new }"
-      (click)="activateTab('new')"
-      >New</a
+<div class="px-4 py-6 md:px-6 md:py-8">
+  <div class="max-w-5xl mx-auto space-y-6">
+    <app-page-header
+      icon="pi-file-edit"
+      title="DPM Management"
+      [subtitle]="isAdmin() ? 'Create and edit DPMs' : 'Create new DPMs'"
+      variant="primary"
+    />
+
+    <div *appAuthorized="editRoles" role="tablist" class="flex gap-2">
+      <button
+        role="tab"
+        type="button"
+        class="px-5 py-2.5 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer"
+        [ngClass]="{
+          'bg-primary-600 text-white shadow-sm': active.new,
+          'bg-transparent text-base-content/60 hover:text-base-content hover:bg-base-300/50':
+            !active.new,
+        }"
+        (click)="activateTab('new')"
+      >
+        New
+      </button>
+      <button
+        role="tab"
+        type="button"
+        class="px-5 py-2.5 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer"
+        [ngClass]="{
+          'bg-primary-600 text-white shadow-sm': active.edit,
+          'bg-transparent text-base-content/60 hover:text-base-content hover:bg-base-300/50':
+            !active.edit,
+        }"
+        (click)="activateTab('edit')"
+      >
+        Edit
+      </button>
+    </div>
+
+    <div
+      class="tab-content"
+      [class.tab-content-active]="active.new"
+      [class.tab-content-hidden]="!active.new"
     >
-    <a
-      role="tab"
-      class="tab tab-lg tab-bordered"
-      [ngClass]="{ 'tab-active': active.edit }"
-      (click)="activateTab('edit')"
-      >Edit</a
-    >
+      <app-new-dpm
+        [dpmGroups]="dpmGroups()"
+        [isGroupsLoaded]="isGroupsLoaded()"
+        [driverNames]="driverNames()"
+        [homeFormGroup]="homeFormGroup"
+      ></app-new-dpm>
+    </div>
+
+    @if (isAdmin()) {
+      <div
+        class="tab-content"
+        [class.tab-content-active]="active.edit"
+        [class.tab-content-hidden]="!active.edit"
+      >
+        <app-edit-dpms
+          [(dpmGroupsNeedRefresh)]="groupsNeedRefresh"
+          [dpmGroupsInput]="dpmGroups()"
+        ></app-edit-dpms>
+      </div>
+    }
   </div>
 </div>
-
-<app-new-dpm
-  [dpmGroups]="dpmGroups()"
-  [isGroupsLoaded]="isGroupsLoaded()"
-  [driverNames]="driverNames()"
-  [homeFormGroup]="homeFormGroup"
-  [hidden]="!active.new"
-></app-new-dpm>
-
-@if (isAdmin()) {
-  <app-edit-dpms
-    [(dpmGroupsNeedRefresh)]="groupsNeedRefresh"
-    [dpmGroupsInput]="dpmGroups()"
-    [hidden]="!active.edit"
-  ></app-edit-dpms>
-}

@@ -4,25 +4,31 @@ import { FormatService } from '../../services/format.service';
 import { first } from 'rxjs';
 import ApprovalDpmDto from '../../models/approval-dpm-dto';
 import { NotificationService } from '../../services/notification.service';
-import { LoadingComponent } from '../../shared/loading/loading.component';
 import { UpperCasePipe } from '@angular/common';
 import { BlockPipe } from '../../shared/pipes/BlockPipe';
 import { DataTableComponent } from '../../ui/data-table/data-table.component';
 import { TableColumn, LazyLoadEvent } from '../../ui/data-table/data-table.types';
 import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
 import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component';
+import {
+  SkeletonComponent,
+  TableSkeletonComponent,
+  CardSkeletonComponent,
+} from '../../ui/skeleton';
 
 @Component({
   selector: 'app-approvals',
   templateUrl: './approvals.component.html',
   styleUrls: ['./approvals.component.css'],
   imports: [
-    LoadingComponent,
     UpperCasePipe,
     BlockPipe,
     DataTableComponent,
     PageHeaderComponent,
     EmptyStateComponent,
+    SkeletonComponent,
+    TableSkeletonComponent,
+    CardSkeletonComponent,
   ],
 })
 export class ApprovalsComponent {

@@ -1,8 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { first } from 'rxjs';
 import { UpperCasePipe } from '@angular/common';
 import { DpmService } from '../../services/dpm.service';
-import { LoadingComponent } from '../../shared/loading/loading.component';
 import { StatCardComponent } from '../../ui/stat-card/stat-card.component';
 import { PointsPipe } from '../../shared/pipes/PointsPipe';
 import { BlockPipe } from '../../shared/pipes/BlockPipe';
@@ -11,13 +10,17 @@ import { TableColumn } from '../../ui/data-table/data-table.types';
 import HomeDpmDto from '../../models/home-dpm-dto';
 import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component';
 import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
+import {
+  SkeletonComponent,
+  TableSkeletonComponent,
+  CardSkeletonComponent,
+} from '../../ui/skeleton';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   standalone: true,
   imports: [
-    LoadingComponent,
     StatCardComponent,
     PointsPipe,
     BlockPipe,
@@ -25,14 +28,18 @@ import { PageHeaderComponent } from '../../ui/page-header/page-header.component'
     DataTableComponent,
     EmptyStateComponent,
     PageHeaderComponent,
+    SkeletonComponent,
+    TableSkeletonComponent,
+    CardSkeletonComponent,
   ],
 })
 export class HomeComponent {
   private dpmService = inject(DpmService);
 
-  currentDpms = toSignal(this.dpmService.getCurrentDpms(), {
-    initialValue: [],
-  });
+  private dpmsData = signal<HomeDpmDto[] | null>(null);
+  currentDpms = computed(() => this.dpmsData() ?? []);
+  isLoading = computed(() => this.dpmsData() === null);
+
   expandedDpm = signal<HomeDpmDto | null>(null);
   private _isInitialLoad = signal(true);
 
@@ -72,5 +79,14 @@ export class HomeComponent {
 
   isInitialLoad(): boolean {
     return this._isInitialLoad();
+  }
+
+  constructor() {
+    this.dpmService
+      .getCurrentDpms()
+      .pipe(first())
+      .subscribe((dpms) => {
+        this.dpmsData.set(dpms);
+      });
   }
 }

@@ -24,9 +24,9 @@ import { UserFormComponent } from '../user-form/user-form.component';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
 import { BlockPipe } from '../../shared/pipes/BlockPipe';
 import { PointsPipe } from '../../shared/pipes/PointsPipe';
-import { LoadingComponent } from '../../shared/loading/loading.component';
 import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
 import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component';
+import { SkeletonComponent } from '../../ui/skeleton';
 
 @Component({
   selector: 'app-user-detail',
@@ -40,10 +40,10 @@ import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component'
     ConfirmBoxComponent,
     BlockPipe,
     PointsPipe,
-    LoadingComponent,
     DataTableComponent,
     PageHeaderComponent,
     EmptyStateComponent,
+    SkeletonComponent,
   ],
 })
 export class UserDetailComponent implements OnInit {

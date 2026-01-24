@@ -4,15 +4,26 @@ import { formatDate } from '@angular/common';
 import { NotificationService } from '../../services/notification.service';
 import { first } from 'rxjs';
 import AutogenDpm from '../../models/autogen-dpm';
-import { LoadingComponent } from '../../shared/loading/loading.component';
 import { TooltipDirective } from '../../shared/directives/tooltip.directive';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
+import {
+  SkeletonComponent,
+  TableSkeletonComponent,
+  CardSkeletonComponent,
+} from '../../ui/skeleton';
 
 @Component({
   selector: 'app-autogen',
   templateUrl: './autogen.component.html',
-  imports: [LoadingComponent, TooltipDirective, ButtonComponent, PageHeaderComponent],
+  imports: [
+    TooltipDirective,
+    ButtonComponent,
+    PageHeaderComponent,
+    SkeletonComponent,
+    TableSkeletonComponent,
+    CardSkeletonComponent,
+  ],
 })
 export class AutogenComponent implements OnInit {
   private autogenService = inject(AutogenService);

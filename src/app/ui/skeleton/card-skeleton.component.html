@@ -1,0 +1,18 @@
+<div class="space-y-3">
+  @for (card of cardsArray; track card) {
+    <div class="bg-base-100 rounded-xl border border-neutral-200 dark:border-neutral-700 p-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3 flex-1">
+          @if (showAvatar()) {
+            <app-skeleton width="w-10" height="h-10" rounded="full" />
+          }
+          <div class="flex-1 space-y-2">
+            <app-skeleton width="w-3/4" height="h-4" />
+            <app-skeleton width="w-1/2" height="h-3" />
+          </div>
+        </div>
+        <app-skeleton width="w-12" height="h-6" rounded="lg" />
+      </div>
+    </div>
+  }
+</div>

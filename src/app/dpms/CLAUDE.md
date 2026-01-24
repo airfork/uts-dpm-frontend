@@ -21,3 +21,4 @@ DPM (Driver Performance Marker) management features including creation, editing,
 | `autogen/`   | Auto-generation tool for bulk DPM creation  | Batch DPM operations         |
 | `datagen/`   | Data generation tool for test data          | Test data creation           |
 | `dpms/`      | DPMs wrapper component                      | DPM section layout           |
+| `shared/`    | Shared DPM utilities and form helpers       | DPM form utilities           |

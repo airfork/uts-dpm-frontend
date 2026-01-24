@@ -28,6 +28,7 @@ Angular 21 web application for departmental performance management with signals 
 | `src/app/shared/` | Shared utilities, pipes, directives | Cross-cutting concerns |
 | `src/app/error-pages/` | Error page components (404, 403) | Error handling UI |
 | `docs/` | Development documentation, history | Understanding project evolution |
+| `tests/` | E2E tests with Playwright | Writing E2E tests, debugging test failures |
 
 ## Test Credentials
 

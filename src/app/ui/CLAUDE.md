@@ -22,3 +22,4 @@ Reusable standalone Angular components using signals architecture and Tailwind C
 | `page-header/`  | Page header with icon and title                                     | Page headers                   |
 | `empty-state/`  | Empty/zero state display                                            | No data states                 |
 | `navbar/`       | Application navigation bar                                          | Navigation                     |
+| `skeleton/`     | Loading skeleton placeholders for perceived performance             | Adding loading states          |

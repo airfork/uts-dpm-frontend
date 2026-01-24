@@ -230,7 +230,43 @@
     </div>
   </div>
 } @else {
-  <app-loading></app-loading>
+  <div class="px-4 py-6 md:px-6 md:py-8">
+    <div class="max-w-5xl mx-auto space-y-6">
+      <!-- Page Header Skeleton -->
+      <div class="flex items-center gap-4">
+        <app-skeleton width="w-12" height="h-12" rounded="lg" />
+        <div class="space-y-2">
+          <app-skeleton width="w-40" height="h-6" />
+          <app-skeleton width="w-24" height="h-4" />
+        </div>
+      </div>
+
+      <!-- Tabs Skeleton -->
+      <div class="flex gap-2">
+        <app-skeleton width="w-20" height="h-10" rounded="lg" />
+        <app-skeleton width="w-20" height="h-10" rounded="lg" />
+        <app-skeleton width="w-20" height="h-10" rounded="lg" />
+      </div>
+
+      <!-- Mobile Card Skeleton -->
+      <div class="md:hidden space-y-3">
+        <!-- Search skeleton -->
+        <app-skeleton width="w-full" height="h-12" rounded="lg" />
+        <app-card-skeleton [count]="5" [showAvatar]="true" />
+      </div>
+
+      <!-- Desktop Table Skeleton -->
+      <div
+        class="hidden md:block bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-md overflow-hidden"
+      >
+        <!-- Search bar skeleton -->
+        <div class="p-4 border-b border-neutral-200 dark:border-neutral-700">
+          <app-skeleton width="w-64" height="h-9" rounded="lg" />
+        </div>
+        <app-table-skeleton [rows]="5" [columns]="2" [showAvatar]="true" />
+      </div>
+    </div>
+  </div>
 }
 
 <app-confirm-box

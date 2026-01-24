@@ -18,12 +18,16 @@ import { NotificationService } from '../../services/notification.service';
 import { UserFormComponent } from '../user-form/user-form.component';
 import { ConfirmBoxComponent } from '../../ui/confirm-box/confirm-box.component';
 import { NamePipe } from '../../shared/pipes/NamePipe';
-import { LoadingComponent } from '../../shared/loading/loading.component';
 import { DataTableComponent } from '../../ui/data-table/data-table.component';
 import { TableColumn } from '../../ui/data-table/data-table.types';
 import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
 import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component';
 import { NgClass } from '@angular/common';
+import {
+  SkeletonComponent,
+  TableSkeletonComponent,
+  CardSkeletonComponent,
+} from '../../ui/skeleton';
 
 @Component({
   selector: 'app-users-list',
@@ -34,10 +38,12 @@ import { NgClass } from '@angular/common';
     UserFormComponent,
     ConfirmBoxComponent,
     NamePipe,
-    LoadingComponent,
     DataTableComponent,
     PageHeaderComponent,
     EmptyStateComponent,
+    SkeletonComponent,
+    TableSkeletonComponent,
+    CardSkeletonComponent,
   ],
 })
 export class UsersListComponent implements OnInit {

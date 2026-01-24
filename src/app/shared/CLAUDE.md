@@ -11,8 +11,9 @@ Cross-cutting utilities, pipes, directives, and components used across the appli
 
 ## Directories
 
-| Directory     | What                                         | When to read       |
-| ------------- | -------------------------------------------- | ------------------ |
-| `pipes/`      | Custom Angular pipes for data transformation | Display formatting |
-| `directives/` | Shared directives (tooltip, auto-resize)     | DOM manipulation   |
-| `loading/`    | Loading spinner component                    | Loading states     |
+| Directory     | What                                         | When to read          |
+| ------------- | -------------------------------------------- | --------------------- |
+| `pipes/`      | Custom Angular pipes for data transformation | Display formatting    |
+| `directives/` | Shared directives (tooltip, auto-resize)     | DOM manipulation      |
+| `loading/`    | Loading spinner component                    | Loading states        |
+| `constants/`  | Shared constants and animation configs       | Adding shared configs |

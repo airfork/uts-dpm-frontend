@@ -6,6 +6,7 @@ Project documentation, architecture guides, and development history.
 
 | File | What | When to read |
 | --- | --- | --- |
+| `ARCHITECTURE.md` | System architecture and component interactions | Understanding system design |
 | `claude.md` | AI agent context with patterns and conventions | Understanding codebase patterns, common workflows |
 
 ## Directories

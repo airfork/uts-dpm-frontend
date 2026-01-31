@@ -10,11 +10,7 @@ import { TableColumn } from '../../ui/data-table/data-table.types';
 import HomeDpmDto from '../../models/home-dpm-dto';
 import { EmptyStateComponent } from '../../ui/empty-state/empty-state.component';
 import { PageHeaderComponent } from '../../ui/page-header/page-header.component';
-import {
-  SkeletonComponent,
-  TableSkeletonComponent,
-  CardSkeletonComponent,
-} from '../../ui/skeleton';
+import { SkeletonComponent } from '../../ui/skeleton';
 
 @Component({
   selector: 'app-home',
@@ -29,8 +25,6 @@ import {
     EmptyStateComponent,
     PageHeaderComponent,
     SkeletonComponent,
-    TableSkeletonComponent,
-    CardSkeletonComponent,
   ],
 })
 export class HomeComponent {

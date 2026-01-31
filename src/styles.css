@@ -2455,6 +2455,21 @@ nav a.bg-white {
   transition: all 0.15s ease;
 }
 
+.home-fade-in {
+  animation: homeFadeIn 0.4s ease-out;
+}
+
+@keyframes homeFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .home-row-new {
   animation: fadeInRow 0.45s ease-out backwards;
 }

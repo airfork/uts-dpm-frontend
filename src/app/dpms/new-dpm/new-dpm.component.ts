@@ -44,11 +44,22 @@ export class NewDpmComponent {
   }
 
   search(event: AutocompleteCompleteEvent) {
+    if (this.name?.value !== event.query) {
+      this.homeFormGroup().get('driverId')?.setValue(null);
+    }
+
     this.autocompleteResults.set(
       this.driverNames()
         .filter((user) => user.name.toLowerCase().includes(event.query.toLowerCase()))
-        .map((user) => user.name)
+        .map((user) => this.driverLabel(user))
     );
+  }
+
+  onDriverSelected(label: string) {
+    const user = this.driverByLabel(label);
+    this.homeFormGroup()
+      .get('driverId')
+      ?.setValue(user?.id ?? null);
   }
 
   getInputBorderClass(control: AbstractControl | null): string {
@@ -238,7 +249,8 @@ export class NewDpmComponent {
   private formGroupToDto(): PostDpmDto {
     const values = this.homeFormGroup().value;
     const dto: PostDpmDto = {
-      driver: values.name!,
+      driver: this.driverById(values.driverId!)?.name ?? values.name!,
+      driverId: values.driverId!,
       block: values.block!,
       date: this.formatService.dpmDate(values.dpmDate!),
       type: values.type!,
@@ -252,5 +264,21 @@ export class NewDpmComponent {
     }
 
     return dto;
+  }
+
+  private driverLabel(user: UsernameDto): string {
+    return this.hasDuplicateDriverName(user.name) ? `${user.name} (#${user.id})` : user.name;
+  }
+
+  private driverByLabel(label: string): UsernameDto | undefined {
+    return this.driverNames().find((user) => this.driverLabel(user) === label);
+  }
+
+  private driverById(id: number): UsernameDto | undefined {
+    return this.driverNames().find((user) => user.id === id);
+  }
+
+  private hasDuplicateDriverName(name: string): boolean {
+    return this.driverNames().filter((user) => user.name === name).length > 1;
   }
 }

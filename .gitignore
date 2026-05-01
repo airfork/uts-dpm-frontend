@@ -49,3 +49,6 @@ firebase-debug.log
 /playwright-report/
 /playwright/.cache/
 /test-results/
+
+# Git worktrees
+/.worktrees/

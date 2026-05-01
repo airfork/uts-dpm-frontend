@@ -28,6 +28,7 @@ import CreateUserDto from '../../models/create-user-dto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgClass } from '@angular/common';
 import { ButtonComponent } from '../../ui/button/button.component';
+import UsernameDto from '../../models/username-dto';
 
 const POINTS_VALIDATORS = [Validators.required, Validators.pattern(/-?\d+/)];
 
@@ -44,7 +45,7 @@ export class UserFormComponent implements OnInit, OnChanges {
   private changeDetector = inject(ChangeDetectorRef);
 
   @Input() @Required layout: 'create' | 'edit' = 'edit';
-  @Input() managers: string[] | null | undefined = undefined;
+  @Input() managers: UsernameDto[] | null | undefined = undefined;
   @Input() userInfo?: { user: GetUserDetailDto; id: string };
   user = signal<GetUserDetailDto | null>(null);
   userId = signal<string | null>(null);
@@ -59,7 +60,7 @@ export class UserFormComponent implements OnInit, OnChanges {
     firstname: new FormControl('', [Validators.required]),
     lastname: new FormControl('', [Validators.required]),
     points: new FormControl(0, POINTS_VALIDATORS),
-    manager: new FormControl(''),
+    managerId: new FormControl<number | null>(null, [Validators.required]),
     role: new FormControl(''),
     fullTime: new FormControl(false, { nonNullable: true }),
   });
@@ -211,7 +212,7 @@ export class UserFormComponent implements OnInit, OnChanges {
       firstname: user.firstname,
       lastname: user.lastname,
       points: user.points,
-      manager: this.managers![0],
+      managerId: this.managers?.[0]?.id ?? user.managerId,
       role: this.roles()[0],
       fullTime: user.fullTime,
     };
@@ -221,9 +222,9 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   private setCreateFormData() {
-    if (this.managers) {
+    if (this.managers?.length) {
       this.userFormGroup.reset({
-        manager: this.managers[0],
+        managerId: this.managers[0].id,
         role: this.roles()[0],
         fullTime: false,
       });
@@ -243,7 +244,8 @@ export class UserFormComponent implements OnInit, OnChanges {
       firstname: values.firstname!,
       lastname: values.lastname!,
       points: values.points!,
-      manager: values.manager!,
+      managerId: values.managerId!,
+      manager: this.managerNameById(values.managerId!),
       role: values.role!,
       fullTime: values.fullTime!,
     };
@@ -255,7 +257,8 @@ export class UserFormComponent implements OnInit, OnChanges {
       email: values.email!,
       firstname: values.firstname!,
       lastname: values.lastname!,
-      manager: values.manager!,
+      managerId: values.managerId!,
+      manager: this.managerNameById(values.managerId!),
       role: values.role!,
       fullTime: values.fullTime!,
     };
@@ -277,7 +280,7 @@ export class UserFormComponent implements OnInit, OnChanges {
     this.user.set(user);
     this.userId.set(this.userInfo.id);
     this.roles.set(this.userService.orderRoles(user.role));
-    this.managers = this.userService.orderManagers(user.manager, user.managers);
+    this.managers = this.userService.orderManagers(user.managerId, user.managers);
 
     if (
       this.authService.userData.username.toLowerCase().trim() === user.email.toLowerCase().trim()
@@ -331,7 +334,7 @@ export class UserFormComponent implements OnInit, OnChanges {
         next: () => {
           this.notificationService.showSuccess('User created');
           this.userFormGroup.reset({
-            manager: this.managers![0],
+            managerId: this.managers?.[0]?.id ?? null,
             role: this.roles()[0],
             fullTime: false,
           });
@@ -354,5 +357,9 @@ export class UserFormComponent implements OnInit, OnChanges {
           }
         },
       });
+  }
+
+  private managerNameById(managerId: number): string {
+    return this.managers?.find((manager) => manager.id === managerId)?.name ?? '';
   }
 }

@@ -225,6 +225,24 @@ describe('AuthService', () => {
     });
   });
 
+  describe('completePasswordReset', () => {
+    it('should send POST request with password reset token DTO', () => {
+      const dto = {
+        token: 'reset-token',
+        newPassword: 'newPassword',
+        confirmPassword: 'newPassword',
+      };
+
+      service.completePasswordReset(dto).subscribe();
+
+      const req = httpMock.expectOne(BASE_URL + '/resetPassword');
+      expect(req.request.method).toBe('POST');
+      expect(req.request.body).toEqual(dto);
+
+      req.flush(null);
+    });
+  });
+
   describe('userData initialization', () => {
     it('should load userData from localStorage on construction', () => {
       // Reset TestBed to get fresh instance

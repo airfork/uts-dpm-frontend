@@ -60,7 +60,7 @@ export class UsersListComponent implements OnInit {
   filteredUsers = signal<UsernameDto[]>([]);
   activeTabName = signal<string>('search');
   isInitialLoad = signal(true);
-  managers = signal<string[] | null>(null);
+  managers = signal<UsernameDto[] | null>(null);
   modalOpen = signal(false);
   modalMessage = signal('');
   outputKey = signal<ListOutputKey>('email');

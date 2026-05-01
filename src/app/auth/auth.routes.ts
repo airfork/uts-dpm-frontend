@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { GenerateTitle } from '../shared/title-helper';
 import { authGuard } from './auth.guard';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { PasswordResetComponent } from './password-reset/password-reset.component';
 
 export const AUTH_ROUTES: Route[] = [
   {
@@ -33,6 +34,17 @@ export const AUTH_ROUTES: Route[] = [
         data: {
           allowedRoles: ['ADMIN', 'ANALYST', 'DRIVER', 'MANAGER', 'SUPERVISOR'],
         },
+      },
+    ],
+  },
+  {
+    path: 'passwordReset',
+    component: AuthComponent,
+    children: [
+      {
+        path: '',
+        component: PasswordResetComponent,
+        title: GenerateTitle('Reset Password'),
       },
     ],
   },

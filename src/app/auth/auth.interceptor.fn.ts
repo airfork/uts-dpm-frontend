@@ -7,6 +7,10 @@ import { AuthService } from '../services/auth.service';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const authService = inject(AuthService);
+  const isAuthFlowRequest =
+    req.url.includes('/api/auth/login') ||
+    req.url.includes('/api/auth/changePassword') ||
+    req.url.includes('/api/auth/resetPassword');
 
   if (authService.isAuthenticated()) {
     req = req.clone({
@@ -18,10 +22,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     tap({
       error: (error: unknown) => {
         if (error instanceof HttpErrorResponse) {
-          if (
-            error.status === 401 &&
-            !(req.url.includes('/api/auth/login') || req.url.includes('/api/auth/changePassword'))
-          ) {
+          if (error.status === 401 && !isAuthFlowRequest) {
             console.log('Not authorized, redirecting to login page');
             router.navigate(['/login']);
           } else if (error.status === 303) {

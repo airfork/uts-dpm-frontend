@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment';
 import UserData from '../models/user-data';
 import { NotificationService } from './notification.service';
 import ChangePasswordDto from '../models/change-password-dto';
+import CompletePasswordResetDto from '../models/complete-password-reset-dto';
 
 const BASE_URL = environment.baseUrl + '/auth';
 
@@ -68,6 +69,10 @@ export class AuthService {
 
   changePassword(dto: ChangePasswordDto): Observable<void> {
     return this.http.patch<void>(BASE_URL + '/changePassword', dto);
+  }
+
+  completePasswordReset(dto: CompletePasswordResetDto): Observable<void> {
+    return this.http.post<void>(BASE_URL + '/resetPassword', dto);
   }
 
   private setUserData() {

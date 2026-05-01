@@ -30,9 +30,13 @@ describe('UserService', () => {
     lastname: 'Doe',
     points: 50,
     role: 'Driver',
+    managerId: 1,
     manager: 'Manager Smith',
     fullTime: true,
-    managers: ['Manager Smith', 'Manager Jones'],
+    managers: [
+      { id: 1, name: 'Manager Smith' },
+      { id: 2, name: 'Manager Jones' },
+    ],
   };
 
   beforeEach(() => {
@@ -199,26 +203,51 @@ describe('UserService', () => {
   });
 
   describe('orderManagers', () => {
-    it('should place current manager first in the list', () => {
-      const managers = ['Alice', 'Bob', 'Charlie'];
-      const result = service.orderManagers('Bob', managers);
+    it('should place selected manager id first when manager names collide', () => {
+      const managers = [
+        { id: 1, name: 'Sam Driver' },
+        { id: 2, name: 'Sam Driver' },
+        { id: 3, name: 'Casey Lead' },
+      ];
 
-      expect(result[0]).toBe('Bob');
+      const result = service.orderManagers(2, managers);
+
+      expect(result[0]).toEqual({ id: 2, name: 'Sam Driver' });
+      expect(result.length).toBe(3);
+    });
+
+    it('should place current manager first in the list', () => {
+      const managers = [
+        { id: 1, name: 'Alice' },
+        { id: 2, name: 'Bob' },
+        { id: 3, name: 'Charlie' },
+      ];
+      const result = service.orderManagers(2, managers);
+
+      expect(result[0]).toEqual({ id: 2, name: 'Bob' });
       expect(result.length).toBe(3);
     });
 
     it('should return original list if current manager not found', () => {
-      const managers = ['Alice', 'Bob', 'Charlie'];
-      const result = service.orderManagers('Unknown', managers);
+      const managers = [
+        { id: 1, name: 'Alice' },
+        { id: 2, name: 'Bob' },
+        { id: 3, name: 'Charlie' },
+      ];
+      const result = service.orderManagers(99, managers);
 
       expect(result).toEqual(managers);
     });
 
     it('should not duplicate the current manager', () => {
-      const managers = ['Alice', 'Bob', 'Charlie'];
-      const result = service.orderManagers('Alice', managers);
+      const managers = [
+        { id: 1, name: 'Alice' },
+        { id: 2, name: 'Bob' },
+        { id: 3, name: 'Charlie' },
+      ];
+      const result = service.orderManagers(1, managers);
 
-      const aliceCount = result.filter((m) => m === 'Alice').length;
+      const aliceCount = result.filter((manager) => manager.id === 1).length;
       expect(aliceCount).toBe(1);
     });
   });
@@ -232,6 +261,7 @@ describe('UserService', () => {
         lastname: 'Updated',
         points: 60,
         role: 'Manager',
+        managerId: 1,
         manager: 'Manager Smith',
         fullTime: true,
       };
@@ -251,6 +281,7 @@ describe('UserService', () => {
         lastname: 'User',
         points: 0,
         role: 'Driver',
+        managerId: 1,
         manager: 'Manager',
         fullTime: true,
       };
@@ -268,8 +299,12 @@ describe('UserService', () => {
   });
 
   describe('getManagers', () => {
-    it('should return list of manager names', () => {
-      const managers = ['Manager A', 'Manager B', 'Manager C'];
+    it('should return list of manager ids and names', () => {
+      const managers = [
+        { id: 1, name: 'Manager A' },
+        { id: 2, name: 'Manager B' },
+        { id: 3, name: 'Manager C' },
+      ];
 
       service.getManagers().subscribe((result) => {
         expect(result).toEqual(managers);
@@ -289,6 +324,7 @@ describe('UserService', () => {
         firstname: 'New',
         lastname: 'User',
         role: 'Driver',
+        managerId: 1,
         manager: 'Manager Smith',
         fullTime: true,
       };
@@ -307,6 +343,7 @@ describe('UserService', () => {
         firstname: 'Test',
         lastname: 'User',
         role: 'Driver',
+        managerId: 1,
         manager: 'Manager Smith',
         fullTime: false,
       };
@@ -363,35 +400,35 @@ describe('UserService', () => {
   });
 
   describe('sendPointsBalance', () => {
-    it('should send GET request to email user their points', () => {
+    it('should send POST request to email user their points', () => {
       const userId = '123';
 
       service.sendPointsBalance(userId).subscribe();
 
       const req = httpMock.expectOne(`${BASE_URL}/${userId}/points`);
-      expect(req.request.method).toBe('GET');
+      expect(req.request.method).toBe('POST');
       req.flush(null);
     });
   });
 
   describe('sendPointsBalanceAll', () => {
-    it('should send GET request to email all users their points', () => {
+    it('should send POST request to email all users their points', () => {
       service.sendPointsBalanceAll().subscribe();
 
       const req = httpMock.expectOne(`${BASE_URL}/points`);
-      expect(req.request.method).toBe('GET');
+      expect(req.request.method).toBe('POST');
       req.flush(null);
     });
   });
 
   describe('resetPassword', () => {
-    it('should send GET request to reset user password', () => {
+    it('should send POST request to reset user password', () => {
       const userId = '123';
 
       service.resetPassword(userId).subscribe();
 
       const req = httpMock.expectOne(`${BASE_URL}/${userId}/reset`);
-      expect(req.request.method).toBe('GET');
+      expect(req.request.method).toBe('POST');
       req.flush(null);
     });
 

@@ -56,6 +56,7 @@ export class DpmPageComponent implements OnInit {
       Validators.pattern(regex24HourTime),
     ]),
     name: new FormControl('', [Validators.required]),
+    driverId: new FormControl<number | null>(null, [Validators.required]),
     block: new FormControl('', [Validators.required, Validators.maxLength(5)]),
     location: new FormControl('', [Validators.required, Validators.maxLength(5)]),
     type: new FormControl(0),

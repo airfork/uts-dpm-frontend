@@ -137,6 +137,7 @@ describe('DpmService', () => {
     it('should send POST request with DPM data', () => {
       const newDpm = {
         driver: 'John Doe',
+        driverId: 1,
         date: '2024-01-15',
         type: 1,
         block: 'A1',
@@ -157,6 +158,7 @@ describe('DpmService', () => {
     it('should call error service on failure', () => {
       const newDpm = {
         driver: 'John Doe',
+        driverId: 1,
         date: '2024-01-15',
         type: 1,
         block: 'A1',

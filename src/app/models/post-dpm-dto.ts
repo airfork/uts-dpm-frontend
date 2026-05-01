@@ -1,5 +1,6 @@
 export default interface PostDpmDto {
   driver: string;
+  driverId: number;
   block: string;
   date: string;
   type: number;

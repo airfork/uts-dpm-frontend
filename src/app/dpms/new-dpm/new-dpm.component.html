@@ -19,6 +19,7 @@
           [panelClass]="'dpm-form-input border border-neutral-200 rounded-lg shadow-lg mt-1'"
           [suggestions]="autocompleteResults()"
           (completeMethod)="search($event)"
+          (selected)="onDriverSelected($event)"
           [showEmptyMessage]="true"
           [forceSelection]="true"
         ></app-autocomplete>

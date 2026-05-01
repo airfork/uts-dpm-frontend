@@ -363,35 +363,35 @@ describe('UserService', () => {
   });
 
   describe('sendPointsBalance', () => {
-    it('should send GET request to email user their points', () => {
+    it('should send POST request to email user their points', () => {
       const userId = '123';
 
       service.sendPointsBalance(userId).subscribe();
 
       const req = httpMock.expectOne(`${BASE_URL}/${userId}/points`);
-      expect(req.request.method).toBe('GET');
+      expect(req.request.method).toBe('POST');
       req.flush(null);
     });
   });
 
   describe('sendPointsBalanceAll', () => {
-    it('should send GET request to email all users their points', () => {
+    it('should send POST request to email all users their points', () => {
       service.sendPointsBalanceAll().subscribe();
 
       const req = httpMock.expectOne(`${BASE_URL}/points`);
-      expect(req.request.method).toBe('GET');
+      expect(req.request.method).toBe('POST');
       req.flush(null);
     });
   });
 
   describe('resetPassword', () => {
-    it('should send GET request to reset user password', () => {
+    it('should send POST request to reset user password', () => {
       const userId = '123';
 
       service.resetPassword(userId).subscribe();
 
       const req = httpMock.expectOne(`${BASE_URL}/${userId}/reset`);
-      expect(req.request.method).toBe('GET');
+      expect(req.request.method).toBe('POST');
       req.flush(null);
     });
 

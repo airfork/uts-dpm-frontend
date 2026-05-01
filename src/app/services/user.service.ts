@@ -133,7 +133,7 @@ export class UserService {
   }
 
   sendPointsBalance(id: string): Observable<void> {
-    return this.http.get<void>(`${BASE_URL}/${id}/points`).pipe(
+    return this.http.post<void>(`${BASE_URL}/${id}/points`, null).pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(
           error,
@@ -144,7 +144,7 @@ export class UserService {
   }
 
   sendPointsBalanceAll(): Observable<void> {
-    return this.http.get<void>(BASE_URL + '/points').pipe(
+    return this.http.post<void>(BASE_URL + '/points', null).pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(
           error,
@@ -155,7 +155,7 @@ export class UserService {
   }
 
   resetPassword(id: string): Observable<void> {
-    return this.http.get<void>(`${BASE_URL}/${id}/reset`).pipe(
+    return this.http.post<void>(`${BASE_URL}/${id}/reset`, null).pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(
           error,

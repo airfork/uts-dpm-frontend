@@ -16,18 +16,23 @@ describe('UserFormComponent', () => {
   let authServiceSpy: jasmine.SpyObj<AuthService>;
   let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
 
+  const mockManagers = [
+    { id: 1, name: 'Manager Smith' },
+    { id: 2, name: 'Manager Jones' },
+    { id: 3, name: 'Manager Wilson' },
+  ];
+
   const mockUserDetail: GetUserDetailDto = {
     email: 'john@example.com',
     firstname: 'John',
     lastname: 'Doe',
     points: 50,
     role: 'Driver',
+    managerId: 1,
     manager: 'Manager Smith',
     fullTime: true,
-    managers: ['Manager Smith', 'Manager Jones'],
+    managers: mockManagers.slice(0, 2),
   };
-
-  const mockManagers = ['Manager Smith', 'Manager Jones', 'Manager Wilson'];
 
   beforeEach(async () => {
     userServiceSpy = jasmine.createSpyObj('UserService', [
@@ -92,7 +97,7 @@ describe('UserFormComponent', () => {
     });
 
     it('should set manager and role defaults', () => {
-      expect(component.userFormGroup.get('manager')?.value).toBe('Manager Smith');
+      expect(component.userFormGroup.get('managerId')?.value).toBe(1);
       expect(component.userFormGroup.get('role')?.value).toBe('Driver');
     });
 
@@ -130,7 +135,7 @@ describe('UserFormComponent', () => {
           email: 'new@example.com',
           firstname: 'New',
           lastname: 'User',
-          manager: 'Manager Smith',
+          managerId: 1,
           role: 'Driver',
           fullTime: true,
         });
@@ -143,6 +148,7 @@ describe('UserFormComponent', () => {
           email: 'new@example.com',
           firstname: 'New',
           lastname: 'User',
+          managerId: 1,
           manager: 'Manager Smith',
           role: 'Driver',
           fullTime: true,
@@ -203,7 +209,7 @@ describe('UserFormComponent', () => {
           email: 'test@example.com',
           firstname: 'Test',
           lastname: 'User',
-          manager: 'Manager Smith',
+          managerId: 1,
           role: 'Driver',
           fullTime: true,
         });
@@ -235,10 +241,7 @@ describe('UserFormComponent', () => {
     });
 
     it('should order managers with user current manager first', () => {
-      expect(userServiceSpy.orderManagers).toHaveBeenCalledWith(
-        'Manager Smith',
-        mockUserDetail.managers
-      );
+      expect(userServiceSpy.orderManagers).toHaveBeenCalledWith(1, mockUserDetail.managers);
     });
 
     it('should populate form with user data', () => {
@@ -313,6 +316,8 @@ describe('UserFormComponent', () => {
             email: 'john@example.com',
             firstname: 'Updated',
             lastname: 'Doe',
+            managerId: 1,
+            manager: 'Manager Smith',
           }),
           '1'
         );

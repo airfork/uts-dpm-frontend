@@ -66,14 +66,16 @@ export class UserService {
     return filteredRoles;
   }
 
-  orderManagers(currentManager: string, managers: string[]): string[] {
-    if (!managers.includes(currentManager)) {
-      console.warn(`Failed to find manager '${currentManager}' in manager list`);
+  orderManagers(currentManagerId: number | null, managers: UsernameDto[]): UsernameDto[] {
+    const currentManager = managers.find((manager) => manager.id === currentManagerId);
+
+    if (!currentManager) {
+      console.warn(`Failed to find manager id '${currentManagerId}' in manager list`);
       return managers;
     }
 
     const filteredManagers = [currentManager];
-    filteredManagers.push(...managers.filter((value) => value !== currentManager));
+    filteredManagers.push(...managers.filter((manager) => manager.id !== currentManagerId));
     return filteredManagers;
   }
 
@@ -88,8 +90,8 @@ export class UserService {
     );
   }
 
-  getManagers(): Observable<string[]> {
-    return this.http.get<string[]>(BASE_URL + '/managers').pipe(
+  getManagers(): Observable<UsernameDto[]> {
+    return this.http.get<UsernameDto[]>(BASE_URL + '/managers').pipe(
       catchError((error: HttpErrorResponse) => {
         return this.errorService.errorResponse(
           error,

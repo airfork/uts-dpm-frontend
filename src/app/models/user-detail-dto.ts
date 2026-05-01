@@ -3,6 +3,7 @@ export default interface UserDetailDto {
   firstname: string;
   lastname: string;
   points: number;
+  managerId: number | null;
   manager: string;
   role: string;
   fullTime: boolean;

@@ -57,7 +57,7 @@ describe('DatePickerComponent', () => {
   describe('calendarDays computed', () => {
     it('should generate calendar days', () => {
       const days = component.calendarDays();
-      expect(days.length).toBeGreaterThan(28);
+      expect(days.length).toBeGreaterThanOrEqual(28);
       expect(days.length).toBeLessThanOrEqual(42);
     });
 

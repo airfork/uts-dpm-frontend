@@ -208,7 +208,7 @@
 
           <!-- Desktop Table Layout -->
           <div
-            class="hidden md:block bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-md overflow-hidden"
+            class="hidden md:block bg-base-100 rounded-2xl border border-neutral-200 dark:border-neutral-700 shadow-lg overflow-hidden"
           >
             <app-data-table
               [data]="dpms()"
@@ -232,15 +232,13 @@
                   [style.animation-delay]="isInitialLoad() ? i * 30 + 'ms' : '0ms'"
                   (click)="toggleExpand(dpm)"
                 >
-                  <td class="px-4 py-3">
-                    <div class="flex items-center gap-2">
-                      <span class="text-sm font-medium text-base-content">{{ dpm.type }}</span>
-                    </div>
+                  <td class="px-6 py-4">
+                    <span class="font-medium text-base-content">{{ dpm.type }}</span>
                   </td>
-                  <td class="px-4 py-3 text-sm text-base-content/70">
-                    {{ dpm.date }}
+                  <td class="px-6 py-4">
+                    <span class="text-sm text-base-content/70">{{ dpm.date }}</span>
                   </td>
-                  <td class="px-4 py-3">
+                  <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
                       <span
                         class="px-2.5 py-1 text-xs font-medium rounded-full"

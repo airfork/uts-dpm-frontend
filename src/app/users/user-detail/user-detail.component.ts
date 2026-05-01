@@ -64,9 +64,9 @@ export class UserDetailComponent implements OnInit {
   isInitialLoad = signal(true);
 
   columns: TableColumn<DpmDetailDto>[] = [
-    { field: 'type', header: 'Type' },
-    { field: 'date', header: 'Date' },
-    { field: 'status', header: 'Status' },
+    { field: 'type', header: 'Type', headerClass: 'w-[50%]' },
+    { field: 'date', header: 'Date', headerClass: 'w-[25%]' },
+    { field: 'status', header: 'Status', headerClass: 'w-[25%]' },
   ];
   loadingDpms = signal(false);
   totalRecords = signal(0);

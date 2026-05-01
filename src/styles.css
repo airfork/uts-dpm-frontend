@@ -1740,6 +1740,15 @@ nav a.bg-white {
   }
 }
 
+@keyframes colorBarGrow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
 /* Dark mode for autogen */
 :root[data-theme='dark'] .autogen-stat-card {
   background: var(--color-base-200);
@@ -2062,15 +2071,33 @@ nav a.bg-white {
   padding: 1rem 1.5rem 1.25rem;
   background: var(--color-neutral-50);
   border-top: 1px dashed var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-neutral-200);
   animation: slideDown 0.2s ease-out;
 }
 
-.approvals-expanded-positive {
-  border-left: 3px solid var(--color-success-400);
+.approvals-expanded-positive,
+.approvals-expanded-negative {
+  position: relative;
 }
 
-.approvals-expanded-negative {
-  border-left: 3px solid var(--color-error-400);
+.approvals-expanded-positive::before,
+.approvals-expanded-negative::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  transform-origin: top;
+  animation: colorBarGrow 0.35s ease-out 0.05s both;
+}
+
+.approvals-expanded-positive::before {
+  background: var(--color-success-400);
+}
+
+.approvals-expanded-negative::before {
+  background: var(--color-error-400);
 }
 
 /* Detail items */
@@ -2226,6 +2253,7 @@ nav a.bg-white {
 
 :root[data-theme='dark'] .approvals-expanded-content {
   border-top-color: var(--color-neutral-700);
+  border-bottom-color: var(--color-neutral-700);
 }
 
 :root[data-theme='dark'] .approvals-points-input {
@@ -2308,6 +2336,7 @@ nav a.bg-white {
 
   :root:not([data-theme='light']) .approvals-expanded-content {
     border-top-color: var(--color-neutral-700);
+    border-bottom-color: var(--color-neutral-700);
   }
 
   :root:not([data-theme='light']) .approvals-points-input {
@@ -2504,15 +2533,33 @@ nav a.bg-white {
   padding: 1rem 1.5rem 1.25rem;
   background: var(--color-neutral-50);
   border-top: 1px dashed var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-neutral-200);
   animation: slideDown 0.2s ease-out;
 }
 
-.home-expanded-positive {
-  border-left: 3px solid var(--color-success-400);
+.home-expanded-positive,
+.home-expanded-negative {
+  position: relative;
 }
 
-.home-expanded-negative {
-  border-left: 3px solid var(--color-error-400);
+.home-expanded-positive::before,
+.home-expanded-negative::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  transform-origin: top;
+  animation: colorBarGrow 0.35s ease-out 0.05s both;
+}
+
+.home-expanded-positive::before {
+  background: var(--color-success-400);
+}
+
+.home-expanded-negative::before {
+  background: var(--color-error-400);
 }
 
 /* Badge */
@@ -2610,6 +2657,7 @@ nav a.bg-white {
 :root[data-theme='dark'] .home-expanded-content {
   background: var(--color-neutral-800);
   border-top-color: var(--color-neutral-700);
+  border-bottom-color: var(--color-neutral-700);
 }
 
 :root[data-theme='dark'] .home-badge-positive {
@@ -2647,6 +2695,7 @@ nav a.bg-white {
   :root:not([data-theme='light']) .home-expanded-content {
     background: var(--color-neutral-800);
     border-top-color: var(--color-neutral-700);
+    border-bottom-color: var(--color-neutral-700);
   }
 
   :root:not([data-theme='light']) .home-badge-positive {
@@ -2856,13 +2905,16 @@ nav a.bg-white {
 
 /* User DPM Table Row */
 .user-dpm-row {
-  border-top: 1px solid var(--color-neutral-200);
-  transition: background-color 0.15s ease;
-  cursor: pointer;
+  border-bottom: 1px solid var(--color-neutral-200);
+  transition: all 0.15s ease;
+}
+
+.user-dpm-row:last-child {
+  border-bottom: none;
 }
 
 .user-dpm-row:hover {
-  background: var(--color-primary-50);
+  background: var(--color-neutral-50);
 }
 
 .user-dpm-row-new {
@@ -2870,18 +2922,19 @@ nav a.bg-white {
 }
 
 .user-dpm-row-expanded {
-  background: var(--color-primary-50);
+  background: var(--color-neutral-50);
 }
 
 .user-dpm-expanded-row {
-  background: var(--color-base-100);
+  border: none;
 }
 
 .user-dpm-expanded-content {
-  padding: 1rem 1.5rem;
+  padding: 1rem 1.5rem 1.25rem;
   background: var(--color-neutral-50);
-  border-top: 1px solid var(--color-neutral-200);
-  animation: expandIn 0.2s ease-out;
+  border-top: 1px dashed var(--color-neutral-200);
+  border-bottom: 1px solid var(--color-neutral-200);
+  animation: slideDown 0.2s ease-out;
 }
 
 .user-dpm-mobile-card-expanded {
@@ -2892,19 +2945,8 @@ nav a.bg-white {
 .user-dpm-mobile-expanded {
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--color-neutral-200);
-  animation: expandIn 0.2s ease-out;
-}
-
-@keyframes expandIn {
-  from {
-    opacity: 0;
-    max-height: 0;
-  }
-  to {
-    opacity: 1;
-    max-height: 500px;
-  }
+  border-top: 1px dashed var(--color-neutral-200);
+  animation: slideDown 0.2s ease-out;
 }
 
 /* User Action Card */
@@ -2968,23 +3010,24 @@ nav a.bg-white {
 
 :root[data-theme='dark'] .user-row,
 :root[data-theme='dark'] .user-dpm-row {
-  border-color: var(--color-neutral-700);
+  border-bottom-color: var(--color-neutral-700);
 }
 
 :root[data-theme='dark'] .user-row:hover,
 :root[data-theme='dark'] .user-dpm-row:hover {
-  background: var(--color-primary-900);
+  background: var(--color-neutral-800);
 }
 
 :root[data-theme='dark'] .user-dpm-row-expanded,
 :root[data-theme='dark'] .user-dpm-mobile-card-expanded {
-  background: var(--color-primary-900);
+  background: var(--color-neutral-800);
   border-color: var(--color-primary-600);
 }
 
 :root[data-theme='dark'] .user-dpm-expanded-content {
-  background: var(--color-base-300);
-  border-color: var(--color-neutral-700);
+  background: var(--color-neutral-800);
+  border-top-color: var(--color-neutral-700);
+  border-bottom-color: var(--color-neutral-700);
 }
 
 :root[data-theme='dark'] .user-dpm-mobile-expanded {
@@ -3027,23 +3070,24 @@ nav a.bg-white {
 
   :root:not([data-theme='light']) .user-row,
   :root:not([data-theme='light']) .user-dpm-row {
-    border-color: var(--color-neutral-700);
+    border-bottom-color: var(--color-neutral-700);
   }
 
   :root:not([data-theme='light']) .user-row:hover,
   :root:not([data-theme='light']) .user-dpm-row:hover {
-    background: var(--color-primary-900);
+    background: var(--color-neutral-800);
   }
 
   :root:not([data-theme='light']) .user-dpm-row-expanded,
   :root:not([data-theme='light']) .user-dpm-mobile-card-expanded {
-    background: var(--color-primary-900);
+    background: var(--color-neutral-800);
     border-color: var(--color-primary-600);
   }
 
   :root:not([data-theme='light']) .user-dpm-expanded-content {
-    background: var(--color-base-300);
-    border-color: var(--color-neutral-700);
+    background: var(--color-neutral-800);
+    border-top-color: var(--color-neutral-700);
+    border-bottom-color: var(--color-neutral-700);
   }
 
   :root:not([data-theme='light']) .user-dpm-mobile-expanded {
